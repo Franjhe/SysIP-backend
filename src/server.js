@@ -1,13 +1,15 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+import * as express from 'express';
+import v1AuthRouter from './v1/routes/authRoutes.js';
 
-// Rutas de ejemplo
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
+const app = express(); 
 
-// Iniciar el servidor
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+app.use(express.json());
+
+app.use("/api/v1/auth", v1AuthRouter);
+
+const PORT = process.env.PORT || 3000; 
+
+app.listen(PORT, () => { 
+  console.log(`\n API is listening on port ${PORT}`);
+  V1SwaggerDocs(app, PORT);
 });
