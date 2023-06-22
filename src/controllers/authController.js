@@ -1,8 +1,8 @@
-import authService from '../services/authService.js';
+import authService from '../service/authService.js';
 
 const createJWT = async (req, res) => {
-    const clogin = req.body.clogin;
-    const verifiedUsername = await authService.verifyIfUsernameExists(clogin);
+    const xlogin = req.body.xlogin;
+    const verifiedUsername = await authService.verifyIfUsernameExists(xlogin);
     if (verifiedUsername.error) { 
         res
             .status(verifiedUsername.code)
@@ -13,7 +13,7 @@ const createJWT = async (req, res) => {
         return;
     }
     const xclavesec = req.body.xclavesec;
-    const verifiedPassword = await authService.verifyIfPasswordMatchs(clogin, xclavesec);
+    const verifiedPassword = await authService.verifyIfPasswordMatchs(xlogin, xclavesec);
     if (verifiedPassword.error) { 
         res
             .status(verifiedPassword.code)
@@ -23,7 +23,7 @@ const createJWT = async (req, res) => {
             });
         return;
     }
-    const user = await authService.getOneUser(clogin);
+    const user = await authService.getOneUser(xlogin);
     if (user.error) {
         return res
             .status(user.code)
@@ -38,10 +38,8 @@ const createJWT = async (req, res) => {
             status: true, 
             message: 'Usuario Autenticado',
             data: {
+                cusuario: user.cusuario,
                 xusuario: user.xusuario,
-                csucursal: user.csucursal,
-                xsucursal: user.xsucursal,
-                bmaster: user.bmaster,
                 token: 'Bearer ' + jwt
             }
         });
@@ -49,7 +47,7 @@ const createJWT = async (req, res) => {
 };
 
 const getUserModules = async (req, res) => {
-    const userModules = await authService.getUserModules(res.locals.decodedJWT.cusuario);
+    const userModules = await authService.getUserModules(req.body.cusuario);
     if (userModules.error) {
         return res
             .status(userModules.code)

@@ -1,7 +1,9 @@
-import * as express from 'express';
+import express from 'express';
+import dotenv from 'dotenv/config';
 import v1AuthRouter from './v1/routes/authRoutes.js';
 
 const app = express(); 
+dotenv;
 
 app.use(express.json());
 
@@ -11,5 +13,4 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => { 
   console.log(`\n API is listening on port ${PORT}`);
-  V1SwaggerDocs(app, PORT);
 });

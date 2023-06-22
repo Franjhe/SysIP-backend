@@ -1,7 +1,9 @@
 import User from '../db/User.js';
+import jwt from 'jsonwebtoken';
+import moment from 'moment';
 
-const verifyIfUsernameExists = async (clogin) => {
-    const verifiedUsername = await User.verifyIfUsernameExists(clogin.toLowerCase());
+const verifyIfUsernameExists = async (xlogin) => {
+    const verifiedUsername = await User.verifyIfUsernameExists(xlogin);
     if (verifiedUsername.error) {
         return { error: verifiedUsername.error, code: 500 };
     }
@@ -11,8 +13,8 @@ const verifyIfUsernameExists = async (clogin) => {
     return verifiedUsername;
 }
 
-const verifyIfPasswordMatchs = async (clogin, xclavesec) => {
-    const verifiedPassword = await User.verifyIfPasswordMatchs(clogin, xclavesec);
+const verifyIfPasswordMatchs = async (xlogin, xclavesec) => {
+    const verifiedPassword = await User.verifyIfPasswordMatchs(xlogin, xclavesec);
     if (verifiedPassword.error) {
         return { error: verifiedPassword.error, code: 500 };
     }
@@ -22,7 +24,34 @@ const verifyIfPasswordMatchs = async (clogin, xclavesec) => {
     return verifiedPassword;
 };
 
+const createJWT = (user) => {
+    const payload = {
+        cusuario: user.cusuario,
+        xusuario: user.xusuario,
+        xlogin: user.xlogin,
+        iat: moment().unix(),
+        exp: moment().add(1, 'day').unix(),
+    }
+    return jwt.sign(payload, process.env.JWT_SECRET)
+}
+
+const getOneUser = async (xlogin) => {
+    const user = await User.getOneUser(xlogin);
+    if (user.error) {
+        return { error: user.error };
+    }
+    if (!user) {
+        return { errorNotFound: "User not found" };
+    }
+    if (user.xlogin) {
+        user.xlogin
+    }
+    return user;
+}
+
 export default {
     verifyIfUsernameExists,
-    verifyIfPasswordMatchs
+    verifyIfPasswordMatchs,
+    createJWT,
+    getOneUser
 }
