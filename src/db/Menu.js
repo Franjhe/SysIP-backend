@@ -106,7 +106,7 @@ const Menu = sequelize.define(
   
       for (let i = 0; i < menuPrincipal.length; i++) {
         const cmenu_principal = menuPrincipal[i].cmenu_principal;
-        const semenuQuery = await Menu.findAll({ where: { cmenu_principal }, attributes: ['cmenu', 'xmenu', 'xruta'] });
+        const semenuQuery = await Menu.findAll({ where: { cmenu_principal }, attributes: ['cmenu', 'cmenu_principal', 'xmenu', 'xruta'] });
         const semenu = semenuQuery.map((item) => item.get({ plain: true }));
         menu.push(semenu);
       }
@@ -134,7 +134,7 @@ const Menu = sequelize.define(
   
             const semenuQuery = await SubMenu.findOne({
               where: { cmenu_principal, cmenu },
-              attributes: ['csubmenu', 'xsubmenu', 'xruta'],
+              attributes: ['csubmenu', 'cmenu_principal', 'cmenu','xsubmenu', 'xruta'],
             });
   
             if (semenuQuery !== null) {
