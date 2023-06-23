@@ -1,4 +1,4 @@
-import tradeService from '../services/tradeService.js';
+import tradeService from '../service/tradeService.js';
 
 const getAllTrade = async (req, res) => {
     const trades = await tradeService.getAllTrade();

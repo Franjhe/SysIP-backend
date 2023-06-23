@@ -1,17 +1,25 @@
 import { DataTypes } from 'sequelize';
-import db from '../config/database.js';
+import sequelize from '../config/database.js';
 
-const Trade = db.define('maramos', {
-  cramo: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-});
+const Trade = sequelize.define(
+  'maramos',
+  {
+    cramo: {
+      type: DataTypes.SMALLINT,
+      primaryKey: true,
+      autoIncrement: false,
+    },
+    xdescripcion_l: {
+      type: DataTypes.CHAR,
+      field: 'xdescripcion_l' // Nombre de la columna en la base de datos sin espacios en blanco
+    },
+  }
+);
 
 const getAllTrade = async () => {
   try {
-    const trades = await Trade.findAll();
+    const trades = await Trade.findAll({attributes: ['cramo', 'xdescripcion_l']});
+    console.log(trades);
     return trades;
   } catch (error) {
     console.error(error);
@@ -20,5 +28,5 @@ const getAllTrade = async () => {
 };
 
 export default {
-  getAllTrade
+  getAllTrade,
 };

@@ -12,6 +12,7 @@ const sqlConfig = {
 }
 
 const verifyIfUsernameExists = async (xlogin) => {
+    console.log('hola')
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
@@ -52,7 +53,6 @@ const getOneUser = async (xlogin) => {
         return result.recordset[0];
     }
     catch (error) {
-        console.log(error.message);
         return { error: error.message };
     }
 }

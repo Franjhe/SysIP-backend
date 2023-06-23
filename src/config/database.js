@@ -1,18 +1,16 @@
 import { Sequelize } from 'sequelize';
 
-const db = new Sequelize({
+const sequelize = new Sequelize(process.env.NAME_BD, process.env.USER_BD, process.env.PASSWORD_BD, {
+  host: process.env.SERVER_BD,
+
   dialect: 'mssql',
-  server: process.env.SERVER_BD,
-  database: process.env.NAME_BD,
-  username: process.env.USER_BD,
-  password: process.env.PASSWORD_BD,
-  port: process.env.PORT,
   dialectOptions: {
     options: {
       encrypt: true,
-      trustServerCertificate: true
-    }
-  }
+      trustServerCertificate: true,
+    },
+  },
 });
 
-export default db;
+// Exporta la instancia de Sequelize para su uso en otros archivos
+export default sequelize;
