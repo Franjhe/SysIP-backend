@@ -12,6 +12,7 @@ const sqlConfig = {
 }
 
 const verifyIfUsernameExists = async (xlogin) => {
+    console.log('hola')
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
@@ -45,14 +46,13 @@ const getOneUser = async (xlogin) => {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
            .input('xlogin', sql.NVarChar, xlogin)
-           .query('select cusuario, xusuario, xlogin from seusuarios where xlogin = @xlogin')
+           .query('select * from seVlogin where xlogin = @xlogin')
         if (result.rowsAffected < 1) {
             return false;
         }
         return result.recordset[0];
     }
     catch (error) {
-        console.log(error.message);
         return { error: error.message };
     }
 }
