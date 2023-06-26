@@ -32,15 +32,6 @@ const createJWT = async (req, res) => {
                 message: user.error
             });
     }
-    // const permissonRol = await authService.getPermissonRol()
-    // if (permissonRol.error) {
-    //     return res
-    //         .status(permissonRol.code)
-    //         .send({
-    //             status: false,
-    //             message: permissonRol.error
-    //         });
-    // }
     const jwt = authService.createJWT(user);
     res
         .status(201).send({ 

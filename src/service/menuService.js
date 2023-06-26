@@ -1,23 +1,12 @@
 import Menu from '../db/Menu.js';
 
-const getAllMainMenu = async () => {
+const getAllMainMenu = async (menuData) => {
     try {
-      const menuPrincipal = await Menu.getAllMainMenu();
+      const menuPrincipal = await Menu.getAllMainMenu(menuData);
       if (menuPrincipal.error) {
         return { error: menuPrincipal.error };
       }
-  
-      const menu = await Menu.getAllMenus();
-      if (menu.error) {
-        return { error: menu.error };
-      }
-
-      const subMenu = await Menu.getAllSubMenus();
-      if (subMenu.error) {
-        return { error: subMenu.error };
-      }
-  
-      return { menuPrincipal, menu, subMenu };
+      return menuPrincipal ;
     } catch (error) {
       return { error: error.message };
     }
