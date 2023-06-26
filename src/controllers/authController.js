@@ -32,6 +32,15 @@ const createJWT = async (req, res) => {
                 message: user.error
             });
     }
+    // const permissonRol = await authService.getPermissonRol()
+    // if (permissonRol.error) {
+    //     return res
+    //         .status(permissonRol.code)
+    //         .send({
+    //             status: false,
+    //             message: permissonRol.error
+    //         });
+    // }
     const jwt = authService.createJWT(user);
     res
         .status(201).send({ 
@@ -40,6 +49,12 @@ const createJWT = async (req, res) => {
             data: {
                 cusuario: user.cusuario,
                 xusuario: user.xusuario,
+                cdepartamento: user.cdepartamento,
+                crol: user.crol,
+                bcrear: user.bcrear,
+                bconsultar: user.bconsultar,
+                bmodificar: user.bmodificar,
+                beliminar: user.beliminar,
                 token: 'Bearer ' + jwt
             }
         });
