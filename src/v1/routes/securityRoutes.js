@@ -1,11 +1,11 @@
 import express from 'express';
 import authenticate from '../../middlewares/authenticate.js';
-import menuController from '../../controllers/menuController.js';
+import securityController from '../../controllers/securityController.js';
 
 const router = express.Router();
 
 router
 
-    .post("/get-menu", authenticate, menuController.getAllMenu);
+    .post("/user/search", authenticate, securityController.searchUser);
 
 export default router;
