@@ -12,8 +12,8 @@ const createJWT = async (req, res) => {
             });
         return;
     }
-    const xclavesec = req.body.xclavesec;
-    const verifiedPassword = await authService.verifyIfPasswordMatchs(xlogin, xclavesec);
+    const xcontrasena = req.body.xcontrasena;
+    const verifiedPassword = await authService.verifyIfPasswordMatchs(xlogin, xcontrasena);
     if (verifiedPassword.error) { 
         res
             .status(verifiedPassword.code)

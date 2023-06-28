@@ -12,12 +12,11 @@ const sqlConfig = {
 }
 
 const verifyIfUsernameExists = async (xlogin) => {
-    console.log('hola')
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
             .input('xlogin', sql.NVarChar, xlogin)
-            .query('select cusuario, xusuario, xlogin from seusuarios where xlogin = @xlogin')
+            .query('select cusuario, xusuario, xlogin from seusuariosweb where xlogin = @xlogin')
         return { 
             result: result 
         };
@@ -27,13 +26,13 @@ const verifyIfUsernameExists = async (xlogin) => {
     }
 }
 
-const verifyIfPasswordMatchs = async (xlogin, xclavesec) => {
+const verifyIfPasswordMatchs = async (xlogin, xcontrasena) => {
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
             .input('xlogin', sql.NVarChar, xlogin)
-            .input('xclavesec', sql.NVarChar, xclavesec)
-            .query('select cusuario from seusuarios where xlogin = @xlogin and xclavesec = @xclavesec')
+            .input('xcontrasena', sql.NVarChar, xcontrasena)
+            .query('select cusuario from seusuariosweb where xlogin = @xlogin and xcontrasena = @xcontrasena')
         return { result: result };
     }
     catch (error) {

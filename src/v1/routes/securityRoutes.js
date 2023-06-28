@@ -6,6 +6,8 @@ const router = express.Router();
 
 router
 
-    .post("/user/search", authenticate, securityController.searchUser);
+    .post("/user/search", authenticate, securityController.searchUser)
+    .post("/user/info", authenticate, securityController.infoUser)
+    .post("/user/update", authenticate, securityController.updateUser)
 
 export default router;

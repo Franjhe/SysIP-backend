@@ -13,8 +13,8 @@ const verifyIfUsernameExists = async (xlogin) => {
     return verifiedUsername;
 }
 
-const verifyIfPasswordMatchs = async (xlogin, xclavesec) => {
-    const verifiedPassword = await User.verifyIfPasswordMatchs(xlogin, xclavesec);
+const verifyIfPasswordMatchs = async (xlogin, xcontrasena) => {
+    const verifiedPassword = await User.verifyIfPasswordMatchs(xlogin, xcontrasena);
     if (verifiedPassword.error) {
         return { error: verifiedPassword.error, code: 500 };
     }
