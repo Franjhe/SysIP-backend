@@ -40,9 +40,31 @@ const getBrokers = async () => {
     return brokers;
 }
 
+const getDepartament = async () => {
+    const departaments = await Valrep.getDepartament();
+    if (departaments.error) {
+        return {
+            error: departaments.error
+        }
+    }
+    return departaments;
+}
+
+const getRol = async (rolData) => {
+    const rols = await Valrep.getRol(rolData);
+    if (rols.error) {
+        return {
+            error: rols.error
+        }
+    }
+    return rols;
+}
+
 export default {
     getTrade,
     getCoin,
     getClient,
-    getBrokers
+    getBrokers,
+    getDepartament,
+    getRol
 }

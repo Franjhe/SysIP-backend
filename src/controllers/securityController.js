@@ -78,7 +78,7 @@ const updateUser = async (req, res) => {
                 status: false,
                 message: update.error
             });
-    }
+        }
     return res
         .status(200)
         .send({

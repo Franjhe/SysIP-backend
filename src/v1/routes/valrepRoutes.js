@@ -10,5 +10,7 @@ router
     .post("/coin", authenticate, valrepController.getCoin)
     .post("/client", authenticate, valrepController.getClient)
     .post("/brockers", authenticate, valrepController.getBrokers)
+    .post("/departament", authenticate, valrepController.getDepartament)
+    .post("/rol", authenticate, valrepController.getRol)
 
 export default router;

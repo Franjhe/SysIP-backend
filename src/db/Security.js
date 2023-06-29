@@ -96,27 +96,6 @@ const infoUser = async (infoUser) => {
   }
 };
 
-// const updateUser = async (updateUser) => {
-//   const { xnombre, xapellido, xlogin, xusuario, xcorreo, xobservacion } = updateUser;
-//   try {
-//     const updatedUser = await Update.update(
-//       { xnombre, xapellido, xlogin, xusuario, xcorreo, xobservacion },
-//       { where: { cusuario: parseInt(updateUser.cusuario) } }
-//     );
-
-//     if (updatedUser[0] === 1) {
-//       console.log('Usuario actualizado correctamente');
-//       const update = updatedUser[0] ? updatedUser[0].get({ plain: true }) : null;
-//       return update;
-//     } else {
-//       return { success: false, message: 'No se encontró ningún usuario' };
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     return { success: false, message: 'Error al actualizar el usuario', error };
-//   }
-// };
-
 const updateUser = async (updateUser) => {
   const { xnombre, xapellido, xlogin, xusuario, xcorreo, xobservacion } = updateUser;
   try {
