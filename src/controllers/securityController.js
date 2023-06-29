@@ -89,8 +89,39 @@ const updateUser = async (req, res) => {
         });
 }
 
+const createUser = async (req, res) => {
+    const create = await securityService.createUser(req.body);
+    if (create.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: create.permissionError
+            });
+    }
+    if (create.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: create.error
+            });
+        }
+
+        console.log(create)
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Usuario Creado exitosamente.'
+            }
+        });
+}
+
 export default {
     searchUser,
     infoUser,
-    updateUser
+    updateUser,
+    createUser
 }

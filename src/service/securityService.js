@@ -30,8 +30,19 @@ const updateUser = async (updateUser) => {
     return update;
 }
 
+const createUser = async (createUser) => {
+    const create = await Security.createUser(createUser);
+    if (create.error) {
+        return {
+            error: create.error
+        }
+    }
+    return create;
+}
+
 export default {
     searchUser,
     infoUser,
-    updateUser
+    updateUser,
+    createUser
 }

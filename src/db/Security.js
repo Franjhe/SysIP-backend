@@ -1,8 +1,22 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
+import sql from "mssql";
 
+const sqlConfig = {
+    user: process.env.USER_BD,
+    password: process.env.PASSWORD_BD,
+    server: process.env.SERVER_BD,
+    database: process.env.NAME_BD,
+    options: {
+        encrypt: true,
+        trustServerCertificate: true
+    }
+}
+
+sequelize.options.logging = console.log;
 
 const User = sequelize.define('seusuariosweb', {}, { tableName: 'seusuariosweb' });
+
 const Info = sequelize.define('seusuariosweb', {
   cusuario: {
     type: Sequelize.INTEGER,
@@ -36,6 +50,7 @@ const Info = sequelize.define('seusuariosweb', {
 }, {
   tableName: 'seusuariosweb',
 });
+
 const Update = sequelize.define('seusuariosweb', {
   cusuario: {
     type: Sequelize.INTEGER,
@@ -44,23 +59,23 @@ const Update = sequelize.define('seusuariosweb', {
   },
   xnombre: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   xapellido: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   xlogin: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   xusuario: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   xcorreo: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   xobservacion: {
     type: Sequelize.STRING,
@@ -120,9 +135,35 @@ const updateUser = async (updateUser) => {
   }
 };
 
+const createUser = async(createUser) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let insert = await pool.request()
+        .input('u_version', sql.NVarChar, createUser.u_version)
+        .input('xnombre', sql.NVarChar, createUser.xnombre)
+        .input('xapellido', sql.NVarChar, createUser.xapellido)
+        .input('xlogin', sql.NVarChar, createUser.xlogin)
+        .input('xcontrasena', sql.NVarChar, createUser.xcontrasena)
+        .input('xusuario', sql.NVarChar, createUser.xusuario)
+        .input('xobservacion', sql.NVarChar, createUser.xobservacion)
+        .input('cdepartamento', sql.Int, createUser.cdepartamento)
+        .input('crol', sql.Int, createUser.crol)
+        .input('xcorreo', sql.NVarChar, createUser.xcorreo)
+        .query('insert into seusuariosweb (u_version, xnombre, xapellido, xlogin, xcontrasena, xusuario, xobservacion, cdepartamento, crol, xcorreo) values (@u_version, @xnombre, @xapellido, @xlogin, @xcontrasena, @xusuario, @xobservacion, @cdepartamento, @crol, @xcorreo)')        
+        rowsAffected = rowsAffected + insert.rowsAffected;
+        const create = rowsAffected   
+        return create
+  }
+  catch(err){
+      console.log(err.message)
+      return { error: err.message };
+  }
+}
 
 export default {
   searchUser,
   infoUser,
-  updateUser
+  updateUser,
+  createUser
 };

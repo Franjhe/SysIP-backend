@@ -9,5 +9,6 @@ router
     .post("/user/search", authenticate, securityController.searchUser)
     .post("/user/info", authenticate, securityController.infoUser)
     .post("/user/update", authenticate, securityController.updateUser)
+    .post("/user/create", authenticate, securityController.createUser)
 
 export default router;
