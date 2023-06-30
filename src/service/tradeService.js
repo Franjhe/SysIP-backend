@@ -7,7 +7,6 @@ const getAllTrade = async () => {
             error: trade.error
         }
     }
-    console.log(trade);
     return trade;
 }
 

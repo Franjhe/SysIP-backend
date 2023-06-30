@@ -112,9 +112,67 @@ const getBrokers = async (req, res) => {
         });
 }
 
+const getDepartament = async (req, res) => {
+    const departaments = await valrepService.getDepartament();
+    if (departaments.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: departaments.permissionError
+            });
+    }
+    if (departaments.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: departaments.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                departaments: departaments
+            }
+        });
+}
+
+const getRol = async (req, res) => {
+    const rols = await valrepService.getRol(req.body);
+    if (rols.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: rols.permissionError
+            });
+    }
+    if (rols.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: rols.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                rols: rols
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
     getClient,
-    getBrokers
+    getBrokers,
+    getDepartament,
+    getRol
 }

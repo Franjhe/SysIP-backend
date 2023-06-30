@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { Sequelize, DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 
 const Trade = sequelize.define(
@@ -18,11 +18,14 @@ const Trade = sequelize.define(
 
 const getAllTrade = async () => {
   try {
-    const trades = await Trade.findAll({attributes: ['cramo', 'xdescripcion_l']});
-    console.log(trades);
+    const trades = await Trade.findAll({
+      attributes: [
+        'cramo',
+        [Sequelize.fn('RTRIM', Sequelize.col('xdescripcion_l')), 'xdescripcion_l']
+      ]
+    });
     return trades;
   } catch (error) {
-    console.error(error);
     return { error: error.message };
   }
 };
