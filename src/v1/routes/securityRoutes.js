@@ -13,4 +13,10 @@ router
     .post("/user/create", authenticate, securityController.createUser)
     .post("/user/delete", authenticate, securityController.deleteUser)
 
+    //CRUD Departament.
+    .post("/departament/search", authenticate, securityController.searchDepartament)
+    .post("/departament/info",   authenticate, securityController.infoDepartament)
+    .post("/departament/update", authenticate, securityController.updateDepartament)
+    .post("/departament/create", authenticate, securityController.createDepartament)
+
 export default router;

@@ -147,10 +147,129 @@ const deleteUser = async (req, res) => {
         });
 }
 
+const searchDepartament = async (req, res) => {
+    const departaments = await securityService.searchDepartament();
+    if (departaments.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: departaments.permissionError
+            });
+    }
+    if (departaments.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: departaments.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                departaments: departaments
+            }
+        });
+}
+
+const infoDepartament = async (req, res) => {
+    const infoDep= await securityService.infoDepartament(req.body);
+    if (infoDep.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: infoDep.permissionError
+            });
+    }
+    if (infoDep.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: infoDep.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                xdepartamento: infoDep.xdepartamento
+            }
+        });
+}
+
+const updateDepartament = async (req, res) => {
+    const updateDep = await securityService.updateDepartament(req.body);
+    if (updateDep.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: updateDep.permissionError
+            });
+    }
+    if (updateDep.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: updateDep.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Departamento Modificado exitosamente.'
+            }
+        });
+}
+
+const createDepartament = async (req, res) => {
+    const createDep = await securityService.createDepartament(req.body);
+    if (createDep.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: createDep.permissionError
+            });
+    }
+    if (createDep.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createDep.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Departamento Creado exitosamente.'
+            }
+        });
+}
+
 export default {
+  //Usuarios
     searchUser,
     infoUser,
     updateUser,
     createUser,
-    deleteUser
+    deleteUser,
+
+  //Departamentos
+    searchDepartament,
+    infoDepartament,
+    updateDepartament,
+    createDepartament
 }

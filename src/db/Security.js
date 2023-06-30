@@ -101,6 +101,37 @@ const DeleteU = sequelize.define('seusuariosweb', {
   timestamps: false, // Agregar esta opción para deshabilitar los timestamps
 });
 
+const Departament = sequelize.define('sedepartamento', {}, { tableName: 'sedepartamento' });
+
+const InfoDepartament = sequelize.define('sedepartamento', {
+  cdepartamento: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  xdepartamento: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'sedepartamento',
+});
+
+const UpdateDepartament = sequelize.define('sedepartamento', {
+  cdepartamento: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  xdepartamento: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'sedepartamento',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
@@ -166,7 +197,7 @@ const createUser = async(createUser) => {
         .input('cdepartamento', sql.Int, createUser.cdepartamento)
         .input('crol', sql.Int, createUser.crol)
         .input('xcorreo', sql.NVarChar, createUser.xcorreo)
-        .input('iestado', sql.Char, 'A')
+        .input('istatus', sql.Char, 'V')
         .input('fingreso', sql.DateTime, new Date())
         .query('insert into seusuariosweb (u_version, xnombre, xapellido, xlogin, xcontrasena, xusuario, xobservacion, cdepartamento, crol, xcorreo, iestado, fingreso) values (@u_version, @xnombre, @xapellido, @xlogin, @xcontrasena, @xusuario, @xobservacion, @cdepartamento, @crol, @xcorreo, @iestado, @fingreso)')        
         rowsAffected = rowsAffected + insert.rowsAffected;
@@ -192,10 +223,78 @@ const deleteUser = async (deleteUser) => {
   }
 };
 
+const searchDepartament = async () => {
+  try {
+    const departament = await Departament.findAll({
+      where: { istatus: 'V' },
+      attributes: ['cdepartamento', 'xdepartamento', 'istatus'],
+    });
+    const departaments = departament.map((item) => item.get({ plain: true }));
+    return departaments;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
+const infoDepartament = async (infoDepartament) => {
+  try {
+    const infoDepQuery = await InfoDepartament.findOne({
+      where: {cdepartamento: infoDepartament.cdepartamento},
+      attributes: ['xdepartamento'],
+    });
+    const infoDep = infoDepQuery ? infoDepQuery.get({ plain: true }) : null;
+    return infoDep;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
+const updateDepartament = async (updateDepartament) => {
+  const { xdepartamento } = updateDepartament;
+  try {
+    const updateDep = await UpdateDepartament.update(
+      { xdepartamento },
+      { where: { cdepartamento: parseInt(updateDepartament.cdepartamento) } }
+    );
+    return updateDep;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al actualizar el usuario', error };
+  }
+};
+
+const createDepartament = async(createDepartament) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let insert = await pool.request()
+        .input('u_version', sql.NVarChar, createDepartament.u_version)
+        .input('xdepartamento', sql.NVarChar, createDepartament.xdepartamento)
+        .input('istatus', sql.Char, 'V')
+        .input('fingreso', sql.DateTime, new Date())
+        .query('insert into sedepartamento (u_version, xdepartamento, istatus, fingreso) values (@u_version, @xdepartamento, @istatus, @fingreso)')        
+        rowsAffected = rowsAffected + insert.rowsAffected;
+        const createDep = rowsAffected   
+        return createDep
+  }
+  catch(err){
+      return { error: err.message };
+  }
+}
+
 export default {
+//Usuarios
   searchUser,
   infoUser,
   updateUser,
   createUser,
-  deleteUser
+  deleteUser,
+
+//Departamento
+  searchDepartament,
+  infoDepartament,
+  updateDepartament,
+  createDepartament
 };

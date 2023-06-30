@@ -50,10 +50,57 @@ const deleteUser = async (deleteUser) => {
     return resultDelete;
 }
 
+const searchDepartament = async () => {
+    const departaments = await Security.searchDepartament();
+    if (departaments.error) {
+        return {
+            error: departaments.error
+        }
+    }
+    return departaments;
+}
+
+const infoDepartament = async (infoDepartament) => {
+    const infoDep = await Security.infoDepartament(infoDepartament);
+    if (infoDep.error) {
+        return {
+            error: infoDep.error
+        }
+    }
+    return infoDep;
+}
+
+const updateDepartament = async (updateDepartament) => {
+    const updateDep = await Security.updateDepartament(updateDepartament);
+    if (updateDep.error) {
+        return {
+            error: updateDep.error
+        }
+    }
+    return updateDep;
+}
+
+const createDepartament = async (createDepartament) => {
+    const createDep = await Security.createDepartament(createDepartament);
+    if (createDep.error) {
+        return {
+            error: createDep.error
+        }
+    }
+    return createDep;
+}
+
 export default {
+  //Usuarios  
     searchUser,
     infoUser,
     updateUser,
     createUser,
-    deleteUser
+    deleteUser,
+
+  //Departamentos
+    searchDepartament,
+    infoDepartament,
+    updateDepartament,
+    createDepartament,
 }
