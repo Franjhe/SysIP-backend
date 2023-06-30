@@ -109,8 +109,6 @@ const createUser = async (req, res) => {
                 message: create.error
             });
         }
-
-        console.log(create)
     return res
         .status(200)
         .send({
@@ -121,9 +119,38 @@ const createUser = async (req, res) => {
         });
 }
 
+const deleteUser = async (req, res) => {
+    const resultDelete = await securityService.deleteUser(req.body);
+    if (resultDelete.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: resultDelete.permissionError
+            });
+    }
+    if (resultDelete.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: resultDelete.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'El usuario ha sido eliminado exitosamente'
+            }
+        });
+}
+
 export default {
     searchUser,
     infoUser,
     updateUser,
-    createUser
+    createUser,
+    deleteUser
 }

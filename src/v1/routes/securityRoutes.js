@@ -6,9 +6,11 @@ const router = express.Router();
 
 router
 
+    //CRUD User.
     .post("/user/search", authenticate, securityController.searchUser)
-    .post("/user/info", authenticate, securityController.infoUser)
+    .post("/user/info",   authenticate, securityController.infoUser)
     .post("/user/update", authenticate, securityController.updateUser)
     .post("/user/create", authenticate, securityController.createUser)
+    .post("/user/delete", authenticate, securityController.deleteUser)
 
 export default router;

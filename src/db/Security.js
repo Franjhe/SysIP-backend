@@ -86,9 +86,25 @@ const Update = sequelize.define('seusuariosweb', {
   timestamps: false, // Agregar esta opción para deshabilitar los timestamps
 });
 
+const DeleteU = sequelize.define('seusuariosweb', {
+  cusuario: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  istatus: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  }
+}, {
+  tableName: 'seusuariosweb',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
+      where: { istatus: 'V' },
       attributes: ['cusuario', 'xnombre', 'xapellido', 'xlogin', ],
     });
     const users = user.map((item) => item.get({ plain: true }));
@@ -158,14 +174,28 @@ const createUser = async(createUser) => {
         return create
   }
   catch(err){
-      console.log(err.message)
       return { error: err.message };
   }
 }
+
+const deleteUser = async (deleteUser) => {
+  const { istatus } = deleteUser;
+  try {
+    const resultDelete = await DeleteU.update(
+      { istatus },
+      { where: { cusuario: parseInt(deleteUser.cusuario) } }
+    );
+    return resultDelete;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al actualizar el usuario', error };
+  }
+};
 
 export default {
   searchUser,
   infoUser,
   updateUser,
-  createUser
+  createUser,
+  deleteUser
 };

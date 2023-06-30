@@ -40,9 +40,20 @@ const createUser = async (createUser) => {
     return create;
 }
 
+const deleteUser = async (deleteUser) => {
+    const resultDelete = await Security.deleteUser(deleteUser);
+    if (resultDelete.error) {
+        return {
+            error: resultDelete.error
+        }
+    }
+    return resultDelete;
+}
+
 export default {
     searchUser,
     infoUser,
     updateUser,
-    createUser
+    createUser,
+    deleteUser
 }
