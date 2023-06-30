@@ -102,7 +102,7 @@ const infoUser = async (infoUser) => {
   try {
     const infoQuery = await Info.findOne({
       where: infoUser,
-      attributes: ['cusuario', 'xnombre', 'xapellido', 'xlogin', 'xusuario', 'xcorreo', 'xobservacion'],
+      attributes: ['cusuario', 'xnombre', 'xapellido', 'xlogin', 'xusuario', 'xcorreo', 'xobservacion', 'cdepartamento', 'crol'],
     });
     const info = infoQuery ? infoQuery.get({ plain: true }) : null;
     return info;
@@ -150,7 +150,9 @@ const createUser = async(createUser) => {
         .input('cdepartamento', sql.Int, createUser.cdepartamento)
         .input('crol', sql.Int, createUser.crol)
         .input('xcorreo', sql.NVarChar, createUser.xcorreo)
-        .query('insert into seusuariosweb (u_version, xnombre, xapellido, xlogin, xcontrasena, xusuario, xobservacion, cdepartamento, crol, xcorreo) values (@u_version, @xnombre, @xapellido, @xlogin, @xcontrasena, @xusuario, @xobservacion, @cdepartamento, @crol, @xcorreo)')        
+        .input('iestado', sql.Char, 'A')
+        .input('fingreso', sql.DateTime, new Date())
+        .query('insert into seusuariosweb (u_version, xnombre, xapellido, xlogin, xcontrasena, xusuario, xobservacion, cdepartamento, crol, xcorreo, iestado, fingreso) values (@u_version, @xnombre, @xapellido, @xlogin, @xcontrasena, @xusuario, @xobservacion, @cdepartamento, @crol, @xcorreo, @iestado, @fingreso)')        
         rowsAffected = rowsAffected + insert.rowsAffected;
         const create = rowsAffected   
         return create

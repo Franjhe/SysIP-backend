@@ -56,7 +56,9 @@ const infoUser = async (req, res) => {
                 xlogin: info.xlogin,
                 xusuario: info.xusuario,
                 xcorreo: info.xcorreo,
-                xbservacion: info.xobservacion
+                xobservacion: info.xobservacion,
+                cdepartamento: info.cdepartamento,
+                crol: info.crol
             }
         });
 }
