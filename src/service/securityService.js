@@ -90,6 +90,16 @@ const createDepartament = async (createDepartament) => {
     return createDep;
 }
 
+const deleteDepartament = async (deleteDepartament) => {
+    const resultDeleteDep = await Security.deleteDepartament(deleteDepartament);
+    if (resultDeleteDep.error) {
+        return {
+            error: resultDeleteDep.error
+        }
+    }
+    return resultDeleteDep;
+}
+
 export default {
   //Usuarios  
     searchUser,
@@ -103,4 +113,5 @@ export default {
     infoDepartament,
     updateDepartament,
     createDepartament,
+    deleteDepartament
 }

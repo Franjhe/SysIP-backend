@@ -259,6 +259,34 @@ const createDepartament = async (req, res) => {
         });
 }
 
+const deleteDepartament = async (req, res) => {
+    const resultDeleteDep = await securityService.deleteDepartament(req.body);
+    if (resultDeleteDep.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: resultDeleteDep.permissionError
+            });
+    }
+    if (resultDeleteDep.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: resultDeleteDep.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'El Departamento ha sido eliminado exitosamente'
+            }
+        });
+}
+
 export default {
   //Usuarios
     searchUser,
@@ -271,5 +299,6 @@ export default {
     searchDepartament,
     infoDepartament,
     updateDepartament,
-    createDepartament
+    createDepartament,
+    deleteDepartament
 }

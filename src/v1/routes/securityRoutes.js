@@ -18,5 +18,6 @@ router
     .post("/departament/info",   authenticate, securityController.infoDepartament)
     .post("/departament/update", authenticate, securityController.updateDepartament)
     .post("/departament/create", authenticate, securityController.createDepartament)
+    .post("/departament/delete", authenticate, securityController.deleteDepartament)
 
 export default router;

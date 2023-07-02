@@ -132,6 +132,21 @@ const UpdateDepartament = sequelize.define('sedepartamento', {
   timestamps: false, // Agregar esta opción para deshabilitar los timestamps
 });
 
+const DeleteDep = sequelize.define('sedepartamento', {
+  cdepartamento: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  istatus: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  }
+}, {
+  tableName: 'sedepartamento',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
@@ -141,7 +156,7 @@ const searchUser = async () => {
     const users = user.map((item) => item.get({ plain: true }));
     return users;
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message, message: 'Ha ocurrido un error al buscar el usuario' };
   }
 };
 
@@ -154,7 +169,7 @@ const infoUser = async (infoUser) => {
     const info = infoQuery ? infoQuery.get({ plain: true }) : null;
     return info;
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message, message: 'Ha ocurrido un error al recuperar información del usuario solicitado' };
   }
 };
 
@@ -167,7 +182,6 @@ const updateUser = async (updateUser) => {
     );
 
     if (rowCount === 1) {
-      console.log('Usuario actualizado correctamente');
       const updatedRow = await Update.findOne({
         where: { cusuario: parseInt(updateUser.cusuario) }
       });
@@ -205,7 +219,7 @@ const createUser = async(createUser) => {
         return create
   }
   catch(err){
-      return { error: err.message };
+      return { error: err.message, message: 'No se pudo crear el Usuario, por favor revise.' };
   }
 }
 
@@ -219,7 +233,7 @@ const deleteUser = async (deleteUser) => {
     return resultDelete;
   } catch (error) {
     console.log(error);
-    return { success: false, message: 'Error al actualizar el usuario', error };
+    return { success: false, message: 'Error al eliminar el usuario', error };
   }
 };
 
@@ -233,7 +247,7 @@ const searchDepartament = async () => {
     return departaments;
   } catch (error) {
     console.log(error.message)
-    return { error: error.message };
+    return { error: error.message, message: 'Ha ocurrido un error al buscar el departamento' };
   }
 };
 
@@ -247,7 +261,7 @@ const infoDepartament = async (infoDepartament) => {
     return infoDep;
   } catch (error) {
     console.log(error.message)
-    return { error: error.message };
+    return { error: error.message, message: 'Ha ocurrido un error al recuperar información del departamento solicitado' };
   }
 };
 
@@ -261,7 +275,7 @@ const updateDepartament = async (updateDepartament) => {
     return updateDep;
   } catch (error) {
     console.log(error);
-    return { success: false, message: 'Error al actualizar el usuario', error };
+    return { success: false, message: 'Error al actualizar el Departamento', error };
   }
 };
 
@@ -280,9 +294,23 @@ const createDepartament = async(createDepartament) => {
         return createDep
   }
   catch(err){
-      return { error: err.message };
+      return { error: err.message, message: 'Error al crear el Departamento, por favor revise.' };
   }
 }
+
+const deleteDepartament = async (deleteDepartament) => {
+  const { istatus } = deleteDepartament;
+  try {
+    const resultDeleteDep = await DeleteDep.update(
+      { istatus },
+      { where: { cdepartamento: parseInt(deleteDepartament.cdepartamento) } }
+    );
+    return resultDeleteDep;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al eliminar el departamento', error };
+  }
+};
 
 export default {
 //Usuarios
@@ -296,5 +324,6 @@ export default {
   searchDepartament,
   infoDepartament,
   updateDepartament,
-  createDepartament
+  createDepartament,
+  deleteDepartament
 };
