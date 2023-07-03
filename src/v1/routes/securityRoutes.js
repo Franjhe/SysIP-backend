@@ -20,4 +20,11 @@ router
     .post("/departament/create", authenticate, securityController.createDepartament)
     .post("/departament/delete", authenticate, securityController.deleteDepartament)
 
+    //CRUD Rol
+    .post("/rol/search", authenticate, securityController.searchRol)
+    .post("/rol/info",   authenticate, securityController.infoRol)
+    .post("/rol/update", authenticate, securityController.updateRol)
+    .post("/rol/create", authenticate, securityController.createRol)
+    .post("/rol/delete", authenticate, securityController.deleteRol)
+
 export default router;

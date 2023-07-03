@@ -287,6 +287,152 @@ const deleteDepartament = async (req, res) => {
         });
 }
 
+const searchRol = async (req, res) => {
+    const rols = await securityService.searchRol();
+    if (rols.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: rols.permissionError
+            });
+    }
+    if (rols.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: rols.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                rols: rols
+            }
+        });
+}
+
+const infoRol = async (req, res) => {
+    const infR= await securityService.infoRol(req.body);
+    if (infR.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: infR.permissionError
+            });
+    }
+    if (infR.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: infR.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                cdepartamento: infR.cdepartamento,
+                xrol: infR.xrol,
+                xdepartamento: infR.xdepartamento,
+                bcrear: infR.bcrear,
+                bmodificar: infR.bmodificar,
+                bconsultar: infR.bconsultar,
+                beliminar: infR.beliminar,
+            }
+        });
+}
+
+const updateRol = async (req, res) => {
+    const updateR = await securityService.updateRol(req.body);
+    if (updateR.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: updateR.permissionError
+            });
+    }
+    if (updateR.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: updateR.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Rol Modificado exitosamente.'
+            }
+        });
+}
+
+const createRol = async (req, res) => {
+    const createR = await securityService.createRol(req.body);
+    if (createR.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: createR.permissionError
+            });
+    }
+    if (createR.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createR.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Rol Creado exitosamente.'
+            }
+        });
+}
+
+const deleteRol = async (req, res) => {
+    const resultDeleteRol = await securityService.deleteRol(req.body);
+    if (resultDeleteRol.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: resultDeleteRol.permissionError
+            });
+    }
+    if (resultDeleteRol.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: resultDeleteRol.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'El Rol ha sido eliminado exitosamente'
+            }
+        });
+}
+
 export default {
   //Usuarios
     searchUser,
@@ -300,5 +446,12 @@ export default {
     infoDepartament,
     updateDepartament,
     createDepartament,
-    deleteDepartament
+    deleteDepartament,
+
+  //Roles
+    searchRol,
+    infoRol,
+    updateRol,
+    createRol,
+    deleteRol
 }

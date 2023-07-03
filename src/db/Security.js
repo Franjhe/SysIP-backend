@@ -147,6 +147,96 @@ const DeleteDep = sequelize.define('sedepartamento', {
   timestamps: false, // Agregar esta opción para deshabilitar los timestamps
 });
 
+const Rol = sequelize.define('seVroles', {});
+
+const InfoRol = sequelize.define('seVroles', {
+  crol: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cdepartamento: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xdepartamento: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  xrol: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  bcrear: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+  bmodificar: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+  bconsultar: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+  beliminar: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+}, {
+  tableName: 'seVroles',
+});
+
+const UpdateRol = sequelize.define('serol', {
+  crol: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cdepartamento: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xrol: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  bcrear: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+  bmodificar: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+  bconsultar: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+  beliminar: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+}, {
+  tableName: 'serol',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
+const DeleteRol = sequelize.define('serol', {
+  crol: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  istatus: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  }
+}, {
+  tableName: 'serol',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
@@ -312,6 +402,85 @@ const deleteDepartament = async (deleteDepartament) => {
   }
 };
 
+const searchRol = async () => {
+  try {
+    const rol = await Rol.findAll({
+      where: { istatus: 'V' },
+      attributes: ['cdepartamento', 'xdepartamento', 'crol', 'xrol', ],
+    });
+    const rols = rol.map((item) => item.get({ plain: true }));
+    return rols;
+  } catch (error) {
+    return { error: error.message, message: 'Ha ocurrido un error al buscar el rol' };
+  }
+};
+
+const infoRol = async (infoRol) => {
+  try {
+    const infoRolQuery = await InfoRol.findOne({
+      where: {crol: infoRol.crol},
+      attributes: ['cdepartamento', 'xrol', 'xdepartamento', 'bcrear', 'bmodificar', 'bconsultar', 'beliminar'],
+    });
+    const infR = infoRolQuery ? infoRolQuery.get({ plain: true }) : null;
+    return infR;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message, message: 'Ha ocurrido un error al recuperar información del departamento solicitado' };
+  }
+};
+
+const updateRol = async (updateRol) => {
+  const { xrol, cdepartamento, bcrear, bconsultar, bmodificar, beliminar } = updateRol;
+  try {
+    const updateR = await UpdateRol.update(
+      { xrol, cdepartamento, bcrear, bconsultar, bmodificar, beliminar },
+      { where: { crol: parseInt(updateRol.crol) } }
+    );
+    return updateR;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al actualizar el Departamento', error };
+  }
+};
+
+const createRol = async(createRol) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let insert = await pool.request()
+        .input('u_version', sql.Char, createRol.u_version)
+        .input('xrol', sql.NVarChar, createRol.xrol)
+        .input('cdepartamento', sql.Int, createRol.cdepartamento)
+        .input('bcrear', sql.Bit, createRol.bcrear)
+        .input('bmodificar', sql.Bit, createRol.bmodificar)
+        .input('bconsultar', sql.Bit, createRol.bconsultar)
+        .input('beliminar', sql.Bit, createRol.beliminar)
+        .input('istatus', sql.Char, 'V')
+        .input('fingreso', sql.DateTime, new Date())
+        .query('insert into serol (u_version, xrol, cdepartamento, bcrear, bmodificar, bconsultar, beliminar, istatus, fingreso) values (@u_version, @xrol, @cdepartamento, @bcrear, @bmodificar, @bconsultar, @beliminar, @istatus, @fingreso)')        
+        rowsAffected = rowsAffected + insert.rowsAffected;
+        const createR = rowsAffected   
+        return createR
+  }
+  catch(err){
+      return { error: err.message, message: 'Error al crear el Departamento, por favor revise.' };
+  }
+}
+
+const deleteRol = async (deleteRol) => {
+  const { istatus } = deleteRol;
+  try {
+    const resultDeleteRol = await DeleteRol.update(
+      { istatus },
+      { where: { crol: parseInt(deleteRol.crol) } }
+    );
+    return resultDeleteRol;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al eliminar el departamento', error };
+  }
+};
+
 export default {
 //Usuarios
   searchUser,
@@ -325,5 +494,12 @@ export default {
   infoDepartament,
   updateDepartament,
   createDepartament,
-  deleteDepartament
+  deleteDepartament,
+
+//Roles
+  searchRol,
+  infoRol,
+  updateRol,
+  createRol,
+  deleteRol
 };

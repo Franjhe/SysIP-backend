@@ -100,6 +100,56 @@ const deleteDepartament = async (deleteDepartament) => {
     return resultDeleteDep;
 }
 
+const searchRol = async () => {
+    const rols = await Security.searchRol();
+    if (rols.error) {
+        return {
+            error: rols.error
+        }
+    }
+    return rols;
+}
+
+const infoRol = async (infoRol) => {
+    const infR = await Security.infoRol(infoRol);
+    if (infR.error) {
+        return {
+            error: infR.error
+        }
+    }
+    return infR;
+}
+
+const updateRol = async (updateRol) => {
+    const updateR = await Security.updateRol(updateRol);
+    if (updateR.error) {
+        return {
+            error: updateR.error
+        }
+    }
+    return updateR;
+}
+
+const createRol = async (createRol) => {
+    const createR = await Security.createRol(createRol);
+    if (createR.error) {
+        return {
+            error: createR.error
+        }
+    }
+    return createR;
+}
+
+const deleteRol = async (deleteRol) => {
+    const resultDeleteRol = await Security.deleteRol(deleteRol);
+    if (resultDeleteRol.error) {
+        return {
+            error: resultDeleteRol.error
+        }
+    }
+    return resultDeleteRol;
+}
+
 export default {
   //Usuarios  
     searchUser,
@@ -113,5 +163,12 @@ export default {
     infoDepartament,
     updateDepartament,
     createDepartament,
-    deleteDepartament
+    deleteDepartament,
+
+  //Roles
+    searchRol,
+    infoRol,
+    updateRol,
+    createRol,
+    deleteRol
 }
