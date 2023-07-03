@@ -27,4 +27,9 @@ router
     .post("/rol/create", authenticate, securityController.createRol)
     .post("/rol/delete", authenticate, securityController.deleteRol)
 
+    //CRUD Menu
+    .post("/menu/search/main-menu", authenticate, securityController.searchMainMenu)
+    .post("/menu/search/menu",      authenticate, securityController.searchMenu)
+    .post("/menu/search/submenu",   authenticate, securityController.searchSubMenu)
+
 export default router;

@@ -433,6 +433,90 @@ const deleteRol = async (req, res) => {
         });
 }
 
+const searchMainMenu = async (req, res) => {
+    const mainMenu = await securityService.searchMainMenu();
+    if (mainMenu.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: mainMenu.permissionError
+            });
+    }
+    if (mainMenu.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: mainMenu.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                mainMenu: mainMenu
+            }
+        });
+}
+
+const searchMenu = async (req, res) => {
+    const MenuResult = await securityService.searchMenu();
+    if (MenuResult.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: MenuResult.permissionError
+            });
+    }
+    if (MenuResult.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: MenuResult.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                Menu: MenuResult
+            }
+        });
+}
+
+const searchSubMenu = async (req, res) => {
+    const SubMenuResult = await securityService.searchSubMenu();
+    if (SubMenuResult.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: SubMenuResult.permissionError
+            });
+    }
+    if (SubMenuResult.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: SubMenuResult.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                Submenu: SubMenuResult
+            }
+        });
+}
+
 export default {
   //Usuarios
     searchUser,
@@ -453,5 +537,10 @@ export default {
     infoRol,
     updateRol,
     createRol,
-    deleteRol
+    deleteRol,
+
+  //Menu
+    searchMainMenu,
+    searchMenu,
+    searchSubMenu
 }

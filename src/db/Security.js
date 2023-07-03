@@ -237,6 +237,12 @@ const DeleteRol = sequelize.define('serol', {
   timestamps: false, // Agregar esta opción para deshabilitar los timestamps
 });
 
+const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
+
+const Menu = sequelize.define('semenu', {}, { tableName: 'semenu' });
+
+const SubMenu = sequelize.define('sesubmenu', {}, { tableName: 'sesubmenu' });
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
@@ -481,6 +487,46 @@ const deleteRol = async (deleteRol) => {
   }
 };
 
+const searchMainMenu = async () => {
+  try {
+    const menu = await MainMenu.findAll({
+      where: { istatus: 'V' },
+      attributes: ['cmenu_principal', 'xmenu', 'xruta'],
+    });
+    const mainMenu = menu.map((item) => item.get({ plain: true }));
+    return mainMenu;
+  } catch (error) {
+    return { error: error.message, message: 'Ha ocurrido un error al buscar el Menu Principal' };
+  }
+};
+
+const searchMenu = async () => {
+  try {
+    const menu = await Menu.findAll({
+      where: { istatus: 'V' },
+      attributes: ['cmenu', 'xmenu', 'xruta'],
+    });
+    const MenuResult = menu.map((item) => item.get({ plain: true }));
+    return MenuResult;
+  } catch (error) {
+    console.log(error)
+    return { error: error.message, message: 'Ha ocurrido un error al buscar el Menu' };
+  }
+};
+
+const searchSubMenu = async () => {
+  try {
+    const menu = await SubMenu.findAll({
+      where: { istatus: 'V' },
+      attributes: ['csubmenu', 'xsubmenu', 'xruta'],
+    });
+    const SubMenuResult = menu.map((item) => item.get({ plain: true }));
+    return SubMenuResult;
+  } catch (error) {
+    return { error: error.message, message: 'Ha ocurrido un error al buscar el Menu' };
+  }
+};
+
 export default {
 //Usuarios
   searchUser,
@@ -501,5 +547,10 @@ export default {
   infoRol,
   updateRol,
   createRol,
-  deleteRol
+  deleteRol,
+
+//Menu
+  searchMainMenu,
+  searchMenu,
+  searchSubMenu
 };

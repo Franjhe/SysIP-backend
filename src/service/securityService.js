@@ -150,6 +150,36 @@ const deleteRol = async (deleteRol) => {
     return resultDeleteRol;
 }
 
+const searchMainMenu = async () => {
+    const mainMenu = await Security.searchMainMenu();
+    if (mainMenu.error) {
+        return {
+            error: mainMenu.error
+        }
+    }
+    return mainMenu;
+}
+
+const searchMenu = async () => {
+    const MenuResult = await Security.searchMenu();
+    if (MenuResult.error) {
+        return {
+            error: MenuResult.error
+        }
+    }
+    return MenuResult;
+}
+
+const searchSubMenu = async () => {
+    const SubMenuResult = await Security.searchSubMenu();
+    if (SubMenuResult.error) {
+        return {
+            error: SubMenuResult.error
+        }
+    }
+    return SubMenuResult;
+}
+
 export default {
   //Usuarios  
     searchUser,
@@ -170,5 +200,10 @@ export default {
     infoRol,
     updateRol,
     createRol,
-    deleteRol
+    deleteRol,
+
+  //Menu
+    searchMainMenu,
+    searchMenu,
+    searchSubMenu
 }
