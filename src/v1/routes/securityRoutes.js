@@ -31,5 +31,11 @@ router
     .post("/menu/search/main-menu", authenticate, securityController.searchMainMenu)
     .post("/menu/search/menu",      authenticate, securityController.searchMenu)
     .post("/menu/search/submenu",   authenticate, securityController.searchSubMenu)
+    .post("/menu/info/main-menu",   authenticate, securityController.infoMainMenu)
+    .post("/menu/info/menu",        authenticate, securityController.infoMenu)
+    .post("/menu/info/submenu",     authenticate, securityController.infoSubMenu)
+    .post("/menu/update/main-menu", authenticate, securityController.updateMainMenu)
+    .post("/menu/update/menu",      authenticate, securityController.updateMenu)
+
 
 export default router;

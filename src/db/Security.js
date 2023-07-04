@@ -243,6 +243,126 @@ const Menu = sequelize.define('semenu', {}, { tableName: 'semenu' });
 
 const SubMenu = sequelize.define('sesubmenu', {}, { tableName: 'sesubmenu' });
 
+const InfoMainMenu = sequelize.define('semenuprincipal', {
+  cmenu_principal: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  xmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  xicono: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  xruta: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'semenuprincipal',
+});
+
+const InfoMenu = sequelize.define('seVmenu', {
+  cdistmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cmenu: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  xmenuprincipal: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  xrutamenu: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'seVmenu',
+});
+
+const InfoSubMenu = sequelize.define('seVmenu', {
+  cdistmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  csubmenu: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  xmenuprincipal: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  xsubmenu: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  xrutasubmenu: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'seVmenu',
+});
+
+const UpdateMainMenu = sequelize.define('semenuprincipal', {
+  cmenu_principal: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  xmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  xicono: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  xruta: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'semenuprincipal',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
+const UpdateMenu = sequelize.define('semenu', {
+  cmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  xmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  xruta: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'semenu',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
@@ -527,6 +647,76 @@ const searchSubMenu = async () => {
   }
 };
 
+const infoMainMenu = async (infoMainMenu) => {
+  try {
+    const infoMainMenuQuery = await InfoMainMenu.findOne({
+      where: {cmenu_principal: infoMainMenu.cmenu_principal},
+      attributes: ['xmenu', 'xicono', 'xruta'],
+    });
+    const infoMM = infoMainMenuQuery ? infoMainMenuQuery.get({ plain: true }) : null;
+    return infoMM;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message, message: 'Ha ocurrido un error al recuperar información del Menu Principal solicitado' };
+  }
+};
+
+const infoMenu = async (infoMenu) => {
+  try {
+    const infoMenuQuery = await InfoMenu.findOne({
+      where: {cmenu: infoMenu.cmenu},
+      attributes: ['xmenu', 'xmenuprincipal', 'xrutamenu'],
+    });
+    const infoM = infoMenuQuery ? infoMenuQuery.get({ plain: true }) : null;
+    return infoM;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message, message: 'Ha ocurrido un error al recuperar información del Menu solicitado' };
+  }
+};
+
+const infoSubMenu = async (infoSubMenu) => {
+  try {
+    const infoSubMenuQuery = await InfoSubMenu.findOne({
+      where: {csubmenu: infoSubMenu.csubmenu},
+      attributes: ['xmenu', 'xmenuprincipal', 'xsubmenu', 'xrutasubmenu'],
+    });
+    const infoSM = infoSubMenuQuery ? infoSubMenuQuery.get({ plain: true }) : null;
+    return infoSM;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message, message: 'Ha ocurrido un error al recuperar información del Menu solicitado' };
+  }
+};
+
+const updateMainMenu = async (updateMainMenu) => {
+  const { xmenu, xicono, xruta } = updateMainMenu;
+  try {
+    const updateMM = await UpdateMainMenu.update(
+      { xmenu, xicono, xruta },
+      { where: { cmenu_principal: updateMainMenu.cmenu_principal } }
+    );
+    return updateMM;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al actualizar el Menu Principal', error };
+  }
+};
+
+const updateMenu = async (updateMenu) => {
+  const { xmenu, xruta } = updateMenu;
+  try {
+    const updateM = await UpdateMenu.update(
+      { xmenu, xruta },
+      { where: { cmenu: updateMenu.cmenu } }
+    );
+    return updateM;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al actualizar el Menu Principal', error };
+  }
+};
+
 export default {
 //Usuarios
   searchUser,
@@ -552,5 +742,10 @@ export default {
 //Menu
   searchMainMenu,
   searchMenu,
-  searchSubMenu
+  searchSubMenu,
+  infoMainMenu,
+  infoMenu,
+  infoSubMenu,
+  updateMainMenu,
+  updateMenu
 };

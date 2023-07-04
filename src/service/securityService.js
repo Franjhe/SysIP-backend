@@ -180,6 +180,56 @@ const searchSubMenu = async () => {
     return SubMenuResult;
 }
 
+const infoMainMenu = async (infoMainMenu) => {
+    const infoMM = await Security.infoMainMenu(infoMainMenu);
+    if (infoMM.error) {
+        return {
+            error: infoMM.error
+        }
+    }
+    return infoMM;
+}
+
+const infoMenu = async (infoMenu) => {
+    const infoM = await Security.infoMenu(infoMenu);
+    if (infoM.error) {
+        return {
+            error: infoM.error
+        }
+    }
+    return infoM;
+}
+
+const infoSubMenu = async (infoSubMenu) => {
+    const infoSM = await Security.infoSubMenu(infoSubMenu);
+    if (infoSM.error) {
+        return {
+            error: infoSM.error
+        }
+    }
+    return infoSM;
+}
+
+const updateMainMenu = async (updateMainMenu) => {
+    const updateMM = await Security.updateMainMenu(updateMainMenu);
+    if (updateMM.error) {
+        return {
+            error: updateMM.error
+        }
+    }
+    return updateMM;
+}
+
+const updateMenu = async (updateMenu) => {
+    const updateM = await Security.updateMenu(updateMenu);
+    if (updateM.error) {
+        return {
+            error: updateM.error
+        }
+    }
+    return updateM;
+}
+
 export default {
   //Usuarios  
     searchUser,
@@ -205,5 +255,10 @@ export default {
   //Menu
     searchMainMenu,
     searchMenu,
-    searchSubMenu
+    searchSubMenu,
+    infoMainMenu,
+    infoMenu,
+    infoSubMenu,
+    updateMainMenu,
+    updateMenu
 }

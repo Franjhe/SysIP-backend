@@ -517,6 +517,153 @@ const searchSubMenu = async (req, res) => {
         });
 }
 
+const infoMainMenu = async (req, res) => {
+    const infoMM = await securityService.infoMainMenu(req.body);
+    if (infoMM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: infoMM.permissionError
+            });
+    }
+    if (infoMM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: infoMM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                xmenu: infoMM.xmenu,
+                xicono: infoMM.xicono,
+                xruta: infoMM.xruta,
+            }
+        });
+}
+
+const infoMenu = async (req, res) => {
+    const infoM = await securityService.infoMenu(req.body);
+    if (infoM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: infoM.permissionError
+            });
+    }
+    if (infoM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: infoM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                xmenu: infoM.xmenu,
+                xmenuprincipal: infoM.xmenuprincipal,
+                xrutamenu: infoM.xrutamenu,
+            }
+        });
+}
+
+const infoSubMenu = async (req, res) => {
+    const infoSM = await securityService.infoSubMenu(req.body);
+    if (infoSM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: infoSM.permissionError
+            });
+    }
+    if (infoSM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: infoSM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                xmenu: infoSM.xmenu,
+                xmenuprincipal: infoSM.xmenuprincipal,
+                xsubmenu: infoSM.xsubmenu,
+                xrutasubmenu: infoSM.xrutasubmenu,
+            }
+        });
+}
+
+const updateMainMenu = async (req, res) => {
+    const updateMM = await securityService.updateMainMenu(req.body);
+    if (updateMM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: updateMM.permissionError
+            });
+    }
+    if (updateMM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: updateMM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Menu Principal Modificado exitosamente.'
+            }
+        });
+}
+
+const updateMenu = async (req, res) => {
+    const updateM = await securityService.updateMenu(req.body);
+    if (updateM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: updateM.permissionError
+            });
+    }
+    if (updateM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: updateM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Menu Modificado exitosamente.'
+            }
+        });
+}
+
 export default {
   //Usuarios
     searchUser,
@@ -542,5 +689,10 @@ export default {
   //Menu
     searchMainMenu,
     searchMenu,
-    searchSubMenu
+    searchSubMenu,
+    infoMainMenu,
+    infoMenu,
+    infoSubMenu,
+    updateMainMenu,
+    updateMenu
 }
