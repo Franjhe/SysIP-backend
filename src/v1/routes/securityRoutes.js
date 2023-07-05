@@ -36,6 +36,7 @@ router
     .post("/menu/info/submenu",     authenticate, securityController.infoSubMenu)
     .post("/menu/update/main-menu", authenticate, securityController.updateMainMenu)
     .post("/menu/update/menu",      authenticate, securityController.updateMenu)
+    .post("/menu/update/submenu",   authenticate, securityController.updateSubMenu)
 
 
 export default router;

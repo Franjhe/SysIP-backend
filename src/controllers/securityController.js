@@ -664,6 +664,34 @@ const updateMenu = async (req, res) => {
         });
 }
 
+const updateSubMenu = async (req, res) => {
+    const updateSM = await securityService.updateSubMenu(req.body);
+    if (updateSM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: updateSM.permissionError
+            });
+    }
+    if (updateSM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: updateSM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Sub-Menu Modificado exitosamente.'
+            }
+        });
+}
+
 export default {
   //Usuarios
     searchUser,
@@ -694,5 +722,6 @@ export default {
     infoMenu,
     infoSubMenu,
     updateMainMenu,
-    updateMenu
+    updateMenu,
+    updateSubMenu
 }

@@ -363,6 +363,25 @@ const UpdateMenu = sequelize.define('semenu', {
   timestamps: false, // Agregar esta opción para deshabilitar los timestamps
 });
 
+const UpdateSubMenu = sequelize.define('sesubmenu', {
+  csubmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  xsubmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  xruta: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+}, {
+  tableName: 'sesubmenu',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
@@ -717,6 +736,20 @@ const updateMenu = async (updateMenu) => {
   }
 };
 
+const updateSubMenu = async (updateSubMenu) => {
+  const { xsubmenu, xruta } = updateSubMenu;
+  try {
+    const updateSM = await UpdateSubMenu.update(
+      { xsubmenu, xruta },
+      { where: { csubmenu: updateSubMenu.csubmenu } }
+    );
+    return updateSM;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al actualizar el Menu Principal', error };
+  }
+};
+
 export default {
 //Usuarios
   searchUser,
@@ -747,5 +780,6 @@ export default {
   infoMenu,
   infoSubMenu,
   updateMainMenu,
-  updateMenu
+  updateMenu,
+  updateSubMenu
 };

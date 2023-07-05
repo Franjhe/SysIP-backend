@@ -230,6 +230,16 @@ const updateMenu = async (updateMenu) => {
     return updateM;
 }
 
+const updateSubMenu = async (updateSubMenu) => {
+    const updateSM = await Security.updateSubMenu(updateSubMenu);
+    if (updateSM.error) {
+        return {
+            error: updateSM.error
+        }
+    }
+    return updateSM;
+}
+
 export default {
   //Usuarios  
     searchUser,
@@ -260,5 +270,6 @@ export default {
     infoMenu,
     infoSubMenu,
     updateMainMenu,
-    updateMenu
+    updateMenu,
+    updateSubMenu
 }
