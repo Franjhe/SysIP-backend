@@ -224,6 +224,34 @@ const getMenu = async (req, res) => {
         });
 }
 
+const getUser = async (req, res) => {
+    const users = await valrepService.getUser();
+    if (users.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: users.permissionError
+            });
+    }
+    if (users.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: users.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                users: users
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
@@ -232,5 +260,6 @@ export default {
     getDepartament,
     getRol,
     getMainMenu,
-    getMenu
+    getMenu,
+    getUser
 }

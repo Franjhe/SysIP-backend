@@ -80,6 +80,16 @@ const getMenu = async (getMenu) => {
     return menuResult;
 }
 
+const getUser = async () => {
+    const users = await Valrep.getUser();
+    if (users.error) {
+        return {
+            error: users.error
+        }
+    }
+    return users;
+}
+
 export default {
     getTrade,
     getCoin,
@@ -88,5 +98,6 @@ export default {
     getDepartament,
     getRol,
     getMainMenu,
-    getMenu
+    getMenu,
+    getUser
 }

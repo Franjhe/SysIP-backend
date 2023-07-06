@@ -6,6 +6,9 @@ const Coin = sequelize.define('mamonedas', {});
 const Client = sequelize.define('maclient', {}, { tableName: 'maclient' });
 const Broker = sequelize.define('macorredores', {});
 const Departament = sequelize.define('sedepartamento', {}, { tableName: 'sedepartamento' });
+const Users = sequelize.define('seusuariosweb', {}, { tableName: 'seusuariosweb' });
+const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
+
 const Rol = sequelize.define('serol', {
   crol: {
     type: Sequelize.INTEGER,
@@ -21,7 +24,6 @@ const Rol = sequelize.define('serol', {
     allowNull: false,
   },
 }, { tableName: 'serol' });
-const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
 const Menu = sequelize.define('semenu', {
   cmenu: {
     type: Sequelize.INTEGER,
@@ -37,6 +39,7 @@ const Menu = sequelize.define('semenu', {
     allowNull: false,
   },
 }, { tableName: 'semenu' });
+
 
 const getTrade = async () => {
   try {
@@ -137,6 +140,19 @@ const getMenu = async (getMenu) => {
     return { error: error.message };
   }
 };
+
+const getUser = async () => {
+  try {
+    const user = await Users.findAll({
+      attributes: ['cusuario', 'xusuario'],
+    });
+    const users = user.map((item) => item.get({ plain: true }));
+    return users;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
   
 export default {
   getTrade,
@@ -146,5 +162,6 @@ export default {
   getDepartament,
   getRol,
   getMainMenu,
-  getMenu
+  getMenu,
+  getUser
 };
