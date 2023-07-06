@@ -12,5 +12,8 @@ router
     .post("/brockers", authenticate, valrepController.getBrokers)
     .post("/departament", authenticate, valrepController.getDepartament)
     .post("/rol", authenticate, valrepController.getRol)
+    .post("/main-menu", authenticate, valrepController.getMainMenu)
+    .post("/menu", authenticate, valrepController.getMenu)
+
 
 export default router;

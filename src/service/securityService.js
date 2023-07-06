@@ -240,6 +240,66 @@ const updateSubMenu = async (updateSubMenu) => {
     return updateSM;
 }
 
+const createMainMenu = async (createMainMenu) => {
+    const createMM = await Security.createMainMenu(createMainMenu);
+    if (createMM.error) {
+        return {
+            error: createMM.error
+        }
+    }
+    return createMM;
+}
+
+const createMenu = async (createMenu) => {
+    const createM = await Security.createMenu(createMenu);
+    if (createM.error) {
+        return {
+            error: createM.error
+        }
+    }
+    return createM;
+}
+
+const createSubMenu = async (createSubMenu) => {
+    const createSM = await Security.createSubMenu(createSubMenu);
+    if (createSM.error) {
+        return {
+            error: createSM.error
+        }
+    }
+    return createSM;
+}
+
+const deleteMainMenu = async (deleteMainMenu) => {
+    const resultDeleteMainMenu = await Security.deleteMainMenu(deleteMainMenu);
+    if (resultDeleteMainMenu.error) {
+        return {
+            error: resultDeleteMainMenu.error
+        }
+    }
+    return resultDeleteMainMenu;
+}
+
+const deleteMenu = async (deleteMenu) => {
+    const resultDeleteMenu = await Security.deleteMenu(deleteMenu);
+    if (resultDeleteMenu.error) {
+        return {
+            error: resultDeleteMenu.error
+        }
+    }
+    return resultDeleteMenu;
+}
+
+const deleteSubMenu = async (deleteSubMenu) => {
+    const resultDeleteSubMenu = await Security.deleteSubMenu(deleteSubMenu);
+    if (resultDeleteSubMenu.error) {
+        return {
+            error: resultDeleteSubMenu.error
+        }
+    }
+    return resultDeleteSubMenu;
+}
+
 export default {
   //Usuarios  
     searchUser,
@@ -271,5 +331,11 @@ export default {
     infoSubMenu,
     updateMainMenu,
     updateMenu,
-    updateSubMenu
+    updateSubMenu,
+    createMainMenu,
+    createMenu,
+    createSubMenu,
+    deleteMainMenu,
+    deleteMenu,
+    deleteSubMenu
 }

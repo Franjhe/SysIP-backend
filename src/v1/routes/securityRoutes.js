@@ -37,6 +37,12 @@ router
     .post("/menu/update/main-menu", authenticate, securityController.updateMainMenu)
     .post("/menu/update/menu",      authenticate, securityController.updateMenu)
     .post("/menu/update/submenu",   authenticate, securityController.updateSubMenu)
+    .post("/menu/create/main-menu", authenticate, securityController.createMainMenu)
+    .post("/menu/create/menu",      authenticate, securityController.createMenu)
+    .post("/menu/create/submenu",   authenticate, securityController.createSubMenu)
+    .post("/menu/delete/main-menu", authenticate, securityController.deleteMainMenu)
+    .post("/menu/delete/menu",      authenticate, securityController.deleteMenu)
+    .post("/menu/delete/submenu",   authenticate, securityController.deleteSubMenu)
 
 
 export default router;

@@ -382,6 +382,52 @@ const UpdateSubMenu = sequelize.define('sesubmenu', {
   timestamps: false, // Agregar esta opción para deshabilitar los timestamps
 });
 
+const DeleteMainMenu = sequelize.define('semenuprincipal', {
+  cmenu_principal: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  istatus: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  }
+}, {
+  tableName: 'semenuprincipal',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
+const DeleteMenu = sequelize.define('semenu', {
+  cmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  istatus: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  }
+}, {
+  tableName: 'semenu',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
+const DeleteSubMenu = sequelize.define('sesubmenu', {
+  csubmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  istatus: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  }
+}, {
+  tableName: 'sesubmenu',
+  timestamps: false, // Agregar esta opción para deshabilitar los timestamps
+});
+
+
 const searchUser = async () => {
   try {
     const user = await User.findAll({
@@ -750,6 +796,112 @@ const updateSubMenu = async (updateSubMenu) => {
   }
 };
 
+const createMainMenu = async(createMainMenu) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let insert = await pool.request()
+        .input('u_version', sql.NVarChar, createMainMenu.u_version)
+        .input('xmenu', sql.NVarChar, createMainMenu.xmenu)
+        .input('xicono', sql.NVarChar, createMainMenu.xicono)
+        .input('xruta', sql.NVarChar, createMainMenu.xruta)
+        .input('istatus', sql.Char, 'V')
+        .input('fingreso', sql.DateTime, new Date())
+        .query('insert into semenuprincipal (u_version, xmenu, xicono, xruta, istatus, fingreso) values (@u_version, @xmenu, @xicono, @xruta, @istatus, @fingreso)')        
+        rowsAffected = rowsAffected + insert.rowsAffected;
+        const createMM = rowsAffected   
+        return createMM
+  }
+  catch(err){
+      return { error: err.message, message: 'Error al crear el Menu Principal, por favor revise.' };
+  }
+}
+
+const createMenu = async(createMenu) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let insert = await pool.request()
+        .input('u_version', sql.NVarChar, createMenu.u_version)
+        .input('cmenu_principal', sql.Int, createMenu.cmenu_principal)
+        .input('xmenu', sql.NVarChar, createMenu.xmenu)
+        .input('xruta', sql.NVarChar, createMenu.xruta)
+        .input('istatus', sql.Char, 'V')
+        .input('fingreso', sql.DateTime, new Date())
+        .query('insert into semenu (u_version, cmenu_principal, xmenu, xruta, istatus, fingreso) values (@u_version, @cmenu_principal, @xmenu, @xruta, @istatus, @fingreso)')        
+        rowsAffected = rowsAffected + insert.rowsAffected;
+        const createM = rowsAffected   
+        return createM
+  }
+  catch(err){
+      return { error: err.message, message: 'Error al crear el Menu, por favor revise.' };
+  }
+}
+
+const createSubMenu = async(createSubMenu) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let insert = await pool.request()
+        .input('u_version', sql.NVarChar, createSubMenu.u_version)
+        .input('cmenu_principal', sql.Int, createSubMenu.cmenu_principal)
+        .input('cmenu', sql.Int, createSubMenu.cmenu)
+        .input('xsubmenu', sql.NVarChar, createSubMenu.xsubmenu)
+        .input('xruta', sql.NVarChar, createSubMenu.xruta)
+        .input('istatus', sql.Char, 'V')
+        .input('fingreso', sql.DateTime, new Date())
+        .query('insert into sesubmenu (u_version, cmenu_principal, cmenu, xsubmenu, xruta, istatus, fingreso) values (@u_version, @cmenu_principal, @cmenu, @xsubmenu, @xruta, @istatus, @fingreso)')        
+        rowsAffected = rowsAffected + insert.rowsAffected;
+        const createM = rowsAffected   
+        return createM
+  }
+  catch(err){
+      return { error: err.message, message: 'Error al crear el Sub Menu, por favor revise.' };
+  }
+}
+
+const deleteMainMenu = async (deleteMainMenu) => {
+  const { istatus } = deleteMainMenu;
+  try {
+    const resultDeleteMainMenu = await DeleteMainMenu.update(
+      { istatus },
+      { where: { cmenu_principal: parseInt(deleteMainMenu.cmenu_principal) } }
+    );
+    return resultDeleteMainMenu;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al eliminar el Menu Principal', error };
+  }
+};
+
+const deleteMenu = async (deleteMenu) => {
+  const { istatus } = deleteMenu;
+  try {
+    const resultDeleteMenu = await DeleteMenu.update(
+      { istatus },
+      { where: { cmenu: parseInt(deleteMenu.cmenu) } }
+    );
+    return resultDeleteMenu;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al eliminar el Menu', error };
+  }
+};
+
+const deleteSubMenu = async (deleteSubMenu) => {
+  const { istatus } = deleteSubMenu;
+  try {
+    const resultDeleteSubMenu = await DeleteSubMenu.update(
+      { istatus },
+      { where: { csubmenu: parseInt(deleteSubMenu.csubmenu) } }
+    );
+    return resultDeleteSubMenu;
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error al eliminar el Sub-Menu', error };
+  }
+};
+
 export default {
 //Usuarios
   searchUser,
@@ -781,5 +933,11 @@ export default {
   infoSubMenu,
   updateMainMenu,
   updateMenu,
-  updateSubMenu
+  updateSubMenu,
+  createMainMenu,
+  createMenu,
+  createSubMenu,
+  deleteMainMenu,
+  deleteMenu,
+  deleteSubMenu
 };

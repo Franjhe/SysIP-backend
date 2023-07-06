@@ -168,11 +168,69 @@ const getRol = async (req, res) => {
         });
 }
 
+const getMainMenu = async (req, res) => {
+    const mainMenu = await valrepService.getMainMenu();
+    if (mainMenu.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: mainMenu.permissionError
+            });
+    }
+    if (mainMenu.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: mainMenu.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                mainMenu: mainMenu
+            }
+        });
+}
+
+const getMenu = async (req, res) => {
+    const menuResult = await valrepService.getMenu(req.body);
+    if (menuResult.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: menuResult.permissionError
+            });
+    }
+    if (menuResult.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: menuResult.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                menu: menuResult
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
     getClient,
     getBrokers,
     getDepartament,
-    getRol
+    getRol,
+    getMainMenu,
+    getMenu
 }

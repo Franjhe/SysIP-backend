@@ -692,6 +692,174 @@ const updateSubMenu = async (req, res) => {
         });
 }
 
+const createMainMenu = async (req, res) => {
+    const createMM = await securityService.createMainMenu(req.body);
+    if (createMM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: createMM.permissionError
+            });
+    }
+    if (createMM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createMM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Menu Principal Creado exitosamente.'
+            }
+        });
+}
+
+const createMenu = async (req, res) => {
+    const createM = await securityService.createMenu(req.body);
+    if (createM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: createM.permissionError
+            });
+    }
+    if (createM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Menu Creado exitosamente.'
+            }
+        });
+}
+
+const createSubMenu = async (req, res) => {
+    const createSM = await securityService.createSubMenu(req.body);
+    if (createSM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: createSM.permissionError
+            });
+    }
+    if (createSM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createSM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Sub-Menu Creado exitosamente.'
+            }
+        });
+}
+
+const deleteMainMenu = async (req, res) => {
+    const resultDeleteMainMenu = await securityService.deleteMainMenu(req.body);
+    if (resultDeleteMainMenu.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: resultDeleteMainMenu.permissionError
+            });
+    }
+    if (resultDeleteMainMenu.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: resultDeleteMainMenu.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'El Menu Principal ha sido eliminado exitosamente'
+            }
+        });
+}
+
+const deleteMenu = async (req, res) => {
+    const resultDeleteMenu = await securityService.deleteMenu(req.body);
+    if (resultDeleteMenu.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: resultDeleteMenu.permissionError
+            });
+    }
+    if (resultDeleteMenu.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: resultDeleteMenu.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'El Menu ha sido eliminado exitosamente'
+            }
+        });
+}
+
+const deleteSubMenu = async (req, res) => {
+    const resultDeleteSubMenu = await securityService.deleteSubMenu(req.body);
+    if (resultDeleteSubMenu.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: resultDeleteSubMenu.permissionError
+            });
+    }
+    if (resultDeleteSubMenu.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: resultDeleteSubMenu.error
+            });
+        }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'El Sub-Menu ha sido eliminado exitosamente'
+            }
+        });
+}
+
 export default {
   //Usuarios
     searchUser,
@@ -723,5 +891,11 @@ export default {
     infoSubMenu,
     updateMainMenu,
     updateMenu,
-    updateSubMenu
+    updateSubMenu,
+    createMainMenu,
+    createMenu,
+    createSubMenu,
+    deleteMainMenu,
+    deleteMenu,
+    deleteSubMenu
 }
