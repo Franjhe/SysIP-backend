@@ -572,7 +572,7 @@ const infoMenu = async (req, res) => {
             data: {
                 xmenu: infoM.xmenu,
                 xmenuprincipal: infoM.xmenuprincipal,
-                xrutamenu: infoM.xrutamenu,
+                xruta: infoM.xruta,
             }
         });
 }

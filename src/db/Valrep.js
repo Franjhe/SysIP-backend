@@ -39,6 +39,25 @@ const Menu = sequelize.define('semenu', {
     allowNull: false,
   },
 }, { tableName: 'semenu' });
+const SubMenu = sequelize.define('sesubmenu', {
+  csubmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cmenu_principal: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  cmenu: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xsubmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+}, { tableName: 'sesubmenu' });
 
 
 const getTrade = async () => {
@@ -141,6 +160,20 @@ const getMenu = async (getMenu) => {
   }
 };
 
+const getSubMenu = async (getSubMenu) => {
+  try {
+    const submenu = await SubMenu.findAll({
+      where: getSubMenu,
+      attributes: ['csubmenu', 'xsubmenu'],
+    });
+    const subMenuResult = submenu.map((item) => item.get({ plain: true }));
+    return subMenuResult;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
 const getUser = async () => {
   try {
     const user = await Users.findAll({
@@ -163,5 +196,6 @@ export default {
   getRol,
   getMainMenu,
   getMenu,
-  getUser
+  getUser,
+  getSubMenu
 };

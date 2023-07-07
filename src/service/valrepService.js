@@ -80,6 +80,16 @@ const getMenu = async (getMenu) => {
     return menuResult;
 }
 
+const getSubMenu = async (getSubMenu) => {
+    const subMenuResult = await Valrep.getSubMenu(getSubMenu);
+    if (subMenuResult.error) {
+        return {
+            error: subMenuResult.error
+        }
+    }
+    return subMenuResult;
+}
+
 const getUser = async () => {
     const users = await Valrep.getUser();
     if (users.error) {
@@ -99,5 +109,6 @@ export default {
     getRol,
     getMainMenu,
     getMenu,
-    getUser
+    getUser,
+    getSubMenu
 }

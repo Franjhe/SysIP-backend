@@ -265,14 +265,10 @@ const InfoMainMenu = sequelize.define('semenuprincipal', {
   tableName: 'semenuprincipal',
 });
 
-const InfoMenu = sequelize.define('seVmenu', {
-  cdistmenu: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    allowNull: false,
-  },
+const InfoMenu = sequelize.define('seVBmenu', {
   cmenu: {
     type: Sequelize.INTEGER,
+    primaryKey: true,
     allowNull: false,
   },
   xmenu: {
@@ -283,12 +279,12 @@ const InfoMenu = sequelize.define('seVmenu', {
     type: Sequelize.STRING,
     allowNull: true,
   },
-  xrutamenu: {
+  xruta: {
     type: Sequelize.STRING,
     allowNull: true,
   },
 }, {
-  tableName: 'seVmenu',
+  tableName: 'seVBmenu',
 });
 
 const InfoSubMenu = sequelize.define('seVmenu', {
@@ -729,10 +725,11 @@ const infoMainMenu = async (infoMainMenu) => {
 const infoMenu = async (infoMenu) => {
   try {
     const infoMenuQuery = await InfoMenu.findOne({
-      where: {cmenu: infoMenu.cmenu},
-      attributes: ['xmenu', 'xmenuprincipal', 'xrutamenu'],
+      where: {cmenu: parseInt(infoMenu.cmenu)},
+      attributes: ['xmenu', 'xmenuprincipal', 'xruta'],
     });
     const infoM = infoMenuQuery ? infoMenuQuery.get({ plain: true }) : null;
+    console.log(infoM)
     return infoM;
   } catch (error) {
     console.log(error.message)

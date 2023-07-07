@@ -224,6 +224,34 @@ const getMenu = async (req, res) => {
         });
 }
 
+const getSubMenu = async (req, res) => {
+    const subMenuResult = await valrepService.getSubMenu(req.body);
+    if (subMenuResult.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: subMenuResult.permissionError
+            });
+    }
+    if (subMenuResult.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: subMenuResult.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                subMenu: subMenuResult
+            }
+        });
+}
+
 const getUser = async (req, res) => {
     const users = await valrepService.getUser();
     if (users.permissionError) {
@@ -261,5 +289,6 @@ export default {
     getRol,
     getMainMenu,
     getMenu,
-    getUser
+    getUser,
+    getSubMenu
 }
