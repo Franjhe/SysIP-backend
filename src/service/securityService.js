@@ -300,6 +300,16 @@ const deleteSubMenu = async (deleteSubMenu) => {
     return resultDeleteSubMenu;
 }
 
+const distributionMenu = async (distributionMenu) => {
+    const createDM = await Security.distributionMenu(distributionMenu);
+    if (createDM.error) {
+        return {
+            error: createDM.error
+        }
+    }
+    return createDM;
+}
+
 export default {
   //Usuarios  
     searchUser,
@@ -337,5 +347,6 @@ export default {
     createSubMenu,
     deleteMainMenu,
     deleteMenu,
-    deleteSubMenu
+    deleteSubMenu,
+    distributionMenu
 }

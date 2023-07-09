@@ -899,6 +899,32 @@ const deleteSubMenu = async (deleteSubMenu) => {
   }
 };
 
+const distributionMenu = async(distributionMenu) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let insert = await pool.request()
+        .input('u_version', sql.Char, distributionMenu.u_version)
+        .input('cusuario', sql.Int, distributionMenu.cusuario)
+        .input('cdepartamento', sql.Int, distributionMenu.cdepartamento)
+        .input('crol', sql.Int, distributionMenu.crol)
+        .input('cmenu_principal', sql.Int, distributionMenu.cmenu_principal)
+        .input('cmenu', sql.Int, distributionMenu.cmenu)
+        .input('csubmenu', sql.Int, distributionMenu.csubmenu ? distributionMenu.csubmenu: null)
+        .input('cusuario1', sql.Int, distributionMenu.cusuario1)
+        .input('istatus', sql.Char, 'V')
+        .input('fingreso', sql.DateTime, new Date())
+        .query('insert into serol (u_version, cusuario, cdepartamento, crol, cmenu_principal, cmenu, csubmenu, cusuario1, istatus, fingreso) values (@u_version, @cusuario, @cdepartamento, @crol, @cmenu_principal, @cmenu, @csubmenu, @cusuario1, @istatus, @fingreso)')        
+        rowsAffected = rowsAffected + insert.rowsAffected;
+        const createR = rowsAffected   
+        return createR
+  }
+  catch(err){
+    console.log(err)
+      return { error: err.message, message: 'Error al crear el Departamento, por favor revise.' };
+  }
+}
+
 export default {
 //Usuarios
   searchUser,
@@ -936,5 +962,6 @@ export default {
   createSubMenu,
   deleteMainMenu,
   deleteMenu,
-  deleteSubMenu
+  deleteSubMenu,
+  distributionMenu
 };

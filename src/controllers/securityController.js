@@ -860,6 +860,34 @@ const deleteSubMenu = async (req, res) => {
         });
 }
 
+const distributionMenu = async (req, res) => {
+    const createDM = await securityService.distributionMenu(req.body);
+    if (createDM.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: createDM.permissionError
+            });
+    }
+    if (createDM.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createDM.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Se ha creado la Distribución del Menu exitosamente.'
+            }
+        });
+}
+
 export default {
   //Usuarios
     searchUser,
@@ -897,5 +925,6 @@ export default {
     createSubMenu,
     deleteMainMenu,
     deleteMenu,
-    deleteSubMenu
+    deleteSubMenu,
+    distributionMenu
 }
