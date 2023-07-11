@@ -6,6 +6,9 @@ const Coin = sequelize.define('mamonedas', {});
 const Client = sequelize.define('maclient', {}, { tableName: 'maclient' });
 const Broker = sequelize.define('macorredores', {});
 const Departament = sequelize.define('sedepartamento', {}, { tableName: 'sedepartamento' });
+const Users = sequelize.define('seusuariosweb', {}, { tableName: 'seusuariosweb' });
+const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
+
 const Rol = sequelize.define('serol', {
   crol: {
     type: Sequelize.INTEGER,
@@ -21,6 +24,41 @@ const Rol = sequelize.define('serol', {
     allowNull: false,
   },
 }, { tableName: 'serol' });
+const Menu = sequelize.define('semenu', {
+  cmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cmenu_principal: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+}, { tableName: 'semenu' });
+const SubMenu = sequelize.define('sesubmenu', {
+  csubmenu: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cmenu_principal: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  cmenu: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xsubmenu: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+}, { tableName: 'sesubmenu' });
+
 
 const getTrade = async () => {
   try {
@@ -94,6 +132,60 @@ const getRol = async (rolData) => {
     return { error: error.message };
   }
 };
+
+const getMainMenu = async () => {
+  try {
+    const menu = await MainMenu.findAll({
+      attributes: ['cmenu_principal', 'xmenu'],
+    });
+    const mainMenu = menu.map((item) => item.get({ plain: true }));
+    return mainMenu;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
+const getMenu = async (getMenu) => {
+  try {
+    const menu = await Menu.findAll({
+      where: getMenu,
+      attributes: ['cmenu', 'xmenu'],
+    });
+    const menuResult = menu.map((item) => item.get({ plain: true }));
+    return menuResult;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
+const getSubMenu = async (getSubMenu) => {
+  try {
+    const submenu = await SubMenu.findAll({
+      where: getSubMenu,
+      attributes: ['csubmenu', 'xsubmenu'],
+    });
+    const subMenuResult = submenu.map((item) => item.get({ plain: true }));
+    return subMenuResult;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
+const getUser = async () => {
+  try {
+    const user = await Users.findAll({
+      attributes: ['cusuario', 'xusuario'],
+    });
+    const users = user.map((item) => item.get({ plain: true }));
+    return users;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
   
 export default {
   getTrade,
@@ -101,5 +193,9 @@ export default {
   getClient,
   getBrokers,
   getDepartament,
-  getRol
+  getRol,
+  getMainMenu,
+  getMenu,
+  getUser,
+  getSubMenu
 };

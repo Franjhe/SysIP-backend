@@ -60,11 +60,55 @@ const getRol = async (rolData) => {
     return rols;
 }
 
+const getMainMenu = async () => {
+    const mainMenu = await Valrep.getMainMenu();
+    if (mainMenu.error) {
+        return {
+            error: mainMenu.error
+        }
+    }
+    return mainMenu;
+}
+
+const getMenu = async (getMenu) => {
+    const menuResult = await Valrep.getMenu(getMenu);
+    if (menuResult.error) {
+        return {
+            error: menuResult.error
+        }
+    }
+    return menuResult;
+}
+
+const getSubMenu = async (getSubMenu) => {
+    const subMenuResult = await Valrep.getSubMenu(getSubMenu);
+    if (subMenuResult.error) {
+        return {
+            error: subMenuResult.error
+        }
+    }
+    return subMenuResult;
+}
+
+const getUser = async () => {
+    const users = await Valrep.getUser();
+    if (users.error) {
+        return {
+            error: users.error
+        }
+    }
+    return users;
+}
+
 export default {
     getTrade,
     getCoin,
     getClient,
     getBrokers,
     getDepartament,
-    getRol
+    getRol,
+    getMainMenu,
+    getMenu,
+    getUser,
+    getSubMenu
 }

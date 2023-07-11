@@ -168,11 +168,127 @@ const getRol = async (req, res) => {
         });
 }
 
+const getMainMenu = async (req, res) => {
+    const mainMenu = await valrepService.getMainMenu();
+    if (mainMenu.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: mainMenu.permissionError
+            });
+    }
+    if (mainMenu.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: mainMenu.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                mainMenu: mainMenu
+            }
+        });
+}
+
+const getMenu = async (req, res) => {
+    const menuResult = await valrepService.getMenu(req.body);
+    if (menuResult.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: menuResult.permissionError
+            });
+    }
+    if (menuResult.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: menuResult.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                menu: menuResult
+            }
+        });
+}
+
+const getSubMenu = async (req, res) => {
+    const subMenuResult = await valrepService.getSubMenu(req.body);
+    if (subMenuResult.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: subMenuResult.permissionError
+            });
+    }
+    if (subMenuResult.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: subMenuResult.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                subMenu: subMenuResult
+            }
+        });
+}
+
+const getUser = async (req, res) => {
+    const users = await valrepService.getUser();
+    if (users.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: users.permissionError
+            });
+    }
+    if (users.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: users.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                users: users
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
     getClient,
     getBrokers,
     getDepartament,
-    getRol
+    getRol,
+    getMainMenu,
+    getMenu,
+    getUser,
+    getSubMenu
 }
