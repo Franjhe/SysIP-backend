@@ -5,7 +5,7 @@ const router = express.Router();
 
 router
 
-    .post("/create", ninjaParkController.createUsersFromNinja)
-    // .post("/coin",   ninjaParkController.getCoin)
+    .post("/create",  ninjaParkController.createUsersFromNinja)
+    .post("/search",  ninjaParkController.searchUsersFromNinja)
 
 export default router;

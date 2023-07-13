@@ -900,6 +900,7 @@ const deleteSubMenu = async (deleteSubMenu) => {
 };
 
 const distributionMenu = async(distributionMenu) => {
+  console.log(distributionMenu)
   try{
       let rowsAffected = 0;
       let pool = await sql.connect(sqlConfig);
@@ -908,13 +909,13 @@ const distributionMenu = async(distributionMenu) => {
         .input('cusuario', sql.Int, distributionMenu.cusuario)
         .input('cdepartamento', sql.Int, distributionMenu.cdepartamento)
         .input('crol', sql.Int, distributionMenu.crol)
-        .input('cmenu_principal', sql.Int, distributionMenu.cmenu_principal)
+        .input('cmenuprincipal', sql.Int, distributionMenu.cmenu_principal)
         .input('cmenu', sql.Int, distributionMenu.cmenu)
         .input('csubmenu', sql.Int, distributionMenu.csubmenu ? distributionMenu.csubmenu: null)
         .input('cusuario1', sql.Int, distributionMenu.cusuario1)
         .input('istatus', sql.Char, 'V')
         .input('fingreso', sql.DateTime, new Date())
-        .query('insert into serol (u_version, cusuario, cdepartamento, crol, cmenu_principal, cmenu, csubmenu, cusuario1, istatus, fingreso) values (@u_version, @cusuario, @cdepartamento, @crol, @cmenu_principal, @cmenu, @csubmenu, @cusuario1, @istatus, @fingreso)')        
+        .query('insert into sedistribucionmenu (u_version, cusuario, cdepartamento, crol, cmenuprincipal, cmenu, csubmenu, cusuario1, istatus, fingreso) values (@u_version, @cusuario, @cdepartamento, @crol, @cmenuprincipal, @cmenu, @csubmenu, @cusuario1, @istatus, @fingreso)')        
         rowsAffected = rowsAffected + insert.rowsAffected;
         const createR = rowsAffected   
         return createR

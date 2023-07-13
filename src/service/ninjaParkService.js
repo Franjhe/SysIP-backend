@@ -10,6 +10,17 @@ const createUsersFromNinja = async (createUsersFromNinja) => {
     return createUN;
 }
 
+const searchUsersFromNinja = async () => {
+    const search = await NinjaPark.searchUsersFromNinja();
+    if (search.error) {
+        return {
+            error: search.error
+        }
+    }
+    return search;
+}
+
 export default {
-    createUsersFromNinja
+    createUsersFromNinja,
+    searchUsersFromNinja
 }
