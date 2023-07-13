@@ -46,8 +46,8 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
   const searchUsersFromNinja = async () => {
     try {
       const searchNinja = await Search.findAll({
-        attributes: ['xcorreo', 'xdocidentidad', 'xcedula', 'xnombre', 'xapellido', 'xtelefono', 
-                     'xninjapark', 'nacompanante', 'xestado', 'xciudad'],
+        attributes: ['tipoid', 'cedula', 'nombApell', 'fechanac', 'correo', 'nrofac', 'cantidad_tickes',
+        'localidad', 'plan_adquirido', 'fecha_in', 'fecha_out', 'cantidad_personas'],
       });
       const search = searchNinja.map((item) => item.get({ plain: true }));
       return search;
