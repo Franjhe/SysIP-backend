@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 
+# Dependency directories
+/node_modules
+/.env
 
 # Node
 /node_modules
