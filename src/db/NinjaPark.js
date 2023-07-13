@@ -13,33 +13,29 @@ const sqlConfig = {
     }
 }
 
+const Search = sequelize.define('np_recibos', {});
+
 const createUsersFromNinja = async(createUsersFromNinja) => {
     try{
         let rowsAffected = 0;
         let pool = await sql.connect(sqlConfig);
         let insert = await pool.request()
-          .input('xcorreo', sql.NVarChar, createUsersFromNinja.xcorreo)
-          .input('xdocidentidad', sql.Char, createUsersFromNinja.xdocidentidad)
-          .input('xcedula', sql.NVarChar, createUsersFromNinja.xcedula)
-          .input('xnombre', sql.NVarChar, createUsersFromNinja.xnombre)
-          .input('xapellido', sql.NVarChar, createUsersFromNinja.xapellido)
-          .input('xestado', sql.NVarChar, createUsersFromNinja.xestado)
-          .input('xciudad', sql.NVarChar, createUsersFromNinja.xciudad)
-          .input('xmunicipio', sql.NVarChar, createUsersFromNinja.xmunicipio)
-          .input('xtelefono', sql.NVarChar, createUsersFromNinja.xtelefono)
-          .input('nacompanante', sql.SmallInt, createUsersFromNinja.nacompanante)
-          .input('xninjapark', sql.NVarChar, createUsersFromNinja.xninjapark)
-          .input('xpregunta', sql.NVarChar, createUsersFromNinja.xpregunta)
-          .input('bacepto', sql.Bit, createUsersFromNinja.bacepto)
-          .input('bmayor', sql.Bit, createUsersFromNinja.bmayor)
-          .input('fcobro', sql.DateTime, createUsersFromNinja.fcobro)
-          .input('mmonto', sql.Float, createUsersFromNinja.mmonto)
-          .input('bactivo', sql.Bit, 1)
-          .input('fcreacion', sql.DateTime, new Date())
-          .query('insert into np_recibos (xcorreo, xdocidentidad, xcedula, xnombre, xapellido, xestado, xciudad, xmunicipio, xtelefono, nacompanante, xninjapark, xpregunta, bacepto, bmayor, fcobro, mmonto, bactivo, fcreacion) values (@xcorreo, @xdocidentidad, @xcedula, @xnombre, @xapellido, @xestado, @xciudad, @xmunicipio, @xtelefono, @nacompanante, @xninjapark, @xpregunta, @bacepto, @bmayor, @fcobro, @mmonto, @bactivo, @fcreacion)')        
+          .input('tipoid', sql.Char, createUsersFromNinja.tipoid)
+          .input('cedula', sql.NVarChar, createUsersFromNinja.cedula)
+          .input('nombApell', sql.NVarChar, createUsersFromNinja.nombApell)
+          .input('fechanac', sql.NVarChar, createUsersFromNinja.fechanac)
+          .input('correo', sql.NVarChar, createUsersFromNinja.correo)
+          .input('nrofac', sql.NVarChar, createUsersFromNinja.nrofac)
+          .input('cantidad_tickes', sql.SmallInt, createUsersFromNinja.cantidad_tickes)
+          .input('localidad', sql.NVarChar, createUsersFromNinja.localidad)
+          .input('plan_adquirido', sql.SmallInt, createUsersFromNinja.plan_adquirido)
+          .input('fecha_in', sql.NVarChar, createUsersFromNinja.fecha_in)
+          .input('fecha_out', sql.NVarChar, createUsersFromNinja.fecha_out)
+          .input('cantidad_personas', sql.NVarChar, createUsersFromNinja.cantidad_personas)
+          .query('insert into np_recibos (tipoid, cedula, nombApell, fechanac, correo, nrofac, cantidad_tickes, localidad, plan_adquirido, fecha_in, fecha_out, cantidad_personas) values (@tipoid, @cedula, @nombApell, @fechanac, @correo, @nrofac, @cantidad_tickes, @localidad, @plan_adquirido, @fecha_in, @fecha_out, @cantidad_personas)')        
           rowsAffected = rowsAffected + insert.rowsAffected;
-          const createMM = rowsAffected   
-          return createMM
+          const createUN = rowsAffected   
+          return createUN
     }
     catch(err){
         console.log(err.message)
@@ -47,6 +43,20 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
     }
   }
 
+  const searchUsersFromNinja = async () => {
+    try {
+      const searchNinja = await Search.findAll({
+        attributes: ['xcorreo', 'xdocidentidad', 'xcedula', 'xnombre', 'xapellido', 'xtelefono', 
+                     'xninjapark', 'nacompanante', 'xestado', 'xciudad'],
+      });
+      const search = searchNinja.map((item) => item.get({ plain: true }));
+      return search;
+    } catch (error) {
+      return { error: error.message };
+    }
+  };
+
 export default {
-    createUsersFromNinja
+    createUsersFromNinja,
+    searchUsersFromNinja
 };
