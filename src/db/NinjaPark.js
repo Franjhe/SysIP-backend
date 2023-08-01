@@ -16,6 +16,7 @@ const sqlConfig = {
 const Search = sequelize.define('np_recibos', {});
 
 const createUsersFromNinja = async(createUsersFromNinja) => {
+  console.log(createUsersFromNinja)
     try{
         let rowsAffected = 0;
         let pool = await sql.connect(sqlConfig);
@@ -28,7 +29,7 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
           .input('nrofac', sql.NVarChar, createUsersFromNinja.data.nrofac)
           .input('cantidad_tickes', sql.SmallInt, createUsersFromNinja.data.cantidad_tickes)
           .input('localidad', sql.NVarChar, createUsersFromNinja.data.localidad)
-          .input('plan_adquirido', sql.SmallInt, createUsersFromNinja.data.plan_adquirido)
+          .input('plan_adquirido', sql.NVarChar, createUsersFromNinja.data.plan_adquirido)
           .input('fecha_in', sql.NVarChar, createUsersFromNinja.data.fecha_in)
           .input('fecha_out', sql.NVarChar, createUsersFromNinja.data.fecha_out)
           .query('insert into np_recibos (tipoid, cedula, nombApell, fechanac, correo, nrofac, cantidad_tickes, localidad, plan_adquirido, fecha_in, fecha_out) values (@tipoid, @cedula, @nombApell, @fechanac, @correo, @nrofac, @cantidad_tickes, @localidad, @plan_adquirido, @fecha_in, @fecha_out)')  
@@ -40,6 +41,14 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
                 .input('nombre_acompa', sql.NVarChar, createUsersFromNinja.acopanantes[i].nombre_acompa)
                 .input('edad', sql.NVarChar, createUsersFromNinja.acopanantes[i].edad)
                 .query('insert into np_acompanantes (nrofac, nombre_acompa, edad) values (@nrofac, @nombre_acompa, @edad)')  
+            }
+            for(let i = 0; i < createUsersFromNinja.boletos.length; i++){
+              let insert = await pool.request()
+                .input('nrofac', sql.NVarChar, createUsersFromNinja.data.nrofac)
+                .input('item', sql.NVarChar, createUsersFromNinja.boletos[i].item)
+                .input('plan_seguro', sql.NVarChar, createUsersFromNinja.boletos[i].plan_seguro)
+                .input('uso_futuro', sql.NVarChar, createUsersFromNinja.boletos[i].uso_futuro)
+                .query('insert into np_boletos (nrofac, item, plan_seguro, uso_futuro) values (@nrofac, @item, @plan_seguro, @uso_futuro)')  
             }
           }
           const createUN = rowsAffected   
