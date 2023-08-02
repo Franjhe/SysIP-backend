@@ -490,7 +490,7 @@ const createUser = async(createUser) => {
         .input('xcorreo', sql.NVarChar, createUser.xcorreo)
         .input('istatus', sql.Char, 'V')
         .input('fingreso', sql.DateTime, new Date())
-        .query('insert into seusuariosweb (u_version, xnombre, xapellido, xlogin, xcontrasena, xusuario, xobservacion, cdepartamento, crol, xcorreo, iestado, fingreso) values (@u_version, @xnombre, @xapellido, @xlogin, @xcontrasena, @xusuario, @xobservacion, @cdepartamento, @crol, @xcorreo, @iestado, @fingreso)')        
+        .query('insert into seusuariosweb (u_version, xnombre, xapellido, xlogin, xcontrasena, xusuario, xobservacion, cdepartamento, crol, xcorreo, istatus, fingreso) values (@u_version, @xnombre, @xapellido, @xlogin, @xcontrasena, @xusuario, @xobservacion, @cdepartamento, @crol, @xcorreo, @istatus, @fingreso)')        
         rowsAffected = rowsAffected + insert.rowsAffected;
         const create = rowsAffected   
         return create
