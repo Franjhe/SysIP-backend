@@ -64,7 +64,7 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
     try {
       const searchNinja = await Search.findAll({
         attributes: ['tipoid', 'cedula', 'nombApell', 'fechanac', 'correo', 'nrofac', 'cantidad_tickes',
-        'localidad', 'plan_adquirido', 'fecha_in', 'fecha_out', 'cantidad_personas'],
+        'localidad', 'plan_adquirido', 'fecha_in', 'fecha_out', 'hora_fac'],
       });
       const search = searchNinja.map((item) => item.get({ plain: true }));
       return search;
