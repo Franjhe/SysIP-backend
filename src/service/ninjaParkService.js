@@ -21,7 +21,18 @@ const searchUsersFromNinja = async () => {
     return search;
 }
 
+const detailUsersFromNinja = async (detailUsersFromNinja) => {
+    const detail = await NinjaPark.detailUsersFromNinja(detailUsersFromNinja);
+    if (detail.error) {
+        return {
+            error: detail.error
+        }
+    }
+    return detail;
+}
+
 export default {
     createUsersFromNinja,
-    searchUsersFromNinja
+    searchUsersFromNinja,
+    detailUsersFromNinja
 }

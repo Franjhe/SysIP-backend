@@ -15,8 +15,39 @@ const sqlConfig = {
 
 const Search = sequelize.define('np_recibos', {});
 
+const NpVacompanantes = sequelize.define('npVacompanantes', {
+  nrofac: {
+    type: Sequelize.STRING,
+    primaryKey: false,
+    allowNull: false,
+  },
+  cedula: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  nombre_acompa: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  item: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  plan_adquirido: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  mcosto_ext: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  mcosto_local: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+});
+
 const createUsersFromNinja = async(createUsersFromNinja) => {
-  console.log(createUsersFromNinja)
     try{
         let rowsAffected = 0;
         let pool = await sql.connect(sqlConfig);
@@ -40,7 +71,8 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
                 .input('nrofac', sql.NVarChar, createUsersFromNinja.data.nrofac)
                 .input('nombre_acompa', sql.NVarChar, createUsersFromNinja.acopanantes[i].nombre_acompa)
                 .input('edad', sql.NVarChar, createUsersFromNinja.acopanantes[i].edad)
-                .query('insert into np_acompanantes (nrofac, nombre_acompa, edad) values (@nrofac, @nombre_acompa, @edad)')  
+                .input('cedula', sql.NVarChar, createUsersFromNinja.data.cedula)
+                .query('insert into np_acompanantes (nrofac, nombre_acompa, edad, cedula) values (@nrofac, @nombre_acompa, @edad, @cedula)')  
             }
             for(let i = 0; i < createUsersFromNinja.boletos.length; i++){
               let insert = await pool.request()
@@ -48,7 +80,8 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
                 .input('item', sql.NVarChar, createUsersFromNinja.boletos[i].item)
                 .input('plan_seguro', sql.NVarChar, createUsersFromNinja.boletos[i].plan_seguro)
                 .input('uso_futuro', sql.NVarChar, createUsersFromNinja.boletos[i].uso_futuro)
-                .query('insert into np_boletos (nrofac, item, plan_seguro, uso_futuro) values (@nrofac, @item, @plan_seguro, @uso_futuro)')  
+                .input('cedula', sql.NVarChar, createUsersFromNinja.data.cedula)
+                .query('insert into np_boletos (nrofac, item, plan_seguro, uso_futuro, cedula) values (@nrofac, @item, @plan_seguro, @uso_futuro, @cedula)')  
             }
           }
           const createUN = rowsAffected   
@@ -73,7 +106,33 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
     }
   };
 
+  const detailUsersFromNinja = async (detailUsersFromNinja) => {
+    try {
+      const uniqueCompanions = await NpVacompanantes.findAll({
+        attributes: [
+          'nombre_acompa',
+          [Sequelize.fn('MAX', Sequelize.col('item')), 'item'],
+          [Sequelize.fn('MAX', Sequelize.col('plan_seguro')), 'plan_seguro'],
+          [Sequelize.fn('MAX', Sequelize.col('mcosto_ext')), 'mcosto_ext'],
+          [Sequelize.fn('MAX', Sequelize.col('mcosto_local')), 'mcosto_local']
+        ],
+        where: {
+          cedula: detailUsersFromNinja.cedula
+        },
+        group: ['nombre_acompa'],
+        raw: true,
+      });
+  
+      const detail = uniqueCompanions.map((item) => item);
+      return detail;
+    } catch (error) {
+      console.log(error.message)
+      return { error: error.message };
+    }
+  };
+
 export default {
     createUsersFromNinja,
-    searchUsersFromNinja
+    searchUsersFromNinja,
+    detailUsersFromNinja
 };
