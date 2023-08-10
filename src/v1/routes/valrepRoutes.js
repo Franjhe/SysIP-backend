@@ -16,5 +16,6 @@ router
     .post("/menu", authenticate, valrepController.getMenu)
     .post("/submenu", authenticate, valrepController.getSubMenu)
     .post("/user", authenticate, valrepController.getUser)
+    .post("/park", authenticate, valrepController.getPark)
 
 export default router;

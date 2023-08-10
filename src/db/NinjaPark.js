@@ -95,11 +95,14 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
     }
   }
 
-  const searchUsersFromNinja = async () => {
+  const searchUsersFromNinja = async (searchUsersFromNinja) => {
     try {
       const searchNinja = await Search.findAll({
         attributes: ['tipoid', 'cedula', 'nombApell', 'fechanac', 'correo', 'nrofac', 'cantidad_tickes',
-        'localidad', 'plan_adquirido', 'fecha_in', 'fecha_out', 'hora_fac'],
+        'localidad', 'mcosto_ext', 'fingreso', 'fecha_out', 'hora_fac'],
+        where: {
+          plan_adquirido: searchUsersFromNinja.plan_adquirido
+        },
       });
       const search = searchNinja.map((item) => item.get({ plain: true }));
       return search;
