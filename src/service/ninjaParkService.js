@@ -11,8 +11,8 @@ const createUsersFromNinja = async (createUsersFromNinja) => {
     return createUN;
 }
 
-const searchUsersFromNinja = async () => {
-    const search = await NinjaPark.searchUsersFromNinja();
+const searchUsersFromNinja = async (searchUsersFromNinja) => {
+    const search = await NinjaPark.searchUsersFromNinja(searchUsersFromNinja);
     if (search.error) {
         return {
             error: search.error

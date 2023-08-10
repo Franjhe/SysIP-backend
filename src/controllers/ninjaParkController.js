@@ -29,33 +29,32 @@ const createUsersFromNinja = async (req, res) => {
 }
 
 const searchUsersFromNinja = async (req, res) => {
-    const search = await ninjaParkService.searchUsersFromNinja();
+    const search = await ninjaParkService.searchUsersFromNinja(req.body);
     if (search.permissionError) {
-        return res
-            .status(403)
-            .send({
-                status: false,
-                message: search.permissionError
-            });
+      return res.status(403).send({
+        status: false,
+        message: search.permissionError,
+      });
     }
     if (search.error) {
-        return res
-            .status(500)
-            .send({
-                status: false,
-                message: search.error
-            });
+      return res.status(500).send({
+        status: false,
+        message: search.error,
+      });
     }
-    return res
-        .status(200)
-        .send({
-            status: true,
-            data: {
-                list: search
-            }
-        });
-}
-
+  
+    const formattedList = search.map((item) => ({
+      ...item,
+      fingreso: item.fingreso ? new Date(item.fingreso).toLocaleDateString('es-ES') : null,
+    }));
+  
+    return res.status(200).send({
+      status: true,
+      data: {
+        list: formattedList,
+      },
+    });
+  };
 const detailUsersFromNinja = async (req, res) => {
     const detail = await ninjaParkService.detailUsersFromNinja(req.body);
     if (detail.permissionError) {

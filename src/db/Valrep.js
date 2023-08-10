@@ -8,6 +8,7 @@ const Broker = sequelize.define('macorredores', {});
 const Departament = sequelize.define('sedepartamento', {}, { tableName: 'sedepartamento' });
 const Users = sequelize.define('seusuariosweb', {}, { tableName: 'seusuariosweb' });
 const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
+const Park = sequelize.define('np_parques', {});
 
 const Rol = sequelize.define('serol', {
   crol: {
@@ -186,6 +187,19 @@ const getUser = async () => {
     return { error: error.message };
   }
 };
+
+const getPark = async () => {
+  try {
+    const park = await Park.findAll({
+      attributes: ['id', 'plan_adquirido'],
+    });
+    const parks = park.map((item) => item.get({ plain: true }));
+    return parks;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
   
 export default {
   getTrade,
@@ -197,5 +211,6 @@ export default {
   getMainMenu,
   getMenu,
   getUser,
-  getSubMenu
+  getSubMenu,
+  getPark
 };

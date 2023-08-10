@@ -100,6 +100,16 @@ const getUser = async () => {
     return users;
 }
 
+const getPark = async () => {
+    const parks = await Valrep.getPark();
+    if (parks.error) {
+        return {
+            error: parks.error
+        }
+    }
+    return parks;
+}
+
 export default {
     getTrade,
     getCoin,
@@ -110,5 +120,6 @@ export default {
     getMainMenu,
     getMenu,
     getUser,
-    getSubMenu
+    getSubMenu,
+    getPark
 }

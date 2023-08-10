@@ -280,6 +280,34 @@ const getUser = async (req, res) => {
         });
 }
 
+const getPark = async (req, res) => {
+    const parks = await valrepService.getPark();
+    if (parks.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: parks.permissionError
+            });
+    }
+    if (parks.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: parks.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                parks: parks
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
@@ -290,5 +318,6 @@ export default {
     getMainMenu,
     getMenu,
     getUser,
-    getSubMenu
+    getSubMenu,
+    getPark
 }
