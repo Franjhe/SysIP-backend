@@ -64,8 +64,9 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
           .input('fecha_in', sql.NVarChar, createUsersFromNinja.data.fecha_in)
           .input('fecha_out', sql.NVarChar, createUsersFromNinja.data.fecha_out)
           .input('hora_fac', sql.NVarChar, createUsersFromNinja.data.hora_fac)
-          .query('insert into np_recibos (tipoid, cedula, nombApell, fechanac, correo, nrofac, cantidad_tickes, localidad, plan_adquirido, fecha_in, fecha_out, hora_fac) values (@tipoid, @cedula, @nombApell, @fechanac, @correo, @nrofac, @cantidad_tickes, @localidad, @plan_adquirido, @fecha_in, @fecha_out, @hora_fac)')  
-
+          .input('fingreso', sql.DateTime, new Date())
+          .query('insert into np_recibos (tipoid, cedula, nombApell, fechanac, correo, nrofac, cantidad_tickes, localidad, plan_adquirido, fecha_in, fecha_out, hora_fac, fingreso) values (@tipoid, @cedula, @nombApell, @fechanac, @correo, @nrofac, @cantidad_tickes, @localidad, @plan_adquirido, @fecha_in, @fecha_out, @hora_fac, @fingreso)')  
+ 
           if(insert.rowsAffected > 0){
             for(let i = 0; i < createUsersFromNinja.acopanantes.length; i++){
               let insert = await pool.request()
