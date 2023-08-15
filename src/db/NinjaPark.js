@@ -79,19 +79,20 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
             for(let i = 0; i < createUsersFromNinja.boletos.length; i++){
               let insert = await pool.request()
                 .input('nrofac', sql.NVarChar, createUsersFromNinja.data.nrofac)
-                .input('item', sql.NVarChar, createUsersFromNinja.boletos[i].item)
+                .input('cod_prod', sql.NVarChar, createUsersFromNinja.boletos[i].cod_prod)
+                .input('nom_prod', sql.NVarChar, createUsersFromNinja.boletos[i].nom_prod)
+                .input('cant_prod', sql.Int, parseInt(createUsersFromNinja.boletos[i].cant_prod))
                 .input('plan_seguro', sql.NVarChar, createUsersFromNinja.boletos[i].plan_seguro)
                 .input('uso_futuro', sql.NVarChar, createUsersFromNinja.boletos[i].uso_futuro)
                 .input('cedula', sql.NVarChar, createUsersFromNinja.data.cedula)
-                .query('insert into np_boletos (nrofac, item, plan_seguro, uso_futuro, cedula) values (@nrofac, @item, @plan_seguro, @uso_futuro, @cedula)')  
+                .query('insert into np_boletos (nrofac, cod_prod, nom_prod, cant_prod, plan_seguro, uso_futuro, cedula) values (@nrofac, @cod_prod, @nom_prod, @cant_prod, @plan_seguro, @uso_futuro, @cedula)')  
             }
           }
           const createUN = rowsAffected   
           return createUN
     }
     catch(err){
-        console.log(err.message)
-        return { error: err.message, message: 'Error al crear el Menu Principal, por favor revise.' };
+        return { error: err.message, message: 'Error al crear el Usuario, por favor revise.' };
     }
   }
 
@@ -116,7 +117,9 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
       const uniqueCompanions = await NpVacompanantes.findAll({
         attributes: [
           'nombre_acompa',
-          [Sequelize.fn('MAX', Sequelize.col('item')), 'item'],
+          [Sequelize.fn('MAX', Sequelize.col('cod_prod')), 'cod_prod'],
+          [Sequelize.fn('MAX', Sequelize.col('nom_prod')), 'nom_prod'],
+          [Sequelize.fn('MAX', Sequelize.col('cant_prod')), 'cant_prod'],
           [Sequelize.fn('MAX', Sequelize.col('plan_seguro')), 'plan_seguro'],
           [Sequelize.fn('MAX', Sequelize.col('mcosto_ext')), 'mcosto_ext'],
           [Sequelize.fn('MAX', Sequelize.col('mcosto_local')), 'mcosto_local']
@@ -131,7 +134,6 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
       const detail = uniqueCompanions.map((item) => item);
       return detail;
     } catch (error) {
-      console.log(error.message)
       return { error: error.message };
     }
   };
