@@ -191,7 +191,7 @@ const getUser = async () => {
 const getPark = async () => {
   try {
     const park = await Park.findAll({
-      attributes: ['id', 'plan_adquirido'],
+      attributes: ['plan_adquirido', 'xcompania'],
     });
     const parks = park.map((item) => item.get({ plain: true }));
     return parks;
