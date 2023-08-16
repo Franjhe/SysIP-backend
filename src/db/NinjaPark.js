@@ -100,7 +100,7 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
     try {
       const searchNinja = await Search.findAll({
         attributes: ['tipoid', 'cedula', 'nombApell', 'fechanac', 'correo', 'nrofac', 'cantidad_tickes',
-        'localidad', 'mcosto_ext', 'fingreso', 'fecha_out', 'hora_fac'],
+        'localidad', 'mcosto_ext', 'fingreso', 'fecha_out', 'hora_emision'],
         where: {
           plan_adquirido: searchUsersFromNinja.plan_adquirido
         },
