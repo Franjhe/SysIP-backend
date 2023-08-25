@@ -8,6 +8,7 @@ import v1MenuRouter from './v1/routes/menuRoutes.js';
 import v1ValrepRouter from './v1/routes/valrepRoutes.js';
 import v1SecurityRouter from './v1/routes/securityRoutes.js';
 import v1NinjaParkRouter from './v1/routes/ninjaParkRoutes.js';
+import v1ReportRouter from './v1/routes/ninjaParkRoutes.js';
 
 const app = express(); 
 dotenv;
@@ -21,6 +22,7 @@ app.use("/api/v1/menu", v1MenuRouter);
 app.use("/api/v1/valrep", v1ValrepRouter);
 app.use("/api/v1/security", v1SecurityRouter);
 app.use("/api/v1/ninjaPark", v1NinjaParkRouter);
+app.use("/api/v1/report", v1NinjaParkRouter);
 
 const PORT = process.env.PORT || 3000; 
 

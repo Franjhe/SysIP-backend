@@ -13,6 +13,8 @@ const sqlConfig = {
     }
 }
 
+console.log(sqlConfig)
+
 const Search = sequelize.define('np_recibos', {});
 
 const NpVacompanantes = sequelize.define('npVacompanantes', {
@@ -92,6 +94,7 @@ const createUsersFromNinja = async(createUsersFromNinja) => {
           return createUN
     }
     catch(err){
+      console.log(err.message)
         return { error: err.message, message: 'Error al crear el Usuario, por favor revise.' };
     }
   }
