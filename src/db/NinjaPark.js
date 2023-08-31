@@ -227,7 +227,7 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
               port : 465,
               auth: {
                 user: 'seguroslamundial@gmail.com',
-                pass: 'kpddjtxzvfojjhyy'
+                pass: 'Zxc2020*'
               }
             });
           
