@@ -221,10 +221,7 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
           let np_acompanantes = generateTableHtml()
           if(sendmail){
             let transporter = nodemailer.createTransport({
-      
-              secureConnection: true,
-              host:'mail.lamundialdeseguros.com',
-              port : 465,
+              service:'Gmail',
               auth: {
                 user: 'seguroslamundial@gmail.com',
                 pass: 'Zxc2020*'
