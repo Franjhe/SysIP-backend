@@ -1,7 +1,6 @@
 import NinjaPark from '../db/NinjaPark.js';
 
 const createUsersFromNinja = async (createUsersFromNinja) => {
-    console.log(createUsersFromNinja)
     const createUN = await NinjaPark.createUsersFromNinja(createUsersFromNinja);
     if (createUN.error) {
         return {

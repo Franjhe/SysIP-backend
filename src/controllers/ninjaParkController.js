@@ -54,7 +54,8 @@ const searchUsersFromNinja = async (req, res) => {
         list: formattedList,
       },
     });
-  };
+};
+
 const detailUsersFromNinja = async (req, res) => {
     const detail = await ninjaParkService.detailUsersFromNinja(req.body);
     if (detail.permissionError) {
