@@ -224,7 +224,7 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
               service:'Gmail',
               auth: {
                 user: 'seguroslamundial@gmail.com',
-                pass: 'Zxc2020*'
+                pass: 'vyeazhrymlylxsdb'
               }
             });
           
