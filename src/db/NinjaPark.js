@@ -221,7 +221,7 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
           let np_acompanantes = generateTableHtml()
           if(sendmail){
             let transporter = nodemailer.createTransport({
-              host:'mail.lamundialdeseguros.com',
+              host:'192.168.12.22',
               port:25,
               secure:true,
               auth: {
