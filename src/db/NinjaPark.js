@@ -222,11 +222,14 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
           if(sendmail){
             let transporter = nodemailer.createTransport({
               host:'192.168.12.22',
-              port:25,
+              port:587,
               secure:true,
               auth: {
                 user: 'info@lamundialdeseguros.com',
                 pass: 'Zxc2020*'
+              },
+              tls:{
+                rejectUnauthorized: false
               }
             });
           
