@@ -141,7 +141,7 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
                                 </tr>
                                 <tr>
                                     <td style="padding:0 35px;">
-                                    <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;">Plan Contradato
+                                    <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;">Plan Contratado
                                     </h1>
                                     <p style="font-size:15px; color:#455056; margin:8px 0 0; line-height:24px;">
                                     Ofrecemos las siguientes coberturas por niño <strong>durante el uso del parque:<strong>
@@ -221,9 +221,9 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
           let np_acompanantes = generateTableHtml()
           if(sendmail){
             let transporter = nodemailer.createTransport({
-              host:'mail.lamundialdeseguros.com',
-              port:587,
-              secure:true,
+              host:'192.168.12.22',
+              port:25,
+              secure:false,
               auth: {
                 user: 'info@lamundialdeseguros.com',
                 pass: 'Zxc2020*'
@@ -234,11 +234,9 @@ const NpVacompanantes = sequelize.define('npVacompanantes', {
               //   pass: 'vyeazhrymlylxsdb'
               // },
               tls:{
-                rejectUnauthorized: false
-              },
-              options:{
-                encrypt:false,
-                trustServerCertificate:true
+                rejectUnauthorized: false,
+                authorized: false,
+                servername: 'mail.lamundialdeseguros.com',
               }
 
             });
