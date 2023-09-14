@@ -18,6 +18,7 @@ const getAllMenu = async (req, res) => {
                 message: menuPrincipal.error
             });
     }
+    console.log(menuPrincipal)
     return res
         .status(200)
         .send({

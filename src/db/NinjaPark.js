@@ -13,8 +13,6 @@ const sqlConfig = {
     }
 }
 
-console.log(sqlConfig)
-
 const Search = sequelize.define('np_recibos', {});
 
 const NpVacompanantes = sequelize.define('npVacompanantes', {
