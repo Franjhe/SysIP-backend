@@ -24,6 +24,23 @@ const sqlConfigLM = {
     }
 }
 
-console.log(sqlConfig)
+const searchReceipt = async (searchReceipt) => {
+    try{
+        let pool = await sql.connect(sqlConfigLM);
+        let result = await pool.request()
+        .input('iestado', sql.Int, searchReceipt.id_status)
+        .input('fdesde', sql.DateTime, searchReceipt.fdesde)
+        .input('fhasta', sql.DateTime, searchReceipt.fhasta)
+        .execute('inBPrimas_Pend_Cob');
+         let query= await pool.request()
+        .query('select * from tmprimas_pend_cob');
+        return { receipt: query };
+              
+    }catch(err){
+        return { error: err.message };
+        }
+}
 
-console.log(sqlConfigLM)
+export default {
+    searchReceipt,
+}

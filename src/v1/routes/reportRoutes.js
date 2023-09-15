@@ -1,5 +1,5 @@
 import express from 'express';
-import reportController from '../../controllers/ninjaParkController.js';
+import reportController from '../../controllers/reportController.js';
 
 const router = express.Router();
 

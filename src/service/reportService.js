@@ -13,17 +13,14 @@ const searchPremiums = async (searchPremiums) => {
     return search;
 }
 
-const searchReceipt = async (searchPremiums) => {
-    if(searchPremiums.bprima == 'Primas Pendientes'){
-        
-    }
-    const search = await Report.searchPremiums(searchPremiums);
-    if (search.error) {
+const searchReceipt = async (searchReceipt) => {
+    const receipt = await Report.searchReceipt(searchReceipt);
+    if (receipt.error) {
         return {
-            error: search.error
+            error: receipt.error
         }
     }
-    return search;
+    return receipt;
 }
 
 export default {
