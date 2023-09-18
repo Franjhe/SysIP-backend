@@ -37,6 +37,7 @@ const searchReceipt = async (searchReceipt) => {
         return { receipt: query };
               
     }catch(err){
+        console.log(err.message)
         return { error: err.message };
         }
 }
