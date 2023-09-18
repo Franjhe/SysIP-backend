@@ -13,6 +13,17 @@ const searchPremiums = async (searchPremiums) => {
     return search;
 }
 
+const searchReceipt = async (searchReceipt) => {
+    const receipt = await Report.searchReceipt(searchReceipt);
+    if (receipt.error) {
+        return {
+            error: receipt.error
+        }
+    }
+    return receipt;
+}
+
 export default {
-    searchPremiums
+    searchPremiums,
+    searchReceipt
 }
