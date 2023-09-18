@@ -44,7 +44,8 @@ const searchReceipt = async (req, res) => {
             .status(500)
             .send({
                 status: false,
-                message: receipt.error
+                message: receipt.error,
+                code: 500
             });
     }
 
