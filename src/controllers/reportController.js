@@ -48,7 +48,6 @@ const searchReceipt = async (req, res) => {
                 code: 500
             });
     }
-
     const formattedList = receipt.receipt.recordset.map((item) => ({
         ...item,
         start_date: item.start_date ? new Date(item.start_date).toLocaleDateString('es-ES') : null,

@@ -34,10 +34,10 @@ const searchReceipt = async (searchReceipt) => {
         .execute('inBPrimas_Pend_Cob');
          let query= await pool.request()
         .query('select * from tmprimas_pend_cob');
+        await pool.close();
         return { receipt: query };
               
     }catch(err){
-        console.log(err.message)
         return { error: err.message };
         }
 }
