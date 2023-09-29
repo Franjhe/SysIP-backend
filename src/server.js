@@ -9,6 +9,7 @@ import v1ValrepRouter from './v1/routes/valrepRoutes.js';
 import v1SecurityRouter from './v1/routes/securityRoutes.js';
 import v1NinjaParkRouter from './v1/routes/ninjaParkRoutes.js';
 import v1ReportRouter from './v1/routes/reportRoutes.js';
+import viCertificated from './v1/routes/certificateRoutes.js'
 
 const app = express(); 
 dotenv;
@@ -23,6 +24,7 @@ app.use("/api/v1/valrep", v1ValrepRouter);
 app.use("/api/v1/security", v1SecurityRouter);
 app.use("/api/v1/ninjaPark", v1NinjaParkRouter);
 app.use("/api/v1/report", v1ReportRouter);
+app.use("/api/v1/certificate", viCertificated);
 
 const PORT = process.env.PORT || 3000; 
 
