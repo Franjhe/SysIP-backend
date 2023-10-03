@@ -27,18 +27,38 @@ const sqlConfigLM = {
 const searchCertificate = async () => {
     try{
         let pool = await sql.connect(sqlConfig);
-        let result = await pool.request()
+        let resultP = await pool.request()
         .query('select * from TMPOLIZA_AP');
-        if(result.status){
+
+        if(resultP.rowsAffected > 0){
+
+            let poliza =  resultP.recordset[0].cpoliza
+
             let pool = await sql.connect(sqlConfig);
-            let query = await pool.request()
-            .query('select * from TMPOLIZA_AP_COBER');
-            return {    
-                Certificate: result.recordsets,
-                data: query.recordsets 
+            let resultC = await pool.request()
+
+            .input('cpoliza', sql.Numeric(20, 0), poliza)
+            .query('SELECT * FROM TMPOLIZA_AP_COBER WHERE cpoliza = @cpoliza ');
+
+
+            if(resultC.rowsAffected > 0){
+
+                let poliza =  resultP.recordset[0].cpoliza
+    
+                let pool = await sql.connect(sqlConfig);
+                let resultB = await pool.request()
+                .input('cpoliza', sql.Numeric(20, 0), poliza)
+                .query('SELECT * FROM TMPOLIZA_BEN WHERE cpoliza = @cpoliza ');
+        
+                return {    
+                    beneficiario: resultB.recordsets,
+                    poliza: resultP.recordsets,
+                    cobertura: resultC.recordsets,
                     };
+            }
+
         }
-        return { Certificate: result };
+        
               
     }catch(err){
         return { error: err.message };
