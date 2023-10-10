@@ -9,6 +9,13 @@ const Departament = sequelize.define('sedepartamento', {}, { tableName: 'sedepar
 const Users = sequelize.define('seusuariosweb', {}, { tableName: 'seusuariosweb' });
 const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
 const Park = sequelize.define('np_parques', {});
+const Brand = sequelize.define('MAMARCA_WEB', {}, { tableName: 'MAMARCA_WEB' });
+const Color = sequelize.define('MACOLOR_WEB', {}, { tableName: 'MACOLOR_WEB' });
+const Rates = sequelize.define('PRTARIFA_EXCESO', {}, { tableName: 'PRTARIFA_EXCESO' });
+const TypeVehicle = sequelize.define('MATIPOVEHICULO', {}, { tableName: 'MATIPOVEHICULO' });
+const Utility = sequelize.define('MAUSOVEHICULO', {}, { tableName: 'MAUSOVEHICULO' });
+const Class = sequelize.define('MACLASES_WEB', {}, { tableName: 'MACLASES_WEB' });
+const Plan = sequelize.define('PRPLAN_RC', {}, { tableName: 'PRPLAN_RC' });
 
 const Rol = sequelize.define('serol', {
   crol: {
@@ -59,6 +66,76 @@ const SubMenu = sequelize.define('sesubmenu', {
     allowNull: false,
   },
 }, { tableName: 'sesubmenu' });
+const State = sequelize.define('maestados', {
+  cestado: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cpais: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xdescripcion_l: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+},);
+const City = sequelize.define('maciudades', {
+  cciudad: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cpais: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  cestado: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xdescripcion_l: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+},);
+const Model = sequelize.define('MAMODELO_WEB', {
+  cmodelo: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cmarca: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xmodelo: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+}, { tableName: 'MAMODELO_WEB' });
+
+const Version = sequelize.define('MAVERSION_WEB', {
+  cversion: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  cmarca: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  cmodelo: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xversion: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+}, { tableName: 'MAVERSION_WEB' });
+
 
 
 const getTrade = async () => {
@@ -200,6 +277,144 @@ const getPark = async () => {
     return { error: error.message };
   }
 };
+
+const getState = async (getState) => {
+  try {
+    const estado = await State.findAll({
+      where: getState,
+      attributes: ['cestado', 'xdescripcion_l'],
+    });
+    const state = estado.map((item) => item.get({ plain: true }));
+    return state;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
+const getCity = async (getCity) => {
+  try {
+    const ciudad = await City.findAll({
+      where: getCity,
+      attributes: ['cciudad', 'xdescripcion_l'],
+    });
+    const city = ciudad.map((item) => item.get({ plain: true }));
+    return city;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
+const getBrand = async () => {
+  try {
+    const marca = await Brand.findAll({
+      attributes: ['cmarca', 'xmarca'],
+    });
+    const brand = marca.map((item) => item.get({ plain: true }));
+    return brand;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getModel = async (getModel) => {
+  try {
+    const modelo = await Model.findAll({
+      where: getModel,
+      attributes: ['cmodelo', 'xmodelo'],
+    });
+    const model = modelo.map((item) => item.get({ plain: true }));
+    return model;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getVersion = async (getVersion) => {
+  try {
+    const versions = await Version.findAll({
+      where: getVersion,
+      attributes: ['cversion', 'xversion', 'npasajero', 'cano'],
+    });
+    const version = versions.map((item) => item.get({ plain: true }));
+    return version;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getColor = async () => {
+  try {
+    const colores = await Color.findAll({
+      attributes: ['ccolor', 'xcolor'],
+    });
+    const color = colores.map((item) => item.get({ plain: true }));
+    return color;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getRates = async () => {
+  try {
+    const tarifa = await Rates.findAll({
+      attributes: ['ctarifa_exceso', 'xgrupo'],
+    });
+    const rates = tarifa.map((item) => item.get({ plain: true }));
+    return rates;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getTypeVehicle = async () => {
+  try {
+    const tipo = await TypeVehicle.findAll({
+      attributes: ['ctipovehiculo', 'xtipovehiculo'],
+    });
+    const type = tipo.map((item) => item.get({ plain: true }));
+    return type;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getUtility = async () => {
+  try {
+    const uso = await Utility.findAll({
+      attributes: ['cuso', 'xuso'],
+    });
+    const utility = uso.map((item) => item.get({ plain: true }));
+    return utility;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getClass = async () => {
+  try {
+    const clase = await Class.findAll({
+      attributes: ['cclase', 'xclase'],
+    });
+    const classV = clase.map((item) => item.get({ plain: true }));
+    return classV;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getPlan = async () => {
+  try {
+    const planes = await Plan.findAll({
+      attributes: ['cplan_rc', 'xplan_rc'],
+    });
+    const plan = planes.map((item) => item.get({ plain: true }));
+    return plan;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
   
 export default {
   getTrade,
@@ -212,5 +427,16 @@ export default {
   getMenu,
   getUser,
   getSubMenu,
-  getPark
+  getPark,
+  getState,
+  getCity,
+  getBrand,
+  getModel,
+  getVersion,
+  getColor,
+  getRates,
+  getTypeVehicle,
+  getUtility,
+  getClass,
+  getPlan
 };

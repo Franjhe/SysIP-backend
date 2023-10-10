@@ -308,6 +308,321 @@ const getPark = async (req, res) => {
         });
 }
 
+const getState = async (req, res) => {
+    const state = await valrepService.getState(req.body);
+    if (state.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: state.permissionError
+            });
+    }
+    if (state.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: state.error
+            });
+    }
+    state.forEach((item) => {
+        item.xdescripcion_l = item.xdescripcion_l.trim();
+    });
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                state: state
+            }
+        });
+}
+
+const getCity = async (req, res) => {
+    const city = await valrepService.getCity(req.body);
+    if (city.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: city.permissionError
+            });
+    }
+    if (city.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: city.error
+            });
+    }
+    city.forEach((item) => {
+        item.xdescripcion_l = item.xdescripcion_l.trim();
+    });
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                city: city
+            }
+        });
+}
+
+const getBrand = async (req, res) => {
+    const brand = await valrepService.getBrand();
+    if (brand.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: brand.permissionError
+            });
+    }
+    if (brand.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: brand.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                brand: brand
+            }
+        });
+}
+
+const getModel = async (req, res) => {
+    const model = await valrepService.getModel(req.body);
+    if (model.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: model.permissionError
+            });
+    }
+    if (model.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: model.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                model: model
+            }
+        });
+}
+
+const getVersion = async (req, res) => {
+    const version = await valrepService.getVersion(req.body);
+    if (version.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: version.permissionError
+            });
+    }
+    if (version.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: version.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                version: version
+            }
+        });
+}
+
+const getColor = async (req, res) => {
+    const color = await valrepService.getColor();
+    if (color.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: color.permissionError
+            });
+    }
+    if (color.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: color.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                color: color
+            }
+        });
+}
+
+const getRates = async (req, res) => {
+    const rates = await valrepService.getRates();
+    if (rates.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: rates.permissionError
+            });
+    }
+    if (rates.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: rates.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                rates: rates
+            }
+        });
+}
+
+const getTypeVehicle = async (req, res) => {
+    const type = await valrepService.getTypeVehicle();
+    if (type.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: type.permissionError
+            });
+    }
+    if (type.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: type.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                type: type
+            }
+        });
+}
+
+const getUtility = async (req, res) => {
+    const utility = await valrepService.getUtility();
+    if (utility.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: utility.permissionError
+            });
+    }
+    if (utility.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: utility.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                utility: utility
+            }
+        });
+}
+
+const getClass = async (req, res) => {
+    const classV = await valrepService.getClass();
+    if (classV.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: classV.permissionError
+            });
+    }
+    if (classV.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: classV.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                class: classV
+            }
+        });
+}
+
+const getPlan = async (req, res) => {
+    const plan = await valrepService.getPlan();
+    if (plan.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: plan.permissionError
+            });
+    }
+    if (plan.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: plan.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                plan: plan
+            }
+        });
+}
+
+
 export default {
     getTrade,
     getCoin,
@@ -319,5 +634,16 @@ export default {
     getMenu,
     getUser,
     getSubMenu,
-    getPark
+    getPark,
+    getState,
+    getCity,
+    getBrand,
+    getModel,
+    getVersion,
+    getColor,
+    getRates,
+    getTypeVehicle,
+    getUtility,
+    getClass,
+    getPlan,
 }

@@ -17,5 +17,16 @@ router
     .post("/submenu", authenticate, valrepController.getSubMenu)
     .post("/user", authenticate, valrepController.getUser)
     .post("/park", authenticate, valrepController.getPark)
+    .post("/state", authenticate, valrepController.getState)
+    .post("/city", authenticate, valrepController.getCity)
+    .post("/brand", authenticate, valrepController.getBrand)
+    .post("/model", authenticate, valrepController.getModel)
+    .post("/version", authenticate, valrepController.getVersion)
+    .post("/color", authenticate, valrepController.getColor)
+    .post("/rates", authenticate, valrepController.getRates)
+    .post("/type-vehicle", authenticate, valrepController.getTypeVehicle)
+    .post("/utility", authenticate, valrepController.getUtility)
+    .post("/class", authenticate, valrepController.getClass)
+    .post("/plan", authenticate, valrepController.getPlan)
 
 export default router;
