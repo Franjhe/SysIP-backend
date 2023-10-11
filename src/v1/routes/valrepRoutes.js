@@ -9,7 +9,7 @@ router
     .post("/trade", authenticate, valrepController.getTrade)
     .post("/coin", authenticate, valrepController.getCoin)
     .post("/client", authenticate, valrepController.getClient)
-    .post("/brockers", authenticate, valrepController.getBrokers)
+    .post("/brokers", authenticate, valrepController.getBrokers)
     .post("/departament", authenticate, valrepController.getDepartament)
     .post("/rol", authenticate, valrepController.getRol)
     .post("/main-menu", authenticate, valrepController.getMainMenu)

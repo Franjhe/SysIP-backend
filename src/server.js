@@ -10,6 +10,7 @@ import v1SecurityRouter from './v1/routes/securityRoutes.js';
 import v1NinjaParkRouter from './v1/routes/ninjaParkRoutes.js';
 import v1ReportRouter from './v1/routes/reportRoutes.js';
 import v1ConsulPagosRouter from './v1/routes/consulPagosRoutes.js';
+import v1EmissionsRouter from './v1/routes/emissionsRoutes.js';
 
 const app = express(); 
 dotenv;
@@ -25,6 +26,7 @@ app.use("/api/v1/security", v1SecurityRouter);
 app.use("/api/v1/ninjaPark", v1NinjaParkRouter);
 app.use("/api/v1/report", v1ReportRouter);
 app.use("/api/v1/consul-pagos", v1ConsulPagosRouter);
+app.use("/api/v1/emissions", v1EmissionsRouter);
 
 const PORT = process.env.PORT || 3000; 
 

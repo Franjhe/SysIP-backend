@@ -102,12 +102,15 @@ const getBrokers = async (req, res) => {
                 message: brokers.error
             });
     }
+    brokers.forEach((item) => {
+        item.xdescripcion_l = item.xdescripcion_l.trim();
+    });
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                brokers: brokers
+                broker: brokers
             }
         });
 }
@@ -388,12 +391,20 @@ const getBrand = async (req, res) => {
                 message: brand.error
             });
     }
+    let jsonList = [];
+    for(let i = 0; i < brand.length; i++){
+        jsonList.push({
+            cmarca: brand[i].cmarca,
+            xmarca: brand[i].xmarca,
+            control: i
+        })
+    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                brand: brand
+                brand: jsonList
             }
         });
 }
@@ -416,12 +427,20 @@ const getModel = async (req, res) => {
                 message: model.error
             });
     }
+    let jsonList = [];
+    for(let i = 0; i < model.length; i++){
+        jsonList.push({
+            cmodelo: model[i].cmodelo,
+            xmodelo: model[i].xmodelo,
+            control: i
+        })
+    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                model: model
+                model: jsonList
             }
         });
 }
@@ -444,12 +463,22 @@ const getVersion = async (req, res) => {
                 message: version.error
             });
     }
+    let jsonList = [];
+    for(let i = 0; i < version.length; i++){
+        jsonList.push({
+            cversion: version[i].cversion,
+            xversion: version[i].xversion,
+            fano: version[i].cano,
+            npasajeros: version[i].npasajero,
+            control: i
+        })
+    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                version: version
+                version: jsonList
             }
         });
 }
