@@ -29,8 +29,37 @@ const searchCertificate = async (req, res) => {
 }
 
 
+const detailCertificate = async (req, res) => {
+    const detail = await certificateService.detailCertificateCertificate(req.body);
+    if (detail.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: detail.permissionError
+            });
+    }
+    if (detail.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: detail.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: detail
+            
+        });
+}
+
 
 export default {
     searchCertificate,
+    detailCertificate
  
 }
