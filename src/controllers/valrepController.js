@@ -102,12 +102,15 @@ const getBrokers = async (req, res) => {
                 message: brokers.error
             });
     }
+    brokers.forEach((item) => {
+        item.xdescripcion_l = item.xdescripcion_l.trim();
+    });
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                brokers: brokers
+                broker: brokers
             }
         });
 }
@@ -308,6 +311,402 @@ const getPark = async (req, res) => {
         });
 }
 
+const getState = async (req, res) => {
+    const state = await valrepService.getState(req.body);
+    if (state.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: state.permissionError
+            });
+    }
+    if (state.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: state.error
+            });
+    }
+    state.forEach((item) => {
+        item.xdescripcion_l = item.xdescripcion_l.trim();
+    });
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                state: state
+            }
+        });
+}
+
+const getCity = async (req, res) => {
+    const city = await valrepService.getCity(req.body);
+    if (city.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: city.permissionError
+            });
+    }
+    if (city.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: city.error
+            });
+    }
+    city.forEach((item) => {
+        item.xdescripcion_l = item.xdescripcion_l.trim();
+    });
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                city: city
+            }
+        });
+}
+
+const getBrand = async (req, res) => {
+    const brand = await valrepService.getBrand();
+    if (brand.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: brand.permissionError
+            });
+    }
+    if (brand.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: brand.error
+            });
+    }
+    let jsonList = [];
+    for(let i = 0; i < brand.length; i++){
+        jsonList.push({
+            cmarca: brand[i].cmarca,
+            xmarca: brand[i].xmarca,
+            control: i
+        })
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                brand: jsonList
+            }
+        });
+}
+
+const getModel = async (req, res) => {
+    const model = await valrepService.getModel(req.body);
+    if (model.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: model.permissionError
+            });
+    }
+    if (model.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: model.error
+            });
+    }
+    let jsonList = [];
+    for(let i = 0; i < model.length; i++){
+        jsonList.push({
+            cmodelo: model[i].cmodelo,
+            xmodelo: model[i].xmodelo,
+            control: i
+        })
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                model: jsonList
+            }
+        });
+}
+
+const getVersion = async (req, res) => {
+    const version = await valrepService.getVersion(req.body);
+    if (version.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: version.permissionError
+            });
+    }
+    if (version.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: version.error
+            });
+    }
+    let jsonList = [];
+    for(let i = 0; i < version.length; i++){
+        jsonList.push({
+            cversion: version[i].cversion,
+            xversion: version[i].xversion,
+            fano: version[i].cano,
+            npasajeros: version[i].npasajero,
+            control: i
+        })
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                version: jsonList
+            }
+        });
+}
+
+const getColor = async (req, res) => {
+    const color = await valrepService.getColor();
+    if (color.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: color.permissionError
+            });
+    }
+    if (color.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: color.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                color: color
+            }
+        });
+}
+
+const getRates = async (req, res) => {
+    const rates = await valrepService.getRates();
+    if (rates.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: rates.permissionError
+            });
+    }
+    if (rates.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: rates.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                rates: rates
+            }
+        });
+}
+
+const getTypeVehicle = async (req, res) => {
+    const type = await valrepService.getTypeVehicle();
+    if (type.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: type.permissionError
+            });
+    }
+    if (type.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: type.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                type: type
+            }
+        });
+}
+
+const getUtility = async (req, res) => {
+    const utility = await valrepService.getUtility();
+    if (utility.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: utility.permissionError
+            });
+    }
+    if (utility.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: utility.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                utility: utility
+            }
+        });
+}
+
+const getClass = async (req, res) => {
+    const classV = await valrepService.getClass();
+    if (classV.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: classV.permissionError
+            });
+    }
+    if (classV.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: classV.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                class: classV
+            }
+        });
+}
+
+const getPlan = async (req, res) => {
+    const plan = await valrepService.getPlan();
+    if (plan.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: plan.permissionError
+            });
+    }
+    if (plan.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: plan.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                plan: plan
+            }
+        });
+}
+
+const getAccesories = async (req, res) => {
+    const accesories = await valrepService.getAccesories();
+    if (accesories.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: accesories.permissionError
+            });
+    }
+    if (accesories.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: accesories.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                accesories: accesories
+            }
+        });
+}
+
+const getMethodOfPayment = async (req, res) => {
+    const payment = await valrepService.getMethodOfPayment();
+    if (payment.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: payment.permissionError
+            });
+    }
+    if (payment.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: payment.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                payment: payment
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
@@ -319,5 +718,18 @@ export default {
     getMenu,
     getUser,
     getSubMenu,
-    getPark
+    getPark,
+    getState,
+    getCity,
+    getBrand,
+    getModel,
+    getVersion,
+    getColor,
+    getRates,
+    getTypeVehicle,
+    getUtility,
+    getClass,
+    getPlan,
+    getAccesories,
+    getMethodOfPayment
 }

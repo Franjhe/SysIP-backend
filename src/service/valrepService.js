@@ -110,6 +110,136 @@ const getPark = async () => {
     return parks;
 }
 
+const getState = async (getState) => {
+    const state = await Valrep.getState(getState);
+    if (state.error) {
+        return {
+            error: state.error
+        }
+    }
+    return state;
+}
+
+const getCity = async (getCity) => {
+    const city = await Valrep.getCity(getCity);
+    if (city.error) {
+        return {
+            error: city.error
+        }
+    }
+    return city;
+}
+
+const getBrand = async () => {
+    const brand = await Valrep.getBrand();
+    if (brand.error) {
+        return {
+            error: brand.error
+        }
+    }
+    return brand;
+}
+
+const getModel = async (getModel) => {
+    const model = await Valrep.getModel(getModel);
+    if (model.error) {
+        return {
+            error: model.error
+        }
+    }
+    return model;
+}
+
+const getVersion = async (getVersion) => {
+    const version = await Valrep.getVersion(getVersion);
+    if (version.error) {
+        return {
+            error: version.error
+        }
+    }
+    return version;
+}
+
+const getColor = async () => {
+    const color = await Valrep.getColor();
+    if (color.error) {
+        return {
+            error: color.error
+        }
+    }
+    return color;
+}
+
+const getRates = async () => {
+    const rates = await Valrep.getRates();
+    if (rates.error) {
+        return {
+            error: rates.error
+        }
+    }
+    return rates;
+}
+
+const getTypeVehicle = async () => {
+    const type = await Valrep.getTypeVehicle();
+    if (type.error) {
+        return {
+            error: type.error
+        }
+    }
+    return type;
+}
+
+const getUtility = async () => {
+    const utility = await Valrep.getUtility();
+    if (utility.error) {
+        return {
+            error: utility.error
+        }
+    }
+    return utility;
+}
+
+const getClass = async () => {
+    const classV = await Valrep.getClass();
+    if (classV.error) {
+        return {
+            error: classV.error
+        }
+    }
+    return classV;
+}
+
+const getPlan = async () => {
+    const plan = await Valrep.getPlan();
+    if (plan.error) {
+        return {
+            error: plan.error
+        }
+    }
+    return plan;
+}
+
+const getAccesories = async () => {
+    const accesories = await Valrep.getAccesories();
+    if (accesories.error) {
+        return {
+            error: accesories.error
+        }
+    }
+    return accesories;
+}
+
+const getMethodOfPayment = async () => {
+    const payment = await Valrep.getMethodOfPayment();
+    if (payment.error) {
+        return {
+            error: payment.error
+        }
+    }
+    return payment;
+}
+
 export default {
     getTrade,
     getCoin,
@@ -121,5 +251,18 @@ export default {
     getMenu,
     getUser,
     getSubMenu,
-    getPark
+    getPark,
+    getState,
+    getCity,
+    getBrand,
+    getModel,
+    getVersion,
+    getColor,
+    getRates,
+    getTypeVehicle,
+    getUtility,
+    getClass,
+    getPlan,
+    getAccesories,
+    getMethodOfPayment
 }
