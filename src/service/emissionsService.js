@@ -20,7 +20,18 @@ const searchOtherPrice = async (searchOtherPrice) => {
     return rates;
 }
 
+const executePremiumAmount = async (executePremiumAmount) => {
+    const result = await Emissions.executePremiumAmount(executePremiumAmount);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+}
+
 export default {
     searchHullPrice,
-    searchOtherPrice
+    searchOtherPrice,
+    executePremiumAmount
 }

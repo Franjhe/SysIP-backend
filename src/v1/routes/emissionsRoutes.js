@@ -6,5 +6,6 @@ const router = express.Router();
 router
 
     .post("/automobil/hull-price",  emissionsController.searchHullPrice)
+    .post("/automobil/premium-amount",  emissionsController.executePremiumAmount)
 
 export default router;

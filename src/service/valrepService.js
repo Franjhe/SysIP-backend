@@ -220,6 +220,26 @@ const getPlan = async () => {
     return plan;
 }
 
+const getAccesories = async () => {
+    const accesories = await Valrep.getAccesories();
+    if (accesories.error) {
+        return {
+            error: accesories.error
+        }
+    }
+    return accesories;
+}
+
+const getMethodOfPayment = async () => {
+    const payment = await Valrep.getMethodOfPayment();
+    if (payment.error) {
+        return {
+            error: payment.error
+        }
+    }
+    return payment;
+}
+
 export default {
     getTrade,
     getCoin,
@@ -243,4 +263,6 @@ export default {
     getUtility,
     getClass,
     getPlan,
+    getAccesories,
+    getMethodOfPayment
 }

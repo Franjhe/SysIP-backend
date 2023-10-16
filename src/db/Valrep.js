@@ -16,6 +16,8 @@ const TypeVehicle = sequelize.define('MATIPOVEHICULO', {}, { tableName: 'MATIPOV
 const Utility = sequelize.define('MAUSOVEHICULO', {}, { tableName: 'MAUSOVEHICULO' });
 const Class = sequelize.define('MACLASES_WEB', {}, { tableName: 'MACLASES_WEB' });
 const Plan = sequelize.define('PRPLAN_RC', {}, { tableName: 'PRPLAN_RC' });
+const Accesories = sequelize.define('MAACCESORIOS', {});
+const Payment = sequelize.define('MAMETODOLOGIAPAGO', {}, { tableName: 'MAMETODOLOGIAPAGO' });
 
 const Rol = sequelize.define('serol', {
   crol: {
@@ -415,6 +417,31 @@ const getPlan = async () => {
     return { error: error.message };
   }
 };
+
+const getAccesories = async () => {
+  try {
+    const accesorios = await Accesories.findAll({
+      attributes: ['caccesorio', 'xaccesorio', 'mmontomax', 'ptasa'],
+    });
+    const accesories = accesorios.map((item) => item.get({ plain: true }));
+    return accesories;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getMethodOfPayment = async () => {
+  try {
+    const metodologia = await Payment.findAll({
+      attributes: ['cmetodologiapago', 'xmetodologiapago'],
+    });
+    const payment = metodologia.map((item) => item.get({ plain: true }));
+    return payment;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+  
   
 export default {
   getTrade,
@@ -438,5 +465,7 @@ export default {
   getTypeVehicle,
   getUtility,
   getClass,
-  getPlan
+  getPlan,
+  getAccesories,
+  getMethodOfPayment
 };

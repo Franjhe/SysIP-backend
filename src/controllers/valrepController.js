@@ -651,6 +651,61 @@ const getPlan = async (req, res) => {
         });
 }
 
+const getAccesories = async (req, res) => {
+    const accesories = await valrepService.getAccesories();
+    if (accesories.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: accesories.permissionError
+            });
+    }
+    if (accesories.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: accesories.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                accesories: accesories
+            }
+        });
+}
+
+const getMethodOfPayment = async (req, res) => {
+    const payment = await valrepService.getMethodOfPayment();
+    if (payment.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: payment.permissionError
+            });
+    }
+    if (payment.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: payment.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                payment: payment
+            }
+        });
+}
 
 export default {
     getTrade,
@@ -675,4 +730,6 @@ export default {
     getUtility,
     getClass,
     getPlan,
+    getAccesories,
+    getMethodOfPayment
 }
