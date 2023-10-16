@@ -6,6 +6,6 @@ const router = express.Router();
 router
 
     .get("/search",  certificateController.searchCertificate)
-    .get("/detail",  certificateController.searchCertificate)
+    .get("/detail",  certificateController.detailCertificate)
 
 export default router;
