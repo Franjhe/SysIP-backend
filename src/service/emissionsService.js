@@ -30,8 +30,30 @@ const executePremiumAmount = async (executePremiumAmount) => {
     return result;
 }
 
+const createIndividualContract = async (createIndividualContract) => {
+    const result = await Emissions.createIndividualContract(createIndividualContract);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+}
+
+const searchContractIndividual = async () => {
+    const contract = await Emissions.searchContractIndividual();
+    if (contract.error) {
+        return {
+            error: contract.error
+        }
+    }
+    return contract;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
-    executePremiumAmount
+    executePremiumAmount,
+    createIndividualContract,
+    searchContractIndividual
 }

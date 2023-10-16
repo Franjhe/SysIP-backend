@@ -62,7 +62,39 @@ const executePremiumAmount = async (req, res) => {
         });
 }
 
+const createIndividualContract = async (req, res) => {
+    const result = await emissionsService.createIndividualContract(req.body);
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    const contract = await emissionsService.searchContractIndividual();
+    console.log(result)
+    console.log(contract)
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                ccontratoflota: result,
+            }
+        });
+}
+
 export default {
     searchHullPrice,
-    executePremiumAmount
+    executePremiumAmount,
+    createIndividualContract
 }
