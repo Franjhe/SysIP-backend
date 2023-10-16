@@ -81,14 +81,12 @@ const createIndividualContract = async (req, res) => {
             });
     }
     const contract = await emissionsService.searchContractIndividual();
-    console.log(result)
-    console.log(contract)
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                ccontratoflota: result,
+                ccontratoflota: contract.ccontratoflota,
             }
         });
 }
