@@ -91,8 +91,45 @@ const createIndividualContract = async (req, res) => {
         });
 }
 
+const searchAllContract = async (req, res) => {
+    const result = await emissionsService.searchAllContract(req.body);
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+
+    const combinedData = result.map(item => ({
+        ccontratoflota: `${item.ccontratoflota}`,
+        xnombre: `${item.xnombre} ${item.xapellido}`,
+        xvehiculo: `${item.xmarca} - ${item.xmodelo} - ${item.xversion}`,
+        xplaca: `${item.xplaca}`,
+    }));
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                contract: combinedData,
+            }
+        });
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
-    createIndividualContract
+    createIndividualContract,
+    searchAllContract
 }

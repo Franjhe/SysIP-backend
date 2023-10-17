@@ -70,9 +70,9 @@ const detailCertificateCertificate = async (searchDetail) => {
             realCoverages.push(coverage);
         }
         //Se redondea el total de la prima a dos decimales. 96,336 -> 96,34
-        mprimatotal = Math.round10(mprimatotal, -2);
+        mprimatotal = Number(mprimatotal.toFixed(2)); // Redondea mprimatotal a 2 decimales
         if (mprimaprorratatotal > 0) {
-            mprimaprorratatotal = Math.round10(mprimaprorratatotal, -2);
+            mprimaprorratatotal = Number(mprimaprorratatotal.toFixed(2)); // Redondea mprimaprorratatotal a 2 decimales si es mayor que 0
         }
         let services = [];
         let getFleetContractServices = await Certificate.getFleetContractServices(getFleetContractData.result.recordset[0].ccarga);
@@ -100,7 +100,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             xplanservicios = xplan.charAt(0).toUpperCase() + xplan.slice(1);
         }
         let accesories = []
-        let getFleetContractAccesories = await Certificate.getFleetContractAccesoriesQuery(fleetContractData.ccontratoflota);
+        let getFleetContractAccesories = await Certificate.getFleetContractAccesoriesQuery(searchDetail.ccontratoflota);
         if(getFleetContractAccesories.error){ return { status: false, code: 500, message: getFleetContractAccesories.error }; }
         if (getFleetContractAccesories.result.rowsAffected > 0) {
             for(let i = 0; i < getFleetContractAccesories.result.recordset.length; i++){
@@ -113,14 +113,14 @@ const detailCertificateCertificate = async (searchDetail) => {
                 accesories.push(accessory);
             }
         }
-        let getPolicyEffectiveDate = await Certificate.getPolicyEffectiveDateQuery(fleetContractData.ccontratoflota);
+        let getPolicyEffectiveDate = await Certificate.getPolicyEffectiveDateQuery(searchDetail.ccontratoflota);
         if(getPolicyEffectiveDate.error){ return { status: false, code: 500, message: getPolicyEffectiveDate.error }; }
         if(getPolicyEffectiveDate.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Receipts not found.' }; }
         return {
             status: true,
             ccarga: getFleetContractData.result.recordset[0].ccarga,
             ccontratoflota: getFleetContractData.result.recordset[0].CCONTRATOFLOTA,
-            xrecibo: getFleetContractData.result.recordset[0].xrecibo,
+            xrecibo: getFleetContractData.result.recordset[0].XRECIBO,
             xpoliza: getFleetContractData.result.recordset[0].xpoliza,
             xtituloreporte: getFleetContractData.result.recordset[0].XTITULO_REPORTE,
             xtransmision: getFleetContractData.result.recordset[0].XTRANSMISION,
@@ -143,7 +143,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             xsucursalemision: getFleetContractData.result.recordset[0].XSUCURSALEMISION,
             xsucursalsuscriptora: getFleetContractData.result.recordset[0].XSUCURSALSUSCRIPTORA,
             cagrupador: getFleetContractData.result.recordset[0].CAGRUPADOR,
-            fsuscripcion: getFleetContractData.result.recordset[0].FCREACION,
+            fsuscripcion: getFleetContractData.result.recordset[0].FINICIO,
             finicio: getFleetContractData.result.recordset[0].FDESDE_POL,
             fhasta: getFleetContractData.result.recordset[0].FHASTA_POL,
             finiciorecibo: getFleetContractData.result.recordset[0].FDESDE_REC,
@@ -152,8 +152,8 @@ const detailCertificateCertificate = async (searchDetail) => {
             cestatusgeneral: getFleetContractData.result.recordset[0].CESTATUSGENERAL,
             xestatusgeneral: getFleetContractData.result.recordset[0].XESTATUSGENERAL,
             ctrabajador: getFleetContractData.result.recordset[0].CTRABAJADOR,
-            ccorredor: getBroker.result.recordset[0].CCORREDOR,
-            xcorredor: getBroker.result.recordset[0].XCORREDOR,
+            ccorredor: getBroker.result.recordset[0].ccorredor,
+            xcorredor: getBroker.result.recordset[0].xdescripcion_l.trim(),
             cpropietario: getFleetContractData.result.recordset[0].CPROPIETARIO,
             xnombrepropietario: getFleetContractOwnerData.result.recordset[0].XNOMBRE,
             xtipodocidentidadpropietario: getFleetContractOwnerData.result.recordset[0].XTIPODOCIDENTIDAD,
@@ -174,6 +174,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             ctipoplan: getFleetContractData.result.recordset[0].CTIPOPLAN,
             cplan: getFleetContractData.result.recordset[0].CPLAN,
             cmetodologiapago: getFleetContractData.result.recordset[0].CMETODOLOGIAPAGO,
+            xmetodologiapago: getFleetContractData.result.recordset[0].XMETODOLOGIAPAGO,
             ctiporecibo: getFleetContractData.result.recordset[0].CTIPORECIBO,
             xmarca: getFleetContractData.result.recordset[0].XMARCA,
             xmoneda: getFleetContractData.result.recordset[0].xmoneda,
@@ -199,8 +200,8 @@ const detailCertificateCertificate = async (searchDetail) => {
             xzona_postal: getFleetContractData.result.recordset[0].XZONA_POSTAL,
             xtelefono: getFleetContractData.result.recordset[0].XTELEFONO,
             xcorreo: getFleetContractData.result.recordset[0].XCORREO,
-            xestado: getFleetContractData.result.recordset[0].XESTADO,
-            xciudad: getFleetContractData.result.recordset[0].XCIUDAD,
+            xestado: getFleetContractClientData.result.recordset[0].XESTADO,
+            xciudad: getFleetContractClientData.result.recordset[0].XCIUDAD,
             xclase: getFleetContractData.result.recordset[0].XCLASE,
             nkilometraje: getFleetContractData.result.recordset[0].NKILOMETRAJE,
             xzona_postal_propietario: getFleetContractData.result.recordset[0].XZONA_POSTAL_PROPIETARIO,

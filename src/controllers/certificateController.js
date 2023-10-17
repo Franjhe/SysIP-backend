@@ -47,7 +47,6 @@ const detailCertificate = async (req, res) => {
                 message: detail.error
             });
     }
-
     return res
         .status(200)
         .send({

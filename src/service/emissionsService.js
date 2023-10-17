@@ -50,10 +50,21 @@ const searchContractIndividual = async () => {
     return contract;
 }
 
+const searchAllContract = async (searchAllContract) => {
+    const result = await Emissions.searchAllContract(searchAllContract);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
     executePremiumAmount,
     createIndividualContract,
-    searchContractIndividual
+    searchContractIndividual,
+    searchAllContract
 }

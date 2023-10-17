@@ -17,6 +17,7 @@ const Clasification = sequelize.define('MACLASIFICACION_VEH', {}, { tableName: '
 const Price = sequelize.define('MATARIFA_CASCO', {}, { tableName: 'MATARIFA_CASCO' });
 const OtherPrice = sequelize.define('MATARIFA_OTROS', {}, { tableName: 'MATARIFA_OTROS' });
 const Contract = sequelize.define('SUCONTRATOFLOTA', {}, { tableName: 'SUCONTRATOFLOTA' });
+const AllContract = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableName: 'VWBUSCARSUCONTRATOFLOTADATA' });
 
 const searchHullPrice = async (searchHullPrice) => {
     try {
@@ -121,7 +122,7 @@ const createIndividualContract = async(createIndividualContract) => {
           .input('cplan', sql.Int, createIndividualContract.cplan_rc ? createIndividualContract.cplan_rc: undefined)
           .input('cplan_rc', sql.Int, createIndividualContract.cplan_rc ? createIndividualContract.cplan_rc: undefined)
           .input('ccorredor', sql.Int, createIndividualContract.ccorredor ? createIndividualContract.ccorredor: undefined)
-          .input('pcasco', sql.Numeric(17, 2), createIndividualContract.pcasco ? createIndividualContract.pcasco: undefined)
+          // .input('pcasco', sql.Numeric(17, 2), createIndividualContract.pcasco ? createIndividualContract.pcasco: undefined)
           .input('msuma_aseg', sql.Numeric(17, 2), createIndividualContract.msuma_aseg ? createIndividualContract.msuma_aseg: undefined)
           .input('mprima_bruta', sql.Numeric(17, 2), createIndividualContract.mprima_bruta ? createIndividualContract.mprima_bruta: undefined)
           .input('pdescuento', sql.Numeric(17, 2), createIndividualContract.pdescuento ? createIndividualContract.pdescuento: undefined)
@@ -137,8 +138,9 @@ const createIndividualContract = async(createIndividualContract) => {
           .input('femision', sql.DateTime, createIndividualContract.femision ? createIndividualContract.femision: undefined)
           .input('cmetodologiapago', sql.Int, createIndividualContract.cmetodologiapago ? createIndividualContract.cmetodologiapago: undefined)
           .input('cpais', sql.Int, createIndividualContract.cpais ? createIndividualContract.cpais: undefined)
-          .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, cmarca, cmodelo, cversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cuso, ctipovehiculo, cclase, cplan_rc, cplan, ccorredor, pcasco, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @cmarca, @cmodelo, @cversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cuso, @ctipovehiculo, @cclase, @cplan_rc, @cplan, @ccorredor, @pcasco, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais)')
-           return { result: { rowsAffected: rowsAffected, status: true } };
+          .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, cmarca, cmodelo, cversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cuso, ctipovehiculo, cclase, cplan_rc, cplan, ccorredor, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @cmarca, @cmodelo, @cversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cuso, @ctipovehiculo, @cclase, @cplan_rc, @cplan, @ccorredor, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais)')
+          await pool.close();
+          return { result: { rowsAffected: rowsAffected, status: true } };
   }
   catch(err){
       console.log(err.message)
@@ -159,6 +161,19 @@ const searchContractIndividual = async () => {
     return { error: error.message };
   }
 };
+
+const searchAllContract = async (searchAllContract) => {
+  try {
+    const contratos = await AllContract.findAll({
+      where: searchAllContract,
+      attributes: ['ccontratoflota', 'xnombre', 'xapellido', 'xmarca', 'xmodelo', 'xversion', 'xplaca'],
+    });
+    const result = contratos.map((item) => item.get({ plain: true }));
+    return result;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
   
 
 export default {
@@ -166,5 +181,6 @@ export default {
     searchOtherPrice,
     executePremiumAmount,
     createIndividualContract,
-    searchContractIndividual
+    searchContractIndividual,
+    searchAllContract
   };
