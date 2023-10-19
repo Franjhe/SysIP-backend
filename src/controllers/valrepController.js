@@ -374,7 +374,7 @@ const getCity = async (req, res) => {
 }
 
 const getBrand = async (req, res) => {
-    const brand = await valrepService.getBrand();
+    const brand = await valrepService.getBrand(req.body);
     if (brand.permissionError) {
         return res
             .status(403)
@@ -391,20 +391,12 @@ const getBrand = async (req, res) => {
                 message: brand.error
             });
     }
-    let jsonList = [];
-    for(let i = 0; i < brand.length; i++){
-        jsonList.push({
-            cmarca: brand[i].cmarca,
-            xmarca: brand[i].xmarca,
-            control: i
-        })
-    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                brand: jsonList
+                brand: brand
             }
         });
 }
@@ -427,20 +419,12 @@ const getModel = async (req, res) => {
                 message: model.error
             });
     }
-    let jsonList = [];
-    for(let i = 0; i < model.length; i++){
-        jsonList.push({
-            cmodelo: model[i].cmodelo,
-            xmodelo: model[i].xmodelo,
-            control: i
-        })
-    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                model: jsonList
+                model: model
             }
         });
 }
@@ -463,22 +447,12 @@ const getVersion = async (req, res) => {
                 message: version.error
             });
     }
-    let jsonList = [];
-    for(let i = 0; i < version.length; i++){
-        jsonList.push({
-            cversion: version[i].cversion,
-            xversion: version[i].xversion,
-            fano: version[i].cano,
-            npasajeros: version[i].npasajero,
-            control: i
-        })
-    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                version: jsonList
+                version: version
             }
         });
 }
@@ -707,6 +681,34 @@ const getMethodOfPayment = async (req, res) => {
         });
 }
 
+const getTakers = async (req, res) => {
+    const takers = await valrepService.getTakers();
+    if (takers.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: takers.permissionError
+            });
+    }
+    if (takers.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: takers.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                takers: takers
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
@@ -731,5 +733,6 @@ export default {
     getClass,
     getPlan,
     getAccesories,
-    getMethodOfPayment
+    getMethodOfPayment,
+    getTakers
 }

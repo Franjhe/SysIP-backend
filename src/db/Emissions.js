@@ -18,6 +18,8 @@ const Price = sequelize.define('MATARIFA_CASCO', {}, { tableName: 'MATARIFA_CASC
 const OtherPrice = sequelize.define('MATARIFA_OTROS', {}, { tableName: 'MATARIFA_OTROS' });
 const Contract = sequelize.define('SUCONTRATOFLOTA', {}, { tableName: 'SUCONTRATOFLOTA' });
 const AllContract = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableName: 'VWBUSCARSUCONTRATOFLOTADATA' });
+const Propietary = sequelize.define('TRPROPIETARIO', {}, { tableName: 'TRPROPIETARIO' });
+const Vehicle = sequelize.define('TRVEHICULOPROPIETARIO', {}, { tableName: 'TRVEHICULOPROPIETARIO' });
 
 const searchHullPrice = async (searchHullPrice) => {
     try {
@@ -175,6 +177,35 @@ const searchAllContract = async (searchAllContract) => {
   }
 };
   
+const searchPropietary = async (searchPropietary) => {
+  try {
+    const propietario = await Propietary.findAll({
+      where: {
+          xdocidentidad: searchPropietary.xrif_cliente,
+        },
+      attributes: ['xnombre', 'xapellido', 'xtelefonocasa', 'xemail', 'cestado', 'cciudad', 'xdireccion'],
+    });
+    const propietary = propietario.map((item) => item.get({ plain: true }));
+    return propietary;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const searchVehicle = async (searchVehicle) => {
+  try {
+    const vehiculo = await Vehicle.findAll({
+      where: {
+          xplaca: searchVehicle.xplaca,
+        },
+      attributes: ['cvehiculopropietario'],
+    });
+    const vehicle = vehiculo.map((item) => item.get({ plain: true }));
+    return vehicle;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
 
 export default {
     searchHullPrice,
@@ -182,5 +213,7 @@ export default {
     executePremiumAmount,
     createIndividualContract,
     searchContractIndividual,
-    searchAllContract
+    searchAllContract,
+    searchPropietary,
+    searchVehicle
   };

@@ -5,9 +5,11 @@ const router = express.Router();
 
 router
 
-    .post("/automobil/hull-price",  emissionsController.searchHullPrice)
-    .post("/automobil/premium-amount",  emissionsController.executePremiumAmount)
-    .post("/automobil/create",  emissionsController.createIndividualContract)
-    .post("/automobil/search",  emissionsController.searchAllContract)
+    .post("/automobile/hull-price",  emissionsController.searchHullPrice)
+    .post("/automobile/premium-amount",  emissionsController.executePremiumAmount)
+    .post("/automobile/create",  emissionsController.createIndividualContract)
+    .post("/automobile/search",  emissionsController.searchAllContract)
+    .post("/automobile/propietary",  emissionsController.searchPropietary)
+    .post("/automobile/vehicle",  emissionsController.searchVehicle)
 
 export default router;
