@@ -96,6 +96,17 @@ const createIndividualContract = async(createIndividualContract) => {
   try{
       let rowsAffected = 0;
       let pool = await sql.connect(sqlConfig);
+
+      if (createIndividualContract.xtomador) {
+        const matomadorResult = await pool.request()
+          .input('xtomador', sql.NVarChar, createIndividualContract.xtomador)
+          .query('INSERT INTO MATOMADORES (xtomador) VALUES (@xtomador) SELECT SCOPE_IDENTITY() AS ctomador');
+
+        if (matomadorResult.recordset.length > 0) {
+          createIndividualContract.ctomador = matomadorResult.recordset[0].ctomador;
+        }
+      }
+
       let insert = await pool.request()
           .input('icedula', sql.Char, createIndividualContract.icedula ? createIndividualContract.icedula: undefined)
           .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
@@ -108,9 +119,9 @@ const createIndividualContract = async(createIndividualContract) => {
           .input('cciudad', sql.Int, createIndividualContract.cciudad ? createIndividualContract.cciudad: undefined)
           .input('xdireccionfiscal', sql.NVarChar, createIndividualContract.xdireccion ? createIndividualContract.xdireccion: undefined)
           .input('xplaca', sql.NVarChar, createIndividualContract.xplaca ? createIndividualContract.xplaca: undefined)
-          .input('cmarca', sql.Int, createIndividualContract.cmarca ? createIndividualContract.cmarca: undefined)
-          .input('cmodelo', sql.Int, createIndividualContract.cmodelo ? createIndividualContract.cmodelo: undefined)
-          .input('cversion', sql.Int, createIndividualContract.cversion ? createIndividualContract.cversion: undefined)
+          .input('xmarca', sql.NVarChar, createIndividualContract.xmarca ? createIndividualContract.xmarca: undefined)
+          .input('xmodelo', sql.NVarChar, createIndividualContract.xmodelo ? createIndividualContract.xmodelo: undefined)
+          .input('xversion', sql.NVarChar, createIndividualContract.xversion ? createIndividualContract.xversion: undefined)
           .input('cano', sql.Int, createIndividualContract.fano ? createIndividualContract.fano: undefined)
           .input('ncapacidad_p', sql.Int, createIndividualContract.npasajeros ? createIndividualContract.npasajeros: undefined)
           .input('xcolor', sql.NVarChar, createIndividualContract.xcolor ? createIndividualContract.xcolor: undefined)
@@ -118,12 +129,14 @@ const createIndividualContract = async(createIndividualContract) => {
           .input('xserialmotor', sql.NVarChar, createIndividualContract.xserialmotor ? createIndividualContract.xserialmotor: undefined)
           .input('xcobertura', sql.NVarChar, createIndividualContract.xcobertura ? createIndividualContract.xcobertura: undefined)
           .input('ctarifa_exceso', sql.Int, createIndividualContract.ctarifa_exceso ? createIndividualContract.ctarifa_exceso: undefined)
-          .input('cuso', sql.Int, createIndividualContract.cuso ? createIndividualContract.cuso: undefined)
-          .input('ctipovehiculo', sql.Int, createIndividualContract.ctipovehiculo ? createIndividualContract.ctipovehiculo: undefined)
-          .input('cclase', sql.Int, createIndividualContract.cclase ? createIndividualContract.cclase: undefined)
-          .input('cplan', sql.Int, createIndividualContract.cplan_rc ? createIndividualContract.cplan_rc: undefined)
           .input('cplan_rc', sql.Int, createIndividualContract.cplan_rc ? createIndividualContract.cplan_rc: undefined)
           .input('ccorredor', sql.Int, createIndividualContract.ccorredor ? createIndividualContract.ccorredor: undefined)
+          .input('ctomador', sql.Int, createIndividualContract.ctomador ? createIndividualContract.ctomador: undefined)
+          .input('ccotizacion', sql.Int, createIndividualContract.ccotizacion ? createIndividualContract.ccotizacion: undefined)
+          .input('cinspeccion', sql.Int, createIndividualContract.cinspeccion ? createIndividualContract.cinspeccion: undefined)
+          .input('fdesde_pol', sql.DateTime, createIndividualContract.fdesde_pol ? createIndividualContract.fdesde_pol: undefined)
+          .input('fhasta_pol', sql.DateTime, createIndividualContract.fhasta_pol ? createIndividualContract.fhasta_pol: undefined)
+          .input('cclasificacion', sql.Char, createIndividualContract.cclasificacion ? createIndividualContract.cclasificacion: undefined)
           // .input('pcasco', sql.Numeric(17, 2), createIndividualContract.pcasco ? createIndividualContract.pcasco: undefined)
           .input('msuma_aseg', sql.Numeric(17, 2), createIndividualContract.msuma_aseg ? createIndividualContract.msuma_aseg: undefined)
           .input('mprima_bruta', sql.Numeric(17, 2), createIndividualContract.mprima_bruta ? createIndividualContract.mprima_bruta: undefined)
@@ -137,10 +150,10 @@ const createIndividualContract = async(createIndividualContract) => {
           .input('msuma_blindaje', sql.Numeric(17, 2), createIndividualContract.msuma_blindaje ? createIndividualContract.msuma_blindaje: undefined)
           .input('mprima_blindaje', sql.Numeric(17, 2), createIndividualContract.mprima_blindaje ? createIndividualContract.mprima_blindaje: undefined)
           .input('xpago', sql.NVarChar, createIndividualContract.xpago ? createIndividualContract.xpago: undefined)
-          .input('femision', sql.DateTime, createIndividualContract.femision ? createIndividualContract.femision: undefined)
+          .input('femision', sql.DateTime, new Date()) 
           .input('cmetodologiapago', sql.Int, createIndividualContract.cmetodologiapago ? createIndividualContract.cmetodologiapago: undefined)
           .input('cpais', sql.Int, createIndividualContract.cpais ? createIndividualContract.cpais: undefined)
-          .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, cmarca, cmodelo, cversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cuso, ctipovehiculo, cclase, cplan_rc, cplan, ccorredor, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @cmarca, @cmodelo, @cversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cuso, @ctipovehiculo, @cclase, @cplan_rc, @cplan, @ccorredor, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais)')
+          .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, xmarca, xmodelo, xversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cplan_rc, ccorredor, ctomador, ccotizacion, cinspeccion, fdesde_pol, fhasta_pol, cclasificacion, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cplan_rc, @ccorredor, @ctomador, @ccotizacion, @cinspeccion, @fdesde_pol, @fhasta_pol, @cclasificacion, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais)')
           await pool.close();
           return { result: { rowsAffected: rowsAffected, status: true } };
   }

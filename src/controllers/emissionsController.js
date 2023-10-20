@@ -145,7 +145,13 @@ const searchPropietary = async (req, res) => {
                 message: propietary.error
             });
     }
-    return res
+    if (!propietary[0]) {
+        return res.status(500).send({
+          status: false,
+        });
+    }else{
+        console.log(propietary[0])
+        return res
         .status(200)
         .send({
             status: true,
@@ -159,6 +165,8 @@ const searchPropietary = async (req, res) => {
                 xdireccion: propietary[0].xdireccion,
             }
         });
+    }
+
 }
 
 const searchVehicle = async (req, res) => {
