@@ -150,7 +150,6 @@ const searchPropietary = async (req, res) => {
           status: false,
         });
     }else{
-        console.log(propietary[0])
         return res
         .status(200)
         .send({

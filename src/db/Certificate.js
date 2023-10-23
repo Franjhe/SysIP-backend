@@ -166,20 +166,6 @@ const getBroker = async(ccorredor) => {
     }
 }
 
-const getPlanArys = async(cplan) => {
-    try{
-         let pool = await sql.connect(sqlConfig);
-         let result = await pool.request()
-             .input('cplan', sql.Int, cplan)
-             .query('select * from POPLAN where CPLAN = @cplan');
-         //sql.close();
-         await pool.close();
-         return { result: result };
-     }catch(err){
-         return { error: err.message };
-     }
- }
-
  const getFleetContractAccesoriesQuery = async(ccontratoflota) => {
     try{ 
         let pool = await sql.connect(sqlConfig);
@@ -228,7 +214,6 @@ export default {
     getPlanCoverages,
     getFleetContractServices,
     getBroker,
-    getPlanArys,
     getFleetContractAccesoriesQuery,
     getPolicyEffectiveDateQuery,
     getCoverageAnnexesQuery
