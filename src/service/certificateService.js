@@ -15,6 +15,30 @@ const detailCertificateCertificate = async (searchDetail) => {
     let getFleetContractData = await Certificate.getFleetContractDataQuery(searchDetail).then((res) => res);
     if(getFleetContractData.error){ return { status: false, code: 500, message: getFleetContractData.error }; }
     if(getFleetContractData.result.rowsAffected > 0){
+    let getFleetContractReceiptData = await Certificate.getFleetContractReceiptData(searchDetail).then((res) => res);
+    let receiptList = [];
+    if (getFleetContractReceiptData.result.rowsAffected > 0) {
+        for (let i = 0; i < getFleetContractReceiptData.result.recordset.length; i++) {
+            // Convierte las fechas a formato "dd/mm/yyyy"
+            const fdesdeRec = new Date(getFleetContractReceiptData.result.recordset[i].FDESDE_REC);
+            const fhastaRec = new Date(getFleetContractReceiptData.result.recordset[i].FHASTA_REC);
+    
+            const dd_mm_yyyy_format = (date) => {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Suma 1 al mes, ya que los meses en JavaScript van de 0 a 11.
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            };
+    
+            receiptList.push({
+                crecibo: getFleetContractReceiptData.result.recordset[i].CRECIBO,
+                fdesde_rec: dd_mm_yyyy_format(fdesdeRec),
+                fhasta_rec: dd_mm_yyyy_format(fhastaRec),
+                xmoneda: getFleetContractReceiptData.result.recordset[i].xmoneda,
+                mprima: getFleetContractReceiptData.result.recordset[i].MPRIMA_ANUAL,
+            });
+        }
+    }
     let getFleetContractOwnerData = await Certificate.getFleetContractOwnerDataQuery(searchDetail, getFleetContractData.result.recordset[0].CPROPIETARIO).then((res) => res);
         if(getFleetContractOwnerData.error){console.log(getFleetContractOwnerData.error); return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
         let telefonopropietario;
@@ -203,6 +227,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             services:services,
             realCoverages: realCoverages,
             coverageAnnexes: coverageAnnexes,
+            receipt: receiptList,
             fdesde_pol: getPolicyEffectiveDate.result.recordset[0].FDESDE_POL,
             fhasta_pol: getPolicyEffectiveDate.result.recordset[0].FHASTA_POL
         }
