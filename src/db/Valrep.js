@@ -9,7 +9,6 @@ const Departament = sequelize.define('sedepartamento', {}, { tableName: 'sedepar
 const Users = sequelize.define('seusuariosweb', {}, { tableName: 'seusuariosweb' });
 const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
 const Park = sequelize.define('np_parques', {});
-const Brand = sequelize.define('MAMARCA_WEB', {}, { tableName: 'MAMARCA_WEB' });
 const Color = sequelize.define('MACOLOR_WEB', {}, { tableName: 'MACOLOR_WEB' });
 const Rates = sequelize.define('PRTARIFA_EXCESO', {}, { tableName: 'PRTARIFA_EXCESO' });
 const TypeVehicle = sequelize.define('MATIPOVEHICULO', {}, { tableName: 'MATIPOVEHICULO' });
@@ -18,6 +17,7 @@ const Class = sequelize.define('MACLASES_WEB', {}, { tableName: 'MACLASES_WEB' }
 const Plan = sequelize.define('PRPLAN_RC', {}, { tableName: 'PRPLAN_RC' });
 const Accesories = sequelize.define('MAACCESORIOS', {});
 const Payment = sequelize.define('MAMETODOLOGIAPAGO', {}, { tableName: 'MAMETODOLOGIAPAGO' });
+const Takers = sequelize.define('MATOMADORES', {});
 
 const Rol = sequelize.define('serol', {
   crol: {
@@ -102,41 +102,55 @@ const City = sequelize.define('maciudades', {
     allowNull: false,
   },
 },);
-const Model = sequelize.define('MAMODELO_WEB', {
-  cmodelo: {
+
+const Brand = sequelize.define('mainma', {  
+  qano: {
     type: Sequelize.INTEGER,
-    primaryKey: true,
     allowNull: false,
   },
-  cmarca: {
+  xmarca: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+}, { tableName: 'mainma' });
+
+const Model = sequelize.define('mainma', {
+  qano: {
     type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  xmarca: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
   xmodelo: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-}, { tableName: 'MAMODELO_WEB' });
+}, { tableName: 'mainma' });
 
-const Version = sequelize.define('MAVERSION_WEB', {
-  cversion: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    allowNull: false,
-  },
-  cmarca: {
+const Version = sequelize.define('mainma', {
+  qano: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  cmodelo: {
-    type: Sequelize.INTEGER,
+  xmarca: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  xmodelo: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
   xversion: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-}, { tableName: 'MAVERSION_WEB' });
+  npasajero: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+}, { tableName: 'mainma' });
 
 
 
@@ -308,10 +322,11 @@ const getCity = async (getCity) => {
   }
 };
 
-const getBrand = async () => {
+const getBrand = async (getBrand) => {
   try {
     const marca = await Brand.findAll({
-      attributes: ['cmarca', 'xmarca'],
+      where: getBrand,
+      attributes: [[sequelize.fn('DISTINCT', sequelize.col('xmarca')), 'xmarca']]
     });
     const brand = marca.map((item) => item.get({ plain: true }));
     return brand;
@@ -324,7 +339,7 @@ const getModel = async (getModel) => {
   try {
     const modelo = await Model.findAll({
       where: getModel,
-      attributes: ['cmodelo', 'xmodelo'],
+      attributes: [[sequelize.fn('DISTINCT', sequelize.col('xmodelo')), 'xmodelo']]
     });
     const model = modelo.map((item) => item.get({ plain: true }));
     return model;
@@ -337,7 +352,7 @@ const getVersion = async (getVersion) => {
   try {
     const versions = await Version.findAll({
       where: getVersion,
-      attributes: ['cversion', 'xversion', 'npasajero', 'cano'],
+      attributes: ['xversion', 'npasajero', 'xclasificacion', 'id'],
     });
     const version = versions.map((item) => item.get({ plain: true }));
     return version;
@@ -441,6 +456,18 @@ const getMethodOfPayment = async () => {
     return { error: error.message };
   }
 };
+
+const getTakers = async () => {
+  try {
+    const tomador = await Takers.findAll({
+      attributes: ['ctomador', 'xtomador'],
+    });
+    const takers = tomador.map((item) => item.get({ plain: true }));
+    return takers;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
   
   
 export default {
@@ -467,5 +494,6 @@ export default {
   getClass,
   getPlan,
   getAccesories,
-  getMethodOfPayment
+  getMethodOfPayment,
+  getTakers
 };

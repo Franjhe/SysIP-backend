@@ -127,9 +127,84 @@ const searchAllContract = async (req, res) => {
         });
 }
 
+const searchPropietary = async (req, res) => {
+    const propietary = await emissionsService.searchPropietary(req.body);
+    if (propietary.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: propietary.permissionError
+            });
+    }
+    if (propietary.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: propietary.error
+            });
+    }
+    if (!propietary[0]) {
+        return res.status(500).send({
+          status: false,
+        });
+    }else{
+        return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                xnombre: propietary[0].xnombre,
+                xapellido: propietary[0].xapellido,
+                xtelefono_emp: propietary[0].xtelefonocasa,
+                email: propietary[0].xemail,
+                cestado: propietary[0].cestado,
+                cciudad: propietary[0].cciudad,
+                xdireccion: propietary[0].xdireccion,
+            }
+        });
+    }
+
+}
+
+const searchVehicle = async (req, res) => {
+    const vehicle = await emissionsService.searchVehicle(req.body);
+    if (vehicle.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: vehicle.permissionError
+            });
+    }
+    if (vehicle.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: vehicle.error
+            });
+    }
+    if (vehicle[0]) {
+        return res.status(200).send({
+          status: true,
+          message:
+            'Lo sentimos, la placa ingresada ya se encuentra registrada en nuestro sistema. Por favor, verifique la información o comuníquese con nuestro servicio de atención al cliente para obtener asistencia adicional.',
+        });
+    }
+    return res
+        .status(200)
+        .send({
+            status: false
+        });
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
     createIndividualContract,
-    searchAllContract
+    searchAllContract,
+    searchPropietary,
+    searchVehicle
 }

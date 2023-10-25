@@ -60,11 +60,33 @@ const searchAllContract = async (searchAllContract) => {
     return result;
 }
 
+const searchPropietary = async (searchPropietary) => {
+    const propietary = await Emissions.searchPropietary(searchPropietary);
+    if (propietary.error) {
+        return {
+            error: propietary.error
+        }
+    }
+    return propietary;
+}
+
+const searchVehicle = async (searchVehicle) => {
+    const vehicle = await Emissions.searchVehicle(searchVehicle);
+    if (vehicle.error) {
+        return {
+            error: vehicle.error
+        }
+    }
+    return vehicle;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
     executePremiumAmount,
     createIndividualContract,
     searchContractIndividual,
-    searchAllContract
+    searchAllContract,
+    searchPropietary,
+    searchVehicle
 }

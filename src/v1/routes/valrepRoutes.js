@@ -30,5 +30,6 @@ router
     .post("/plan", authenticate, valrepController.getPlan)
     .post("/accesories", authenticate, valrepController.getAccesories)
     .post("/method-of-payment", authenticate, valrepController.getMethodOfPayment)
+    .post("/takers", authenticate, valrepController.getTakers)
 
 export default router;

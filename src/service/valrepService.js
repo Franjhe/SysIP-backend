@@ -130,8 +130,8 @@ const getCity = async (getCity) => {
     return city;
 }
 
-const getBrand = async () => {
-    const brand = await Valrep.getBrand();
+const getBrand = async (getBrand) => {
+    const brand = await Valrep.getBrand(getBrand);
     if (brand.error) {
         return {
             error: brand.error
@@ -240,6 +240,16 @@ const getMethodOfPayment = async () => {
     return payment;
 }
 
+const getTakers = async () => {
+    const takers = await Valrep.getTakers();
+    if (takers.error) {
+        return {
+            error: takers.error
+        }
+    }
+    return takers;
+}
+
 export default {
     getTrade,
     getCoin,
@@ -264,5 +274,6 @@ export default {
     getClass,
     getPlan,
     getAccesories,
-    getMethodOfPayment
+    getMethodOfPayment,
+    getTakers
 }

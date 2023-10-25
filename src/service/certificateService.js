@@ -15,6 +15,30 @@ const detailCertificateCertificate = async (searchDetail) => {
     let getFleetContractData = await Certificate.getFleetContractDataQuery(searchDetail).then((res) => res);
     if(getFleetContractData.error){ return { status: false, code: 500, message: getFleetContractData.error }; }
     if(getFleetContractData.result.rowsAffected > 0){
+    let getFleetContractReceiptData = await Certificate.getFleetContractReceiptData(searchDetail).then((res) => res);
+    let receiptList = [];
+    if (getFleetContractReceiptData.result.rowsAffected > 0) {
+        for (let i = 0; i < getFleetContractReceiptData.result.recordset.length; i++) {
+            // Convierte las fechas a formato "dd/mm/yyyy"
+            const fdesdeRec = new Date(getFleetContractReceiptData.result.recordset[i].FDESDE_REC);
+            const fhastaRec = new Date(getFleetContractReceiptData.result.recordset[i].FHASTA_REC);
+    
+            const dd_mm_yyyy_format = (date) => {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Suma 1 al mes, ya que los meses en JavaScript van de 0 a 11.
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            };
+    
+            receiptList.push({
+                crecibo: getFleetContractReceiptData.result.recordset[i].CRECIBO,
+                fdesde_rec: dd_mm_yyyy_format(fdesdeRec),
+                fhasta_rec: dd_mm_yyyy_format(fhastaRec),
+                xmoneda: getFleetContractReceiptData.result.recordset[i].xmoneda,
+                mprima: getFleetContractReceiptData.result.recordset[i].MPRIMA_ANUAL,
+            });
+        }
+    }
     let getFleetContractOwnerData = await Certificate.getFleetContractOwnerDataQuery(searchDetail, getFleetContractData.result.recordset[0].CPROPIETARIO).then((res) => res);
         if(getFleetContractOwnerData.error){console.log(getFleetContractOwnerData.error); return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
         let telefonopropietario;
@@ -29,12 +53,12 @@ const detailCertificateCertificate = async (searchDetail) => {
         let inspections = [];
         let mprimatotal = 0;
         let mprimaprorratatotal = 0; 
-        let getPlanData = await Certificate.getPlanData(getFleetContractData.result.recordset[0].CPLAN);
+        let getPlanData = await Certificate.getPlanData(getFleetContractData.result.recordset[0].CPLAN_RC);
         if(getPlanData.error){ return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
         if(getPlanData.result.rowsAffected < 0){ console.log(getPlanData.error); return { status: false, code: 404, message: 'Fleet Contract Plan not found.' }; }
         let realCoverages = [];
         let coverageAnnexes = [];
-        let getPlanCoverages = await Certificate.getPlanCoverages(getFleetContractData.result.recordset[0].CPLAN, getFleetContractData.result.recordset[0].CCONTRATOFLOTA);
+        let getPlanCoverages = await Certificate.getPlanCoverages(getFleetContractData.result.recordset[0].CPLAN_RC, getFleetContractData.result.recordset[0].CCONTRATOFLOTA);
         if(getPlanCoverages.error){ console.log(getPlanCoverages.error); return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
         if(getPlanCoverages.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Plan Coverages not found.' }; }
         for (let i = 0; i < getPlanCoverages.result.recordset.length; i++) {
@@ -90,15 +114,6 @@ const detailCertificateCertificate = async (searchDetail) => {
         let getBroker = await Certificate.getBroker(getFleetContractData.result.recordset[0].ccorredor);
         if(getBroker.error){ console.log(getBroker.error); return { status: false, code: 500, message: getBroker.error }; }
         if(getBroker.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Service not found.' }; }
-
-        let getPlanArysData = await Certificate.getPlanArys(getFleetContractData.result.recordset[0].CPLAN);
-        if(getPlanArysData.error){ console.log(getPlanArysData.error); return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
-        if(getPlanArysData.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Plan Arys not found.' }; }
-        let xplanservicios;
-        if (getPlanArysData.result.recordset[0].XPLAN) {
-            let xplan = getPlanArysData.result.recordset[0].XPLAN.toLowerCase()
-            xplanservicios = xplan.charAt(0).toUpperCase() + xplan.slice(1);
-        }
         let accesories = []
         let getFleetContractAccesories = await Certificate.getFleetContractAccesoriesQuery(searchDetail.ccontratoflota);
         if(getFleetContractAccesories.error){ return { status: false, code: 500, message: getFleetContractAccesories.error }; }
@@ -172,7 +187,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             xtelefonopropietario: getFleetContractOwnerData.result.recordset[0].telefonopropietario,
             cvehiculopropietario: getFleetContractData.result.recordset[0].CVEHICULOPROPIETARIO,
             ctipoplan: getFleetContractData.result.recordset[0].CTIPOPLAN,
-            cplan: getFleetContractData.result.recordset[0].CPLAN,
+            CPLAN_RC: getFleetContractData.result.recordset[0].CPLAN_RC,
             cmetodologiapago: getFleetContractData.result.recordset[0].CMETODOLOGIAPAGO,
             xmetodologiapago: getFleetContractData.result.recordset[0].XMETODOLOGIAPAGO,
             ctiporecibo: getFleetContractData.result.recordset[0].CTIPORECIBO,
@@ -205,7 +220,6 @@ const detailCertificateCertificate = async (searchDetail) => {
             xclase: getFleetContractData.result.recordset[0].XCLASE,
             nkilometraje: getFleetContractData.result.recordset[0].NKILOMETRAJE,
             xzona_postal_propietario: getFleetContractData.result.recordset[0].XZONA_POSTAL_PROPIETARIO,
-            xplanservicios: xplanservicios,
             mprimatotal: mprimatotal,
             mprimaprorratatotal: mprimaprorratatotal,
             accesories: accesories,
@@ -213,6 +227,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             services:services,
             realCoverages: realCoverages,
             coverageAnnexes: coverageAnnexes,
+            receipt: receiptList,
             fdesde_pol: getPolicyEffectiveDate.result.recordset[0].FDESDE_POL,
             fhasta_pol: getPolicyEffectiveDate.result.recordset[0].FHASTA_POL
         }

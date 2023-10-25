@@ -81,6 +81,20 @@ const getFleetContractDataQuery = async (fleetContractData) => {
     }
 }
 
+const getFleetContractReceiptData = async (fleetContractData) => {
+    try{ 
+        let pool = await sql.connect(sqlConfig);
+        let result = await pool.request()
+            .input('ccontratoflota', sql.Int, fleetContractData.ccontratoflota)
+            .query('select * from VWBUSCARRECIBO where CCONTRATOFLOTA = @ccontratoflota');
+        //sql.close();
+        await pool.close();
+        return { result: result };
+    }catch(err){
+        return { error: err.message };
+    }
+}
+
  const getFleetContractOwnerDataQuery = async(fleetContractData, cpropietario) => {
     try{
         let pool = await sql.connect(sqlConfig);
@@ -166,20 +180,6 @@ const getBroker = async(ccorredor) => {
     }
 }
 
-const getPlanArys = async(cplan) => {
-    try{
-         let pool = await sql.connect(sqlConfig);
-         let result = await pool.request()
-             .input('cplan', sql.Int, cplan)
-             .query('select * from POPLAN where CPLAN = @cplan');
-         //sql.close();
-         await pool.close();
-         return { result: result };
-     }catch(err){
-         return { error: err.message };
-     }
- }
-
  const getFleetContractAccesoriesQuery = async(ccontratoflota) => {
     try{ 
         let pool = await sql.connect(sqlConfig);
@@ -222,13 +222,13 @@ const getCoverageAnnexesQuery = async(ccobertura) => {
 export default {
     searchCertificate,
     getFleetContractDataQuery,
+    getFleetContractReceiptData,
     getFleetContractOwnerDataQuery,
     getContractClientData,
     getPlanData,
     getPlanCoverages,
     getFleetContractServices,
     getBroker,
-    getPlanArys,
     getFleetContractAccesoriesQuery,
     getPolicyEffectiveDateQuery,
     getCoverageAnnexesQuery
