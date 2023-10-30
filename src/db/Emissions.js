@@ -182,8 +182,17 @@ const searchAllContract = async (searchAllContract) => {
   try {
     const contratos = await AllContract.findAll({
       where: searchAllContract,
-      attributes: ['ccontratoflota', 'xnombre', 'xapellido', 'xmarca', 'xmodelo', 'xversion', 'xplaca'],
+      attributes: [
+        [Sequelize.literal('DISTINCT ccontratoflota'), 'ccontratoflota'],
+        'xnombre',
+        'xapellido',
+        'xmarca',
+        'xmodelo',
+        'xversion',
+        'xplaca',
+      ],
     });
+
     const result = contratos.map((item) => item.get({ plain: true }));
     return result;
   } catch (error) {
