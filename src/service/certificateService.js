@@ -35,7 +35,7 @@ const detailCertificateCertificate = async (searchDetail) => {
                 fdesde_rec: dd_mm_yyyy_format(fdesdeRec),
                 fhasta_rec: dd_mm_yyyy_format(fhastaRec),
                 xmoneda: getFleetContractReceiptData.result.recordset[i].xmoneda,
-                mprima: getFleetContractReceiptData.result.recordset[i].MPRIMA_ANUAL,
+                mprima: getFleetContractReceiptData.result.recordset[i].MPRIMA_BRUTA_EXT,
             });
         }
     }

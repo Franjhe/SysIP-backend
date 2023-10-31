@@ -19,7 +19,7 @@ const OtherPrice = sequelize.define('MATARIFA_OTROS', {}, { tableName: 'MATARIFA
 const Contract = sequelize.define('SUCONTRATOFLOTA', {}, { tableName: 'SUCONTRATOFLOTA' });
 const AllContract = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableName: 'VWBUSCARSUCONTRATOFLOTADATA' });
 const Propietary = sequelize.define('TRPROPIETARIO', {}, { tableName: 'TRPROPIETARIO' });
-const Vehicle = sequelize.define('TRVEHICULOPROPIETARIO', {}, { tableName: 'TRVEHICULOPROPIETARIO' });
+const Vehicle = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableName: 'VWBUSCARSUCONTRATOFLOTADATA' });
 
 const searchHullPrice = async (searchHullPrice) => {
     try {
@@ -98,9 +98,19 @@ const createIndividualContract = async(createIndividualContract) => {
       let pool = await sql.connect(sqlConfig);
 
       if (createIndividualContract.xtomador) {
+        
         const matomadorResult = await pool.request()
           .input('xtomador', sql.NVarChar, createIndividualContract.xtomador)
-          .query('INSERT INTO MATOMADORES (xtomador) VALUES (@xtomador) SELECT SCOPE_IDENTITY() AS ctomador');
+          .input('xrif', sql.NVarChar, createIndividualContract.xrif_tomador)
+          .input('xcorreo', sql.NVarChar, createIndividualContract.xemail_tomador)
+          .input('cestado', sql.Int, createIndividualContract.cestado_tomador)
+          .input('cciudad', sql.Int, createIndividualContract.cciudad_tomador)
+          .input('xdireccion', sql.NVarChar, createIndividualContract.xdireccion_tomador)
+          .input('xzona_postal', sql.NVarChar, createIndividualContract.xzona_postal_tomador)
+          .input('xtelefono', sql.NVarChar, createIndividualContract.xtelefono_tomador)
+          .input('cpais', sql.Int, 58)
+          .input('cestatusgeneral', sql.Int, 2)
+          .query('INSERT INTO MATOMADORES (xtomador, xrif, xcorreo, cestado, cciudad, xdireccion, xzona_postal, xtelefono, cpais, cestatusgeneral) VALUES (@xtomador, @xrif, @xcorreo, @cestado, @cciudad, @xdireccion, @xzona_postal, @xtelefono, @cpais, @cestatusgeneral) SELECT SCOPE_IDENTITY() AS ctomador');
 
         if (matomadorResult.recordset.length > 0) {
           createIndividualContract.ctomador = matomadorResult.recordset[0].ctomador;
@@ -220,8 +230,11 @@ const searchVehicle = async (searchVehicle) => {
     const vehiculo = await Vehicle.findAll({
       where: {
           xplaca: searchVehicle.xplaca,
+          cestatusgeneral: {
+            [Sequelize.Op.ne]: 3,
+          },
         },
-      attributes: ['cvehiculopropietario'],
+      attributes: ['ccontratoflota'],
     });
     const vehicle = vehiculo.map((item) => item.get({ plain: true }));
     return vehicle;

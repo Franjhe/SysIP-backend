@@ -189,8 +189,7 @@ const searchVehicle = async (req, res) => {
     if (vehicle[0]) {
         return res.status(200).send({
           status: true,
-          message:
-            'Lo sentimos, la placa ingresada ya se encuentra registrada en nuestro sistema. Por favor, verifique la información o comuníquese con nuestro servicio de atención al cliente para obtener asistencia adicional.',
+          message: `Lo sentimos, la placa ingresada ya se encuentra registrada con la póliza N° ${vehicle[0].ccontratoflota}`,
         });
     }
     return res
