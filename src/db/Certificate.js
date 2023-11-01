@@ -219,6 +219,19 @@ const getCoverageAnnexesQuery = async(ccobertura) => {
     }
 }
 
+const getTakersQuery = async(ccontratoflota) => {
+    try{ 
+        let pool = await sql.connect(sqlConfig);
+        let result = await pool.request()
+            .input('ccontratoflota', sql.Int, ccontratoflota)
+            .query('SELECT * FROM VWBUSCARTOMADORESXCONTRATOS WHERE ccontratoflota = @ccontratoflota')
+            await pool.close();
+        return { result: result}
+    }catch(err){
+        return { error: err.message };
+    }
+}
+
 export default {
     searchCertificate,
     getFleetContractDataQuery,
@@ -231,5 +244,6 @@ export default {
     getBroker,
     getFleetContractAccesoriesQuery,
     getPolicyEffectiveDateQuery,
-    getCoverageAnnexesQuery
+    getCoverageAnnexesQuery,
+    getTakersQuery
 }

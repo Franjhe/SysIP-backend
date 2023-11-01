@@ -131,6 +131,10 @@ const detailCertificateCertificate = async (searchDetail) => {
         let getPolicyEffectiveDate = await Certificate.getPolicyEffectiveDateQuery(searchDetail.ccontratoflota);
         if(getPolicyEffectiveDate.error){ return { status: false, code: 500, message: getPolicyEffectiveDate.error }; }
         if(getPolicyEffectiveDate.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Receipts not found.' }; }
+
+        let getTakers = await Certificate.getTakersQuery(searchDetail.ccontratoflota);
+        if(getTakers.error){ return { status: false, code: 500, message: getTakers.error }; }
+        if(getTakers.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Receipts not found.' }; }
         return {
             status: true,
             ccarga: getFleetContractData.result.recordset[0].ccarga,
@@ -208,15 +212,14 @@ const detailCertificateCertificate = async (searchDetail) => {
             ncapacidadcargavehiculo: getFleetContractData.result.recordset[0].NCAPACIDADCARGA,
             ncapacidadpasajerosvehiculo: getFleetContractData.result.recordset[0].NCAPACIDADPASAJEROS,
             xplancoberturas: getPlanData.result.recordset[0].XPLAN_RC,
-            xtomador: getFleetContractData.result.recordset[0].XTOMADOR,
-            xprofesion: getFleetContractData.result.recordset[0].XPROFESION,
-            xrif: getFleetContractData.result.recordset[0].XRIF,
-            xdomicilio: getFleetContractData.result.recordset[0].XDOMICILIO,
-            xzona_postal: getFleetContractData.result.recordset[0].XZONA_POSTAL,
-            xtelefono: getFleetContractData.result.recordset[0].XTELEFONO,
-            xcorreo: getFleetContractData.result.recordset[0].XCORREO,
-            xestado: getFleetContractClientData.result.recordset[0].XESTADO,
-            xciudad: getFleetContractClientData.result.recordset[0].XCIUDAD,
+            xtomador: getTakers.result.recordset[0].XTOMADOR,
+            xrif_tomador: getTakers.result.recordset[0].XRIF,
+            xdireccion_tomador: getTakers.result.recordset[0].XDIRECCION,
+            xzona_postal_tomador: getTakers.result.recordset[0].XZONA_POSTAL,
+            xtelefono_tomador: getTakers.result.recordset[0].XTELEFONO,
+            xcorreo_tomador: getTakers.result.recordset[0].XCORREO,
+            xestado_tomador: getTakers.result.recordset[0].XESTADO,
+            xciudad_tomador: getTakers.result.recordset[0].XCIUDAD,
             xclase: getFleetContractData.result.recordset[0].XCLASE,
             nkilometraje: getFleetContractData.result.recordset[0].NKILOMETRAJE,
             xzona_postal_propietario: getFleetContractData.result.recordset[0].XZONA_POSTAL_PROPIETARIO,
