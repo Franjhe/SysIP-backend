@@ -18,18 +18,13 @@ const searchHullPrice = async (req, res) => {
                 message: result.error
             });
     }
-    const rates = await emissionsService.searchOtherPrice(req.body);
-    let jsonList = [];
-    for(let i = 0; i < rates.length; i++){
-        jsonList.push({ptarifa: rates[i].ptarifa});
-    }
+    console.log(result)
     return res
         .status(200)
         .send({
             status: true,
             data: {
                 ptasa_casco: result,
-                ptarifa: jsonList,
             }
         });
 }
