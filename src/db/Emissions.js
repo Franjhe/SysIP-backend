@@ -22,21 +22,17 @@ const Propietary = sequelize.define('TRPROPIETARIO', {}, { tableName: 'TRPROPIET
 const Vehicle = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableName: 'VWBUSCARSUCONTRATOFLOTADATA' });
 
 const searchHullPrice = async (searchHullPrice) => {
-    try {
-      const clasificacion = await Price.findAll({
-        where: { xtipo: searchHullPrice.xtipovehiculo, 
-                 xclase: searchHullPrice.xclase, 
-                 cano: searchHullPrice.cano 
-                },
-        attributes: ['pcobertura_amplia'],
-      });
-      const result = clasificacion.map((item) => item.get({ plain: true }));
-      return result
-    } catch (error) {
-      console.log(error.message)
-      return { error: error.message };
-    }
-  };
+  try {
+    const clasificacion = await Price.findAll({
+      where: searchHullPrice,
+      attributes: ['pcobertura_amplia'],
+    });
+    const result = clasificacion.map((item) => item.get({ plain: true }));
+    return result;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
 
   const searchOtherPrice = async (searchOtherPrice) => {
     try {

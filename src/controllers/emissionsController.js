@@ -18,13 +18,12 @@ const searchHullPrice = async (req, res) => {
                 message: result.error
             });
     }
-    console.log(result)
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                ptasa_casco: result,
+                ptasa_casco: result[0].pcobertura_amplia, 
             }
         });
 }
