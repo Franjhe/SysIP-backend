@@ -4,7 +4,7 @@ import sequelize from '../config/database.js';
 const Trade = sequelize.define('maramos', {});
 const Coin = sequelize.define('mamonedas', {});
 const Client = sequelize.define('maclient', {}, { tableName: 'maclient' });
-const Broker = sequelize.define('macorredores', {});
+const Broker = sequelize.define('MACORREDORES_WEB', {}, { tableName: 'MACORREDORES_WEB' });
 const Departament = sequelize.define('sedepartamento', {}, { tableName: 'sedepartamento' });
 const Users = sequelize.define('seusuariosweb', {}, { tableName: 'seusuariosweb' });
 const MainMenu = sequelize.define('semenuprincipal', {}, { tableName: 'semenuprincipal' });
@@ -193,7 +193,7 @@ const getClient = async () => {
 const getBrokers = async () => {
   try {
     const broker = await Broker.findAll({
-      attributes: ['ccorredor', 'xdescripcion_l'],
+      attributes: ['ccorredor', 'xcorredor'],
     });
     const brokers = broker.map((item) => item.get({ plain: true }));
     return brokers;

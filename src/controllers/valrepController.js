@@ -102,9 +102,6 @@ const getBrokers = async (req, res) => {
                 message: brokers.error
             });
     }
-    brokers.forEach((item) => {
-        item.xdescripcion_l = item.xdescripcion_l.trim();
-    });
     return res
         .status(200)
         .send({

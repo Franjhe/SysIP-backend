@@ -133,8 +133,19 @@ const detailCertificateCertificate = async (searchDetail) => {
         if(getPolicyEffectiveDate.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Receipts not found.' }; }
 
         let getTakers = await Certificate.getTakersQuery(searchDetail.ccontratoflota);
+        let xtomador; let xrif_tomador; let xdireccion_tomador; let xzona_postal_tomador; let xtelefono_tomador; let xcorreo_tomador;
+        let xestado_tomador; let xciudad_tomador;
         if(getTakers.error){ return { status: false, code: 500, message: getTakers.error }; }
-        if(getTakers.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Receipts not found.' }; }
+        if(getTakers.result.rowsAffected > 0){ 
+            xtomador = getTakers.result.recordset[0].XTOMADOR
+            xrif_tomador = getTakers.result.recordset[0].XRIF
+            xdireccion_tomador = getTakers.result.recordset[0].XDIRECCION
+            xzona_postal_tomador = getTakers.result.recordset[0].XZONA_POSTAL
+            xtelefono_tomador = getTakers.result.recordset[0].XTELEFONO
+            xcorreo_tomador = getTakers.result.recordset[0].XCORREO
+            xestado_tomador = getTakers.result.recordset[0].XESTADO
+            xciudad_tomador = getTakers.result.recordset[0].XCIUDAD
+        }
         return {
             status: true,
             ccarga: getFleetContractData.result.recordset[0].ccarga,
@@ -212,14 +223,14 @@ const detailCertificateCertificate = async (searchDetail) => {
             ncapacidadcargavehiculo: getFleetContractData.result.recordset[0].NCAPACIDADCARGA,
             ncapacidadpasajerosvehiculo: getFleetContractData.result.recordset[0].NCAPACIDADPASAJEROS,
             xplancoberturas: getPlanData.result.recordset[0].XPLAN_RC,
-            xtomador: getTakers.result.recordset[0].XTOMADOR,
-            xrif_tomador: getTakers.result.recordset[0].XRIF,
-            xdireccion_tomador: getTakers.result.recordset[0].XDIRECCION,
-            xzona_postal_tomador: getTakers.result.recordset[0].XZONA_POSTAL,
-            xtelefono_tomador: getTakers.result.recordset[0].XTELEFONO,
-            xcorreo_tomador: getTakers.result.recordset[0].XCORREO,
-            xestado_tomador: getTakers.result.recordset[0].XESTADO,
-            xciudad_tomador: getTakers.result.recordset[0].XCIUDAD,
+            xtomador: xtomador,
+            xrif_tomador: xrif_tomador,
+            xdireccion_tomador: xdireccion_tomador,
+            xzona_postal_tomador: xzona_postal_tomador,
+            xtelefono_tomador: xtelefono_tomador,
+            xcorreo_tomador: xcorreo_tomador,
+            xestado_tomador: xestado_tomador,
+            xciudad_tomador: xciudad_tomador,
             xclase: getFleetContractData.result.recordset[0].XCLASE,
             nkilometraje: getFleetContractData.result.recordset[0].NKILOMETRAJE,
             xzona_postal_propietario: getFleetContractData.result.recordset[0].XZONA_POSTAL_PROPIETARIO,
