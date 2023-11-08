@@ -193,7 +193,7 @@ const getClient = async () => {
 const getBrokers = async () => {
   try {
     const broker = await Broker.findAll({
-      attributes: ['ccorredor', 'xcorredor'],
+      attributes: ['cproductor', 'xintermediario'],
     });
     const brokers = broker.map((item) => item.get({ plain: true }));
     return brokers;
