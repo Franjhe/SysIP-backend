@@ -172,7 +172,7 @@ const getBroker = async(ccorredor) => {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
         .input('ccorredor', sql.Int, ccorredor)
-        .query('select * from macorredores where ccorredor = @ccorredor');
+        .query('select * from MACORREDORES_WEB where cproductor = @ccorredor');
         await pool.close();
         return { result: result }
     }catch(err){
