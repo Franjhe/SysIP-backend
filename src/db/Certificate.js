@@ -144,7 +144,7 @@ const getPlanCoverages = async(cplan, ccontratoflota) => {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
             .input('ccontratoflota', sql.Int, ccontratoflota)
-            .query('select * from VWBUSCARCOBERTURASXCONTRATOFLOTA where ccontratoflota = @ccontratoflota');
+            .query('select * from VWBUSCARCOBERTURASXCONTRATOFLOTA where ccontratoflota = @ccontratoflota ORDER BY CORDEN');
         //sql.close();
         await pool.close();
         return { result: result };
