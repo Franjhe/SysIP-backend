@@ -75,6 +75,15 @@ const createIndividualContract = async (req, res) => {
             });
     }
     const contract = await emissionsService.searchContractIndividual();
+    const resultArys = await emissionsService.createIndividualContractArys(req.body);
+    if (resultArys.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: resultArys.error
+            });
+    }
     return res
         .status(200)
         .send({
