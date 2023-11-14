@@ -400,7 +400,7 @@ const getTypeVehicle = async () => {
 const getUtility = async () => {
   try {
     const uso = await Utility.findAll({
-      attributes: ['cuso', 'xuso'],
+      attributes: ['cuso', 'xuso', 'precargo'],
     });
     const utility = uso.map((item) => item.get({ plain: true }));
     return utility;

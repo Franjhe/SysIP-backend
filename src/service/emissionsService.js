@@ -51,15 +51,15 @@ const searchContractIndividual = async () => {
     return contract;
 }
 
-const createIndividualContractArys = async (createIndividualContract) => {
-    const result = await Emissions.createIndividualContractArys(createIndividualContract);
-    if (result.error) {
-        return {
-            error: result.error
-        }
-    }
-    return result;
-}
+// const createIndividualContractArys = async (createIndividualContract) => {
+//     const result = await Emissions.createIndividualContractArys(createIndividualContract);
+//     if (result.error) {
+//         return {
+//             error: result.error
+//         }
+//     }
+//     return result;
+// }
 
 const searchAllContract = async (searchAllContract) => {
     const result = await Emissions.searchAllContract(searchAllContract);
@@ -100,5 +100,5 @@ export default {
     searchAllContract,
     searchPropietary,
     searchVehicle,
-    createIndividualContractArys
+    // createIndividualContractArys
 }
