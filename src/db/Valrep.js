@@ -18,6 +18,9 @@ const Plan = sequelize.define('PRPLAN_RC', {}, { tableName: 'PRPLAN_RC' });
 const Accesories = sequelize.define('MAACCESORIOS', {});
 const Payment = sequelize.define('MAMETODOLOGIAPAGO', {}, { tableName: 'MAMETODOLOGIAPAGO' });
 const Takers = sequelize.define('MATOMADORES', {});
+const TypeOfPayment = sequelize.define('MATIPOPAGO', {}, { tableName: 'MATIPOPAGO' });
+const Bank = sequelize.define('MABANCO', {}, { tableName: 'MABANCO' });
+const TargetBank = sequelize.define('MABANCO_DESTINO', {}, { tableName: 'MABANCO_DESTINO' });
 
 const Rol = sequelize.define('serol', {
   crol: {
@@ -469,7 +472,43 @@ const getTakers = async () => {
   }
 };
   
-  
+const getTypeOfPayment = async () => {
+  try {
+    const TipoPago = await TypeOfPayment.findAll({
+      attributes: ['ctipopago', 'xtipopago'],
+    });
+    const typePayment = TipoPago.map((item) => item.get({ plain: true }));
+    return typePayment;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getBank = async () => {
+  try {
+    const banco = await Bank.findAll({
+      attributes: ['cbanco', 'xbanco'],
+    });
+    const bank = banco.map((item) => item.get({ plain: true }));
+    return bank;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+const getTargetBank = async (getTargetBank) => {
+  try {
+    const destino = await TargetBank.findAll({
+      where: getTargetBank,
+      attributes: ['cbanco_destino', 'xbanco'],
+    });
+    const targetBank = destino.map((item) => item.get({ plain: true }));
+    return targetBank;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
 export default {
   getTrade,
   getCoin,
@@ -495,5 +534,8 @@ export default {
   getPlan,
   getAccesories,
   getMethodOfPayment,
-  getTakers
+  getTakers,
+  getTypeOfPayment,
+  getBank,
+  getTargetBank
 };

@@ -250,6 +250,36 @@ const getTakers = async () => {
     return takers;
 }
 
+const getTypeOfPayment = async () => {
+    const typePayment = await Valrep.getTypeOfPayment();
+    if (typePayment.error) {
+        return {
+            error: typePayment.error
+        }
+    }
+    return typePayment;
+}
+
+const getBank = async () => {
+    const bank = await Valrep.getBank();
+    if (bank.error) {
+        return {
+            error: bank.error
+        }
+    }
+    return bank;
+}
+
+const getTargetBank = async (getTargetBank) => {
+    const targetBank = await Valrep.getTargetBank(getTargetBank);
+    if (targetBank.error) {
+        return {
+            error: targetBank.error
+        }
+    }
+    return targetBank;
+}
+
 export default {
     getTrade,
     getCoin,
@@ -275,5 +305,8 @@ export default {
     getPlan,
     getAccesories,
     getMethodOfPayment,
-    getTakers
+    getTakers,
+    getTypeOfPayment,
+    getBank,
+    getTargetBank
 }

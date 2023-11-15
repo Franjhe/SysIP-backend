@@ -706,6 +706,91 @@ const getTakers = async (req, res) => {
         });
 }
 
+const getTypeOfPayment = async (req, res) => {
+    const typePayment = await valrepService.getTypeOfPayment();
+    if (typePayment.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: typePayment.permissionError
+            });
+    }
+    if (typePayment.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: typePayment.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                typePayment: typePayment
+            }
+        });
+}
+
+const getBank = async (req, res) => {
+    const bank = await valrepService.getBank();
+    if (bank.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: bank.permissionError
+            });
+    }
+    if (bank.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: bank.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                bank: bank
+            }
+        });
+}
+
+const getTargetBank = async (req, res) => {
+    const targetBank = await valrepService.getTargetBank(req.body);
+    if (targetBank.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: targetBank.permissionError
+            });
+    }
+    if (targetBank.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: targetBank.error
+            });
+    }
+    console.log(targetBank)
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                targetBank: targetBank
+            }
+        });
+}
+
 export default {
     getTrade,
     getCoin,
@@ -731,5 +816,8 @@ export default {
     getPlan,
     getAccesories,
     getMethodOfPayment,
-    getTakers
+    getTakers,
+    getTypeOfPayment,
+    getBank,
+    getTargetBank
 }

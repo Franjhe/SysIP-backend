@@ -46,6 +46,7 @@ const executePremiumAmount = async (req, res) => {
                 message: result.error
             });
     }
+    console.log(result.result.recordset[0].MPRIMA)
     return res
         .status(200)
         .send({
