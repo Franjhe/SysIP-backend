@@ -114,7 +114,7 @@ const getFleetContractReceiptData = async (fleetContractData) => {
 const getContractClientData = async(ccliente) => {
     try{
         let pool = await sql.connect(sqlConfig);
-        let result = await pool.request()
+        let result = await pool.request() 
             .input('ccliente', sql.Int, ccliente)
             .query('select * from VWBUSCARCLIENTEXCONTRATOFLOTADATA where CCLIENTE = @ccliente');
         //sql.close();

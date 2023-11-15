@@ -188,125 +188,125 @@ const createIndividualContract = async(createIndividualContract) => {
   }
 }
 
-const createIndividualContractArys = async(createIndividualContract) => {
-  console.log(createIndividualContract)
-  try{
-      let rowsAffected = 0;
-      let pool = await sql.connect(sqlConfigArys);
+// const createIndividualContractArys = async(createIndividualContract) => {
+//   console.log(createIndividualContract)
+//   try{
+//       let rowsAffected = 0;
+//       let pool = await sql.connect(sqlConfigArys);
 
-      if (createIndividualContract.xtomador) {
+//       if (createIndividualContract.xtomador) {
         
-        const matomadorResult = await pool.request()
-          .input('xtomador', sql.NVarChar, createIndividualContract.xtomador.toUpperCase())
-          .input('xrif', sql.NVarChar, createIndividualContract.xrif_tomador.toUpperCase())
-          .input('xcorreo', sql.NVarChar, createIndividualContract.xemail_tomador.toUpperCase())
-          .input('cestado', sql.Int, createIndividualContract.cestado_tomador)
-          .input('cciudad', sql.Int, createIndividualContract.cciudad_tomador)
-          .input('xdireccion', sql.NVarChar, createIndividualContract.xdireccion_tomador.toUpperCase())
-          .input('xzona_postal', sql.NVarChar, createIndividualContract.xzona_postal_tomador.toUpperCase())
-          .input('xtelefono', sql.NVarChar, createIndividualContract.xtelefono_tomador)
-          .input('cpais', sql.Int, 58)
-          .input('cestatusgeneral', sql.Int, 2)
-          .query('INSERT INTO MATOMADORES (xtomador, xrif, xcorreo, cestado, cciudad, xdireccion, xzona_postal, xtelefono, cpais, cestatusgeneral) VALUES (@xtomador, @xrif, @xcorreo, @cestado, @cciudad, @xdireccion, @xzona_postal, @xtelefono, @cpais, @cestatusgeneral) SELECT SCOPE_IDENTITY() AS ctomador');
+//         const matomadorResult = await pool.request()
+//           .input('xtomador', sql.NVarChar, createIndividualContract.xtomador.toUpperCase())
+//           .input('xrif', sql.NVarChar, createIndividualContract.xrif_tomador.toUpperCase())
+//           .input('xcorreo', sql.NVarChar, createIndividualContract.xemail_tomador.toUpperCase())
+//           .input('cestado', sql.Int, createIndividualContract.cestado_tomador)
+//           .input('cciudad', sql.Int, createIndividualContract.cciudad_tomador)
+//           .input('xdireccion', sql.NVarChar, createIndividualContract.xdireccion_tomador.toUpperCase())
+//           .input('xzona_postal', sql.NVarChar, createIndividualContract.xzona_postal_tomador.toUpperCase())
+//           .input('xtelefono', sql.NVarChar, createIndividualContract.xtelefono_tomador)
+//           .input('cpais', sql.Int, 58)
+//           .input('cestatusgeneral', sql.Int, 2)
+//           .query('INSERT INTO MATOMADORES (xtomador, xrif, xcorreo, cestado, cciudad, xdireccion, xzona_postal, xtelefono, cpais, cestatusgeneral) VALUES (@xtomador, @xrif, @xcorreo, @cestado, @cciudad, @xdireccion, @xzona_postal, @xtelefono, @cpais, @cestatusgeneral) SELECT SCOPE_IDENTITY() AS ctomador');
 
-        if (matomadorResult.recordset.length > 0) {
-          createIndividualContract.ctomador = matomadorResult.recordset[0].ctomador;
-        }
-      }
+//         if (matomadorResult.recordset.length > 0) {
+//           createIndividualContract.ctomador = matomadorResult.recordset[0].ctomador;
+//         }
+//       }
 
-      let cmarcaValue;
-      let cmodeloValue;
-      let cversionValue;
+//       let cmarcaValue;
+//       let cmodeloValue;
+//       let cversionValue;
 
-      if(createIndividualContract.xmarca){
-        const getCmarcaResult = await pool
-        .request()
-        .input('xmarca', sql.NVarChar, createIndividualContract.xmarca.toUpperCase())
-        .query('SELECT cmarca FROM MAMARCA WHERE xmarca = @xmarca');
+//       if(createIndividualContract.xmarca){
+//         const getCmarcaResult = await pool
+//         .request()
+//         .input('xmarca', sql.NVarChar, createIndividualContract.xmarca.toUpperCase())
+//         .query('SELECT cmarca FROM MAMARCA WHERE xmarca = @xmarca');
     
-        cmarcaValue = getCmarcaResult.recordset.length > 0 ? getCmarcaResult.recordset[0].cmarca : undefined;
-      }
+//         cmarcaValue = getCmarcaResult.recordset.length > 0 ? getCmarcaResult.recordset[0].cmarca : undefined;
+//       }
       
-      if(createIndividualContract.xmodelo){
-        const getCmodeloResult = await pool
-        .request()
-        .input('xmodelo', sql.NVarChar, createIndividualContract.xmodelo.toUpperCase())
-        .input('cmarca', sql.Int, cmarcaValue)
-        .query('SELECT cmodelo FROM MAMODELO WHERE xmodelo = @xmodelo AND cmarca = @cmarca');
+//       if(createIndividualContract.xmodelo){
+//         const getCmodeloResult = await pool
+//         .request()
+//         .input('xmodelo', sql.NVarChar, createIndividualContract.xmodelo.toUpperCase())
+//         .input('cmarca', sql.Int, cmarcaValue)
+//         .query('SELECT cmodelo FROM MAMODELO WHERE xmodelo = @xmodelo AND cmarca = @cmarca');
     
-        cmodeloValue = getCmodeloResult.recordset.length > 0 ? getCmodeloResult.recordset[0].cmodelo : undefined;
-      }
+//         cmodeloValue = getCmodeloResult.recordset.length > 0 ? getCmodeloResult.recordset[0].cmodelo : undefined;
+//       }
   
-      if(createIndividualContract.xversion){
-        const getCversionResult = await pool
-          .request()
-          .input('xversion', sql.NVarChar, createIndividualContract.xversion.toUpperCase())
-          .input('cmodelo', sql.Int, cmodeloValue)
-          .input('cmarca', sql.Int, cmarcaValue)
-          .query('SELECT cversion FROM MAVERSION WHERE xversion = @xversion AND cmodelo = @cmodelo AND cmarca = @cmarca');
+//       if(createIndividualContract.xversion){
+//         const getCversionResult = await pool
+//           .request()
+//           .input('xversion', sql.NVarChar, createIndividualContract.xversion.toUpperCase())
+//           .input('cmodelo', sql.Int, cmodeloValue)
+//           .input('cmarca', sql.Int, cmarcaValue)
+//           .query('SELECT cversion FROM MAVERSION WHERE xversion = @xversion AND cmodelo = @cmodelo AND cmarca = @cmarca');
 
-          cversionValue = getCversionResult.recordset.length > 0 ? getCversionResult.recordset[0].cversion : undefined;
-      }
+//           cversionValue = getCversionResult.recordset.length > 0 ? getCversionResult.recordset[0].cversion : undefined;
+//       }
 
-      let insert = await pool.request()
-          .input('icedula', sql.Char, createIndividualContract.icedula ? createIndividualContract.icedula: undefined)
-          .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
-          .input('xcedula', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
-          .input('xnombre', sql.NVarChar, createIndividualContract.xnombre.toUpperCase() ? createIndividualContract.xnombre: undefined)
-          .input('xapellido', sql.NVarChar, createIndividualContract.xapellido.toUpperCase() ? createIndividualContract.xapellido: undefined)
-          .input('xtelefono_emp', sql.NVarChar, createIndividualContract.xtelefono_emp ? createIndividualContract.xtelefono_emp: undefined)
-          .input('email', sql.NVarChar, createIndividualContract.email.toUpperCase() ? createIndividualContract.email: undefined)
-          .input('cestado', sql.Int, createIndividualContract.cestado ? createIndividualContract.cestado: undefined)
-          .input('cciudad', sql.Int, createIndividualContract.cciudad ? createIndividualContract.cciudad: undefined)
-          .input('xdireccionfiscal', sql.NVarChar, createIndividualContract.xdireccion.toUpperCase() ? createIndividualContract.xdireccion: undefined)
-          .input('xplaca', sql.NVarChar, createIndividualContract.xplaca.toUpperCase() ? createIndividualContract.xplaca: undefined)
-          .input('xmarca', sql.NVarChar, createIndividualContract.xmarca.toUpperCase() ? createIndividualContract.xmarca: undefined)
-          .input('xmodelo', sql.NVarChar, createIndividualContract.xmodelo.toUpperCase() ? createIndividualContract.xmodelo: undefined)
-          .input('xversion', sql.NVarChar, createIndividualContract.xversion.toUpperCase() ? createIndividualContract.xversion: undefined)
-          .input('cmarca', sql.Int, cmarcaValue ? cmarcaValue: undefined)
-          .input('cmodelo', sql.Int, cmodeloValue ? cmodeloValue: undefined)
-          .input('cversion', sql.Int, cversionValue ? cversionValue: undefined)
-          .input('cano', sql.Int, createIndividualContract.fano ? createIndividualContract.fano: undefined)
-          .input('ncapacidad_p', sql.Int, createIndividualContract.npasajeros ? createIndividualContract.npasajeros: undefined)
-          .input('xcolor', sql.NVarChar, createIndividualContract.xcolor.toUpperCase() ? createIndividualContract.xcolor: undefined)
-          .input('xserialcarroceria', sql.NVarChar, createIndividualContract.xserialcarroceria.toUpperCase() ? createIndividualContract.xserialcarroceria: undefined)
-          .input('xserialmotor', sql.NVarChar, createIndividualContract.xserialmotor.toUpperCase() ? createIndividualContract.xserialmotor: undefined)
-          .input('xcobertura', sql.NVarChar, createIndividualContract.xcobertura ? createIndividualContract.xcobertura: undefined)
-          .input('ctarifa_exceso', sql.Int, createIndividualContract.ctarifa_exceso ? createIndividualContract.ctarifa_exceso: undefined)
-          .input('cplan_rc', sql.Int, createIndividualContract.cplan_rc ? createIndividualContract.cplan_rc: undefined)
-          .input('ccorredor', sql.Int, createIndividualContract.ccorredor ? createIndividualContract.ccorredor: undefined)
-          .input('ctomador', sql.Int, createIndividualContract.ctomador ? createIndividualContract.ctomador: undefined)
-          .input('ccotizacion', sql.Int, createIndividualContract.ccotizacion ? createIndividualContract.ccotizacion: undefined)
-          .input('cinspeccion', sql.Int, createIndividualContract.cinspeccion ? createIndividualContract.cinspeccion: undefined)
-          .input('fdesde_pol', sql.DateTime, createIndividualContract.fdesde_pol ? createIndividualContract.fdesde_pol: undefined)
-          .input('fhasta_pol', sql.DateTime, createIndividualContract.fhasta_pol ? createIndividualContract.fhasta_pol: undefined)
-          .input('cclasificacion', sql.Char, createIndividualContract.cclasificacion ? createIndividualContract.cclasificacion: undefined)
-          .input('pcasco', sql.Numeric(17, 2), createIndividualContract.pcasco ? createIndividualContract.pcasco: undefined)
-          .input('msuma_aseg', sql.Numeric(17, 2), createIndividualContract.msuma_aseg ? createIndividualContract.msuma_aseg: undefined)
-          .input('mprima_bruta', sql.Numeric(17, 2), createIndividualContract.mprima_bruta ? createIndividualContract.mprima_bruta: undefined)
-          .input('pdescuento', sql.Numeric(17, 2), createIndividualContract.pdescuento ? createIndividualContract.pdescuento: undefined)
-          .input('pmotin', sql.Numeric(17, 2), createIndividualContract.pmotin ? createIndividualContract.pmotin: undefined)
-          .input('pcatastrofico', sql.Numeric(17, 2), createIndividualContract.pcatastrofico ? createIndividualContract.pcatastrofico: undefined)
-          .input('mprima_casco', sql.Numeric(17, 2), createIndividualContract.mprima_casco ? createIndividualContract.mprima_casco: undefined)
-          .input('mcatastrofico', sql.Numeric(17, 2), createIndividualContract.mcatastrofico ? createIndividualContract.mcatastrofico: undefined)
-          .input('mmotin', sql.Numeric(17, 2), createIndividualContract.mmotin ? createIndividualContract.mmotin: undefined)
-          .input('pblindaje', sql.Numeric(17, 2), createIndividualContract.pblindaje ? createIndividualContract.pblindaje: undefined)
-          .input('msuma_blindaje', sql.Numeric(17, 2), createIndividualContract.msuma_blindaje ? createIndividualContract.msuma_blindaje: undefined)
-          .input('mprima_blindaje', sql.Numeric(17, 2), createIndividualContract.mprima_blindaje ? createIndividualContract.mprima_blindaje: undefined)
-          .input('xpago', sql.NVarChar, createIndividualContract.xpago ? createIndividualContract.xpago: undefined)
-          .input('femision', sql.DateTime, new Date()) 
-          .input('cmetodologiapago', sql.Int, createIndividualContract.cmetodologiapago ? createIndividualContract.cmetodologiapago: undefined)
-          .input('cpais', sql.Int, createIndividualContract.cpais ? createIndividualContract.cpais: undefined)
-          .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, cmarca, cmodelo, cversion, xmarca, xmodelo, xversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cplan_rc, ccorredor, ctomador, ccotizacion, cinspeccion, fdesde_pol, fhasta_pol, cclasificacion, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais, pcasco, pmotin) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @cmarca, @cmodelo, @cversion, @xmarca, @xmodelo, @xversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cplan_rc, @ccorredor, @ctomador, @ccotizacion, @cinspeccion, @fdesde_pol, @fhasta_pol, @cclasificacion, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais, @pcasco, @pmotin)')
-          await pool.close();
+//       let insert = await pool.request()
+//           .input('icedula', sql.Char, createIndividualContract.icedula ? createIndividualContract.icedula: undefined)
+//           .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
+//           .input('xcedula', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
+//           .input('xnombre', sql.NVarChar, createIndividualContract.xnombre.toUpperCase() ? createIndividualContract.xnombre: undefined)
+//           .input('xapellido', sql.NVarChar, createIndividualContract.xapellido.toUpperCase() ? createIndividualContract.xapellido: undefined)
+//           .input('xtelefono_emp', sql.NVarChar, createIndividualContract.xtelefono_emp ? createIndividualContract.xtelefono_emp: undefined)
+//           .input('email', sql.NVarChar, createIndividualContract.email.toUpperCase() ? createIndividualContract.email: undefined)
+//           .input('cestado', sql.Int, createIndividualContract.cestado ? createIndividualContract.cestado: undefined)
+//           .input('cciudad', sql.Int, createIndividualContract.cciudad ? createIndividualContract.cciudad: undefined)
+//           .input('xdireccionfiscal', sql.NVarChar, createIndividualContract.xdireccion.toUpperCase() ? createIndividualContract.xdireccion: undefined)
+//           .input('xplaca', sql.NVarChar, createIndividualContract.xplaca.toUpperCase() ? createIndividualContract.xplaca: undefined)
+//           .input('xmarca', sql.NVarChar, createIndividualContract.xmarca.toUpperCase() ? createIndividualContract.xmarca: undefined)
+//           .input('xmodelo', sql.NVarChar, createIndividualContract.xmodelo.toUpperCase() ? createIndividualContract.xmodelo: undefined)
+//           .input('xversion', sql.NVarChar, createIndividualContract.xversion.toUpperCase() ? createIndividualContract.xversion: undefined)
+//           .input('cmarca', sql.Int, cmarcaValue ? cmarcaValue: undefined)
+//           .input('cmodelo', sql.Int, cmodeloValue ? cmodeloValue: undefined)
+//           .input('cversion', sql.Int, cversionValue ? cversionValue: undefined)
+//           .input('cano', sql.Int, createIndividualContract.fano ? createIndividualContract.fano: undefined)
+//           .input('ncapacidad_p', sql.Int, createIndividualContract.npasajeros ? createIndividualContract.npasajeros: undefined)
+//           .input('xcolor', sql.NVarChar, createIndividualContract.xcolor.toUpperCase() ? createIndividualContract.xcolor: undefined)
+//           .input('xserialcarroceria', sql.NVarChar, createIndividualContract.xserialcarroceria.toUpperCase() ? createIndividualContract.xserialcarroceria: undefined)
+//           .input('xserialmotor', sql.NVarChar, createIndividualContract.xserialmotor.toUpperCase() ? createIndividualContract.xserialmotor: undefined)
+//           .input('xcobertura', sql.NVarChar, createIndividualContract.xcobertura ? createIndividualContract.xcobertura: undefined)
+//           .input('ctarifa_exceso', sql.Int, createIndividualContract.ctarifa_exceso ? createIndividualContract.ctarifa_exceso: undefined)
+//           .input('cplan_rc', sql.Int, createIndividualContract.cplan_rc ? createIndividualContract.cplan_rc: undefined)
+//           .input('ccorredor', sql.Int, createIndividualContract.ccorredor ? createIndividualContract.ccorredor: undefined)
+//           .input('ctomador', sql.Int, createIndividualContract.ctomador ? createIndividualContract.ctomador: undefined)
+//           .input('ccotizacion', sql.Int, createIndividualContract.ccotizacion ? createIndividualContract.ccotizacion: undefined)
+//           .input('cinspeccion', sql.Int, createIndividualContract.cinspeccion ? createIndividualContract.cinspeccion: undefined)
+//           .input('fdesde_pol', sql.DateTime, createIndividualContract.fdesde_pol ? createIndividualContract.fdesde_pol: undefined)
+//           .input('fhasta_pol', sql.DateTime, createIndividualContract.fhasta_pol ? createIndividualContract.fhasta_pol: undefined)
+//           .input('cclasificacion', sql.Char, createIndividualContract.cclasificacion ? createIndividualContract.cclasificacion: undefined)
+//           .input('pcasco', sql.Numeric(17, 2), createIndividualContract.pcasco ? createIndividualContract.pcasco: undefined)
+//           .input('msuma_aseg', sql.Numeric(17, 2), createIndividualContract.msuma_aseg ? createIndividualContract.msuma_aseg: undefined)
+//           .input('mprima_bruta', sql.Numeric(17, 2), createIndividualContract.mprima_bruta ? createIndividualContract.mprima_bruta: undefined)
+//           .input('pdescuento', sql.Numeric(17, 2), createIndividualContract.pdescuento ? createIndividualContract.pdescuento: undefined)
+//           .input('pmotin', sql.Numeric(17, 2), createIndividualContract.pmotin ? createIndividualContract.pmotin: undefined)
+//           .input('pcatastrofico', sql.Numeric(17, 2), createIndividualContract.pcatastrofico ? createIndividualContract.pcatastrofico: undefined)
+//           .input('mprima_casco', sql.Numeric(17, 2), createIndividualContract.mprima_casco ? createIndividualContract.mprima_casco: undefined)
+//           .input('mcatastrofico', sql.Numeric(17, 2), createIndividualContract.mcatastrofico ? createIndividualContract.mcatastrofico: undefined)
+//           .input('mmotin', sql.Numeric(17, 2), createIndividualContract.mmotin ? createIndividualContract.mmotin: undefined)
+//           .input('pblindaje', sql.Numeric(17, 2), createIndividualContract.pblindaje ? createIndividualContract.pblindaje: undefined)
+//           .input('msuma_blindaje', sql.Numeric(17, 2), createIndividualContract.msuma_blindaje ? createIndividualContract.msuma_blindaje: undefined)
+//           .input('mprima_blindaje', sql.Numeric(17, 2), createIndividualContract.mprima_blindaje ? createIndividualContract.mprima_blindaje: undefined)
+//           .input('xpago', sql.NVarChar, createIndividualContract.xpago ? createIndividualContract.xpago: undefined)
+//           .input('femision', sql.DateTime, new Date()) 
+//           .input('cmetodologiapago', sql.Int, createIndividualContract.cmetodologiapago ? createIndividualContract.cmetodologiapago: undefined)
+//           .input('cpais', sql.Int, createIndividualContract.cpais ? createIndividualContract.cpais: undefined)
+//           .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, cmarca, cmodelo, cversion, xmarca, xmodelo, xversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cplan_rc, ccorredor, ctomador, ccotizacion, cinspeccion, fdesde_pol, fhasta_pol, cclasificacion, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais, pcasco, pmotin) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @cmarca, @cmodelo, @cversion, @xmarca, @xmodelo, @xversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cplan_rc, @ccorredor, @ctomador, @ccotizacion, @cinspeccion, @fdesde_pol, @fhasta_pol, @cclasificacion, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais, @pcasco, @pmotin)')
+//           await pool.close();
 
-          return { result: { rowsAffected: rowsAffected, status: true } };
-  }
-  catch(err){
-      console.log(err.message)
-      return { error: err.message };
-  }
-}
+//           return { result: { rowsAffected: rowsAffected, status: true } };
+//   }
+//   catch(err){
+//       console.log(err.message)
+//       return { error: err.message };
+//   }
+// }
 
 const searchContractIndividual = async () => {
   try {
