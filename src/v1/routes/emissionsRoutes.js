@@ -11,5 +11,6 @@ router
     .post("/automobile/search",  emissionsController.searchAllContract)
     .post("/automobile/propietary",  emissionsController.searchPropietary)
     .post("/automobile/vehicle",  emissionsController.searchVehicle)
+    .post("/automobile/ubii/update",  emissionsController.updateUbii)
 
 export default router;

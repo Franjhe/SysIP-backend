@@ -91,6 +91,26 @@ const searchVehicle = async (searchVehicle) => {
     return vehicle;
 }
 
+const updateUbii = async (updateUbii) => {
+    const result = await Emissions.updateUbii(updateUbii);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+}
+
+const updateContract = async (updateContract) => {
+    const result2 = await Emissions.updateContract(updateContract);
+    if (result2.error) {
+        return {
+            error: result2.error
+        }
+    }
+    return result2;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -100,5 +120,7 @@ export default {
     searchAllContract,
     searchPropietary,
     searchVehicle,
+    updateUbii,
+    updateContract
     // createIndividualContractArys
 }

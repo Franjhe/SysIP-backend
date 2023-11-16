@@ -383,6 +383,46 @@ const searchVehicle = async (searchVehicle) => {
   }
 };
 
+const updateUbii = async(updateUbii) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(config);
+      let update = await pool.request()
+      .input('ccontratoflota', sql.Int, updateUbii.ccontratoflota)
+      .input('orderId', sql.NVarChar, updateUbii.orderId)
+      .input('ctipopago', sql.Int, updateUbii.ctipopago)
+      .input('xreferencia', sql.NVarChar, updateUbii.xreferencia)
+      .input('fcobro', sql.DateTime, updateUbii.fcobro)
+      .input('mprima_pagada', sql.Numeric(17,2), updateUbii.mprima_pagada)
+      .input('cestatusgeneral', sql.Int, 7)
+      .query('update SURECIBO set CCODIGO_UBII = @orderId, XREFERENCIA = @xreferencia, CTIPOPAGO = @ctipopago, FCOBRO = @fcobro, MPRIMA_PAGADA = @mprima_pagada, CESTATUSGENERAL = @cestatusgeneral where CRECIBO IN (SELECT TOP 1 CRECIBO FROM SURECIBO WHERE CCONTRATOFLOTA = @ccontratoflota AND CESTATUSGENERAL = 13)' );
+      rowsAffected = rowsAffected + update.rowsAffected;
+      //sql.close();
+      return { result: { rowsAffected: rowsAffected } };
+  }
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
+
+const updateContract = async(updateContract) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(config);
+      let update = await pool.request()
+      .input('ccontratoflota', sql.Int, updateContract.ccontratoflota)
+      .input('cestatusgeneral', sql.Int, 7)
+      .query('update SUCONTRATOFLOTA set CESTATUSGENERAL = @cestatusgeneral where CCONTRATOFLOTA = @ccontratoflota')
+      rowsAffected = rowsAffected + update.rowsAffected;
+      return { result: { rowsAffected: rowsAffected}};
+  }
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -392,5 +432,7 @@ export default {
     searchAllContract,
     searchPropietary,
     searchVehicle,
+    updateUbii,
+    updateContract
     // createIndividualContractArys
   };

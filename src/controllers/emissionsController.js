@@ -46,13 +46,13 @@ const executePremiumAmount = async (req, res) => {
                 message: result.error
             });
     }
-    console.log(result.result.recordset[0].MPRIMA)
     return res
         .status(200)
         .send({
             status: true,
             data: {
                 mprima: result.result.recordset[0].MPRIMA,
+                ccubii: result.result.recordset[0].CCUBII,
             }
         });
 }
@@ -203,11 +203,41 @@ const searchVehicle = async (req, res) => {
         });
 }
 
+const updateUbii = async (req, res) => {
+    const result = await emissionsService.updateUbii(req.body);
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    const result2 = await emissionsService.updateContract(req.body);
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                mprima: result.result.recordset[0].MPRIMA,
+            }
+        });
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
     createIndividualContract,
     searchAllContract,
     searchPropietary,
-    searchVehicle
+    searchVehicle,
+    updateUbii
 }
