@@ -12,6 +12,7 @@ import v1ReportRouter from './v1/routes/reportRoutes.js';
 import v1ConsulPagosRouter from './v1/routes/consulPagosRoutes.js';
 import viCertificated from './v1/routes/certificateRoutes.js'
 import v1EmissionsRouter from './v1/routes/emissionsRoutes.js';
+import v1QuotesRouter from './v1/routes/quotesRoutes.js';
 
 const app = express(); 
 dotenv;
@@ -29,6 +30,7 @@ app.use("/api/v1/report", v1ReportRouter);
 app.use("/api/v1/consul-pagos", v1ConsulPagosRouter);
 app.use("/api/v1/certificate", viCertificated);
 app.use("/api/v1/emissions", v1EmissionsRouter);
+app.use("/api/v1/quotes", v1QuotesRouter);
 
 const PORT = process.env.PORT || 3000; 
 
