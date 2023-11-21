@@ -26,7 +26,7 @@ const createQuotes = async (createQuotes) => {
             .execute('trBCotizacionAuto');
 
         let query = await pool.request()
-            .query('SELECT TOP 5 * FROM TMEMISION_COTIZACION ORDER BY ccotizacion DESC');
+            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, xplan_rc, mprima FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
         await pool.close();
         return { result: query.recordset };
 
