@@ -227,7 +227,7 @@ const updateUbii = async (req, res) => {
         .send({
             status: true,
             data: {
-                mprima: result.result.recordset[0].MPRIMA,
+                message: 'Se ha generado exitósamente el contrato',
             }
         });
 }
