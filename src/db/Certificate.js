@@ -153,12 +153,12 @@ const getPlanCoverages = async(cplan, ccontratoflota) => {
     }
 }
 
-const getFleetContractServices = async(ccarga) => {
+const getFleetContractServices = async(cplan_rc) => {
     try{
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
-            .input('ccarga', sql.Int, ccarga)
-            .query('select * from VWBUSCARSERVICIOSXCONTRATOFLOTA where ccarga = @ccarga');
+            .input('cplan_rc', sql.Int, cplan_rc)
+            .query('select * from MASERVICIOS_WEB where cplan_rc = @cplan_rc');
         //sql.close();
         await pool.close();
         return { result: result };

@@ -99,14 +99,14 @@ const detailCertificateCertificate = async (searchDetail) => {
             mprimaprorratatotal = Number(mprimaprorratatotal.toFixed(2)); // Redondea mprimaprorratatotal a 2 decimales si es mayor que 0
         }
         let services = [];
-        let getFleetContractServices = await Certificate.getFleetContractServices(getFleetContractData.result.recordset[0].ccarga);
+        let getFleetContractServices = await Certificate.getFleetContractServices(getFleetContractData.result.recordset[0].CPLAN_RC);
         if(getFleetContractServices.error){ console.log(getFleetContractServices.error); return { status: false, code: 500, message: getFleetContractServices.error }; }
         if(getFleetContractServices.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Service not found.' }; }
         if (getFleetContractServices.result.rowsAffected > 0) {
             for(let i = 0; i < getFleetContractServices.result.recordset.length; i++){
                 let service = {
                     cservicio: getFleetContractServices.result.recordset[i].cservicio,
-                    xservicio: getFleetContractServices.result.recordset[i].XSERVICIO,
+                    xservicio: getFleetContractServices.result.recordset[i].xservicio,
                 }
                 services.push(service);
             }
@@ -222,6 +222,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             ncapacidadcargavehiculo: getFleetContractData.result.recordset[0].NCAPACIDADCARGA,
             ncapacidadpasajerosvehiculo: getFleetContractData.result.recordset[0].NCAPACIDADPASAJEROS,
             xplancoberturas: getPlanData.result.recordset[0].XPLAN_RC,
+            xgrua: getPlanData.result.recordset[0].XGRUA,
             xtomador: xtomador,
             xrif_tomador: xrif_tomador,
             xdireccion_tomador: xdireccion_tomador,
@@ -237,7 +238,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             mprimaprorratatotal: mprimaprorratatotal,
             accesories: accesories,
             inspections: inspections,
-            services:services,
+            services: services,
             realCoverages: realCoverages,
             coverageAnnexes: coverageAnnexes,
             receipt: receiptList,

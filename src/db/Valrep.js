@@ -427,6 +427,7 @@ const getClass = async () => {
 const getPlan = async () => {
   try {
     const planes = await Plan.findAll({
+      where: {ctipoplan: 1},
       attributes: ['cplan_rc', 'xplan_rc'],
     });
     const plan = planes.map((item) => item.get({ plain: true }));
