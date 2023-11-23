@@ -55,6 +55,7 @@ const createUsersFromConsulPagos = async(createUsersFromConsulPagos) => {
         .input('tipo_doc_vendedor', sql.Char, createUsersFromConsulPagos.data.tipo_doc_vendedor)
         .input('doc_identidad_vendedor', sql.Numeric(22, 0), createUsersFromConsulPagos.data.doc_identidad_vendedor)
         .input('telefono_vendedor', sql.NVarChar, createUsersFromConsulPagos.data.telefono_vendedor)
+        .input('correo_vendedor', sql.NVarChar, createUsersFromConsulPagos.data.correo_vendedor)
         .input('cplan_rc', sql.Int, createUsersFromConsulPagos.data.cplan_rc)
         .input('fdesde_pol', sql.DateTime, createUsersFromConsulPagos.data.fdesde_pol)
         .input('fhasta_pol', sql.DateTime, createUsersFromConsulPagos.data.fhasta_pol)
