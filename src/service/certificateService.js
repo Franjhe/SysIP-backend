@@ -90,6 +90,7 @@ const detailCertificateCertificate = async (searchDetail) => {
                 ititulo: getPlanCoverages.result.recordset[i].ititulo,
                 xmoneda: getPlanCoverages.result.recordset[i].xmoneda,
                 ccontratoflota: getPlanCoverages.result.recordset[i].ccontratoflota,
+                m2: ' ',
             }
             realCoverages.push(coverage);
         }
