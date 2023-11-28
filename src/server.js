@@ -15,6 +15,10 @@ import v1EmissionsRouter from './v1/routes/emissionsRoutes.js';
 import v1QuotesRouter from './v1/routes/quotesRoutes.js';
 import v1Collection from './v1/routes/collection.js'
 
+import fileExtension from 'file-extension';
+import multer from 'multer';
+const { diskStorage } = multer;
+
 const app = express(); 
 dotenv;
 
@@ -38,4 +42,56 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => { 
   console.log(`\n API is listening on port ${PORT}`);
+});
+
+const DOCUMENTS_PATH = './public/documents';
+
+const document_storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, DOCUMENTS_PATH);
+  },
+
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now() + '.' + fileExtension(file.originalname));
+  }
+});
+
+let document_upload = multer({
+    storage: document_storage,
+    limits: {
+      fileSize: 5000000
+    },
+    fileFilter(req, file, cb) {
+      cb(null, true);
+    }
+  });
+
+app.post('/api/upload/documents', document_upload.array('xdocumentos', 5), (req, res) => {
+  const files = req.files;
+
+  if (!files || files.length === 0) {
+    const error = new Error('Please upload at least one file');
+    error.httpStatusCode = 400;
+    console.log(error.message)
+    return res.status(400).json({ data: { status: false, code: 400, message: error.message } });
+  }
+
+//   const uploadedFiles = files.map(file => ({ filename: file.filename }));
+
+  res.json({ data: { status: true, uploadedFile: files } });
+});
+
+app.post('/api/upload/image', document_upload.single('file'), (req, res , err) => {
+  const files = req.files;
+
+  if (!files || files.length === 0) {
+    const error = new Error('Please upload at least one file');
+    error.httpStatusCode = 400;
+
+    return res.status(400).json({ data: { status: false, code: 400, message: error.message } });
+  }
+
+//   const uploadedFiles = files.map(file => ({ filename: file.filename }));
+
+  res.json({ data: { status: true, uploadedFile: files } });
 });
