@@ -260,8 +260,8 @@ const getTypeOfPayment = async () => {
     return typePayment;
 }
 
-const getBank = async () => {
-    const bank = await Valrep.getBank();
+const getBank = async (getBank) => {
+    const bank = await Valrep.getBank(getBank);
     if (bank.error) {
         return {
             error: bank.error

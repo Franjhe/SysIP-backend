@@ -22,20 +22,31 @@ const detailCertificateCertificate = async (searchDetail) => {
             // Convierte las fechas a formato "dd/mm/yyyy"
             const fdesdeRec = new Date(getFleetContractReceiptData.result.recordset[i].FDESDE_REC);
             const fhastaRec = new Date(getFleetContractReceiptData.result.recordset[i].FHASTA_REC);
-    
+            let fcobroIN;
+            let fcobro;
+
             const dd_mm_yyyy_format = (date) => {
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0'); // Suma 1 al mes, ya que los meses en JavaScript van de 0 a 11.
                 const year = date.getFullYear();
                 return `${day}/${month}/${year}`;
             };
+
+            if(getFleetContractReceiptData.result.recordset[i].FCOBRO){
+                fcobroIN = new Date(getFleetContractReceiptData.result.recordset[i].FCOBRO);
+                fcobro = dd_mm_yyyy_format(fcobroIN);
+            }else{
+                fcobro;
+            }
     
             receiptList.push({
                 crecibo: getFleetContractReceiptData.result.recordset[i].CRECIBO,
                 fdesde_rec: dd_mm_yyyy_format(fdesdeRec),
                 fhasta_rec: dd_mm_yyyy_format(fhastaRec),
+                fcobro: fcobro,
                 xmoneda: getFleetContractReceiptData.result.recordset[i].xmoneda,
                 mprima: getFleetContractReceiptData.result.recordset[i].MPRIMA_BRUTA_EXT,
+                xestatus: getFleetContractReceiptData.result.recordset[i].XESTATUSGENERAL,
             });
         }
     }

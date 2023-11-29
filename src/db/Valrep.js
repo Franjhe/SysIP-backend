@@ -485,9 +485,10 @@ const getTypeOfPayment = async () => {
   }
 };
 
-const getBank = async () => {
+const getBank = async (getBank) => {
   try {
     const banco = await Bank.findAll({
+      where: {itipo: getBank.itipo},
       attributes: ['cbanco', 'xbanco'],
     });
     const bank = banco.map((item) => item.get({ plain: true }));
