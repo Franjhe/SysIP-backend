@@ -6,5 +6,6 @@ const router = express.Router();
 router
 
     .post("/search",  collectionController.searchCollectionbyClient)
+    .post("/create",  collectionController.createPaymentReport)
 
 export default router;

@@ -90,5 +90,5 @@ app.post('/api/upload/image', document_upload.single('file'), (req, res , err) =
     return res.status(400).json({  status: false, code: 400, message: error.message  });
   }
 
-  res.json({ data: { status: true, uploadedFile: files } });
+  res.json({  status: true, uploadedFile: files  });
 });

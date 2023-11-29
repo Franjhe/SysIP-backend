@@ -10,6 +10,18 @@ const searchDataReceipt = async (searchDataReceipt) => {
     return searchReceipt;
 }
 
+const createPaymentReport = async (createPaymentReport) => {
+    const createPaymentReportData = await Collection.createPaymentReportW(createPaymentReport);
+    if (createPaymentReportData.error) {
+        return {
+            error: createPaymentReportData.error
+        }
+    }
+    return createPaymentReportData;
+}
+
+
 export default {
-    searchDataReceipt
+    searchDataReceipt,
+    createPaymentReport
 }

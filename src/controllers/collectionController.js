@@ -30,6 +30,37 @@ const searchCollectionbyClient = async (req, res) => {
         });
 }
 
+const createPaymentReport = async (req, res) => {
+    const searchReceipt = await collectionService.createPaymentReport(req.body);
+
+    if (searchReceipt.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchReceipt.permissionError
+            });
+    }
+    if (searchReceipt.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchReceipt.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchReceipt,
+            message: 'Reporte de pago exitoso.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
+    createPaymentReport
 }
