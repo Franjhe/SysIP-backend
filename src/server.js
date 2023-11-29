@@ -82,16 +82,13 @@ app.post('/api/upload/documents', document_upload.array('xdocumentos', 5), (req,
 });
 
 app.post('/api/upload/image', document_upload.single('file'), (req, res , err) => {
-  const files = req.files;
-
+  const files = req.file;
   if (!files || files.length === 0) {
     const error = new Error('Please upload at least one file');
     error.httpStatusCode = 400;
 
-    return res.status(400).json({ data: { status: false, code: 400, message: error.message } });
+    return res.status(400).json({  status: false, code: 400, message: error.message  });
   }
-
-//   const uploadedFiles = files.map(file => ({ filename: file.filename }));
 
   res.json({ data: { status: true, uploadedFile: files } });
 });
