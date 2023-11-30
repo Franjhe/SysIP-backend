@@ -473,9 +473,10 @@ const getTakers = async () => {
   }
 };
   
-const getTypeOfPayment = async () => {
+const getTypeOfPayment = async (getTypeOfPayment) => {
   try {
     const TipoPago = await TypeOfPayment.findAll({
+      where: {itipo: getTypeOfPayment.itipo},
       attributes: ['ctipopago', 'xtipopago'],
     });
     const typePayment = TipoPago.map((item) => item.get({ plain: true }));
