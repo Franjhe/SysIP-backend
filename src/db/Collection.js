@@ -23,7 +23,7 @@ const searchDataReceipt = async(searchDataReceipt) => {
             let receipt = await pool.request()
             .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
             .input('iestadorec', sql.Char(1, 0), 'P')
-            .query('select cnpoliza,cnrecibo, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
+            .query('select qcuotas,cnpoliza,cnrecibo, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
                    'fdesde_pol , mprimabruta , mprimabrutaext  from adrecibos where casegurado = @casegurado and iestadorec = @iestadorec ')
             await pool.close();
             return { 
@@ -150,7 +150,7 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
         let searchReport = await pool.request()
 
         .input('iestadorec', sql.Char(1, 0), 'P')
-        .query('select cnpoliza,cnrecibo, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
+        .query('select cnpoliza,cnrecibo, qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
                'fdesde_pol , mprimabruta , mprimabrutaext  from adrecibos where iestadorec = @iestadorec ')
 
         await pool.close();
