@@ -10,6 +10,17 @@ const createQuotes = async (createQuotes) => {
     return result;
 } 
 
+const updateQuotes = async (updateQuotes) => {
+    const update = await Quotes.updateQuotes(updateQuotes);
+    if (update.error) {
+        return {
+            error: update.error
+        }
+    }
+    return update;
+} 
+
 export default {
-    createQuotes
+    createQuotes,
+    updateQuotes
 }

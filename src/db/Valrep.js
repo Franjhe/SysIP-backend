@@ -427,6 +427,7 @@ const getClass = async () => {
 const getPlan = async () => {
   try {
     const planes = await Plan.findAll({
+      where: {ctipoplan: 1},
       attributes: ['cplan_rc', 'xplan_rc'],
     });
     const plan = planes.map((item) => item.get({ plain: true }));
@@ -472,9 +473,10 @@ const getTakers = async () => {
   }
 };
   
-const getTypeOfPayment = async () => {
+const getTypeOfPayment = async (getTypeOfPayment) => {
   try {
     const TipoPago = await TypeOfPayment.findAll({
+      where: {itipo: getTypeOfPayment.itipo},
       attributes: ['ctipopago', 'xtipopago'],
     });
     const typePayment = TipoPago.map((item) => item.get({ plain: true }));
@@ -484,9 +486,10 @@ const getTypeOfPayment = async () => {
   }
 };
 
-const getBank = async () => {
+const getBank = async (getBank) => {
   try {
     const banco = await Bank.findAll({
+      where: {itipo: getBank.itipo},
       attributes: ['cbanco', 'xbanco'],
     });
     const bank = banco.map((item) => item.get({ plain: true }));

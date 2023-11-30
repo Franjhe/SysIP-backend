@@ -12,6 +12,7 @@ const sqlConfig = {
 }
 
 const createQuotes = async (createQuotes) => {
+    console.log(createQuotes)
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
@@ -26,7 +27,7 @@ const createQuotes = async (createQuotes) => {
             .execute('trBCotizacionAuto');
 
         let query = await pool.request()
-            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, xplan_rc, mprima FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mprima FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
         await pool.close();
         return { result: query.recordset };
 
@@ -36,6 +37,25 @@ const createQuotes = async (createQuotes) => {
     }
 }
 
+const updateQuotes = async (updateQuotes) => {
+
+    try {
+        let pool = await sql.connect(sqlConfig);
+        let update = await pool.request()
+            .input('ccotizacion', sql.Int, updateQuotes.ccotizacion)
+            .input('cplan_rc', sql.Int, updateQuotes.cplan_rc)
+            .input('iaceptado', sql.Bit, updateQuotes.iaceptado)
+            .input('faceptado', sql.DateTime, new Date())
+            .query('UPDATE TMEMISION_COTIZACION SET iaceptado = @iaceptado, faceptado = @faceptado WHERE ccotizacion = @ccotizacion AND cplan_rc = @cplan_rc')
+
+        return update;
+    } catch (error) {
+        console.log(error);
+        return { success: false, message: 'Error al actualizar la Cotizacion', error };
+    }
+};
+
 export default {
-    createQuotes
+    createQuotes,
+    updateQuotes
 }

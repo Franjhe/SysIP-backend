@@ -707,7 +707,7 @@ const getTakers = async (req, res) => {
 }
 
 const getTypeOfPayment = async (req, res) => {
-    const typePayment = await valrepService.getTypeOfPayment();
+    const typePayment = await valrepService.getTypeOfPayment(req.body);
     if (typePayment.permissionError) {
         return res
             .status(403)
@@ -735,7 +735,7 @@ const getTypeOfPayment = async (req, res) => {
 }
 
 const getBank = async (req, res) => {
-    const bank = await valrepService.getBank();
+    const bank = await valrepService.getBank(req.body);
     if (bank.permissionError) {
         return res
             .status(403)

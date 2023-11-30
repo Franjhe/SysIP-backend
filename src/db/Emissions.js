@@ -116,6 +116,9 @@ const createIndividualContract = async(createIndividualContract) => {
           .input('email', sql.NVarChar, createIndividualContract.email.toUpperCase() ? createIndividualContract.email: undefined)
           .input('cestado', sql.Int, createIndividualContract.cestado ? createIndividualContract.cestado: undefined)
           .input('cciudad', sql.Int, createIndividualContract.cciudad ? createIndividualContract.cciudad: undefined)
+          .input('fnac', sql.NVarChar, createIndividualContract.fnacimiento ? createIndividualContract.fnacimiento: undefined)
+          .input('iestado_civil', sql.NVarChar, createIndividualContract.iestado_civil ? createIndividualContract.iestado_civil: undefined)
+          .input('isexo', sql.NVarChar, createIndividualContract.isexo ? createIndividualContract.isexo: undefined)
           .input('xdireccionfiscal', sql.NVarChar, createIndividualContract.xdireccion.toUpperCase() ? createIndividualContract.xdireccion: undefined)
           .input('xplaca', sql.NVarChar, createIndividualContract.xplaca.toUpperCase() ? createIndividualContract.xplaca: undefined)
           .input('xmarca', sql.NVarChar, createIndividualContract.xmarca.toUpperCase() ? createIndividualContract.xmarca: undefined)
@@ -159,33 +162,39 @@ const createIndividualContract = async(createIndividualContract) => {
           .input('cbanco_destino', sql.Int, createIndividualContract.cbanco_destino ? createIndividualContract.cbanco_destino: undefined)
           .input('fcobro', sql.DateTime, createIndividualContract.fcobro ? createIndividualContract.fcobro: undefined)
           .input('xreferencia', sql.NVarChar, createIndividualContract.xreferencia ? createIndividualContract.xreferencia: undefined)
-          .input('mprima_bs', sql.Numeric(18, 2), createIndividualContract.mprima_bs ? createIndividualContract.mprima_bs: undefined)
           .input('mprima_pagada', sql.Numeric(18, 2), createIndividualContract.mprima_pagada ? createIndividualContract.mprima_pagada: undefined)
-          .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, xmarca, xmodelo, xversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cplan_rc, ccorredor, ctomador, ccotizacion, cinspeccion, fdesde_pol, fhasta_pol, cclasificacion, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais, id_inma, pcasco, pmotin, cuso, ctipopago, cbanco, cbanco_destino, xreferencia, mprima_bs, mprima_pagada, fcobro) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cplan_rc, @ccorredor, @ctomador, @ccotizacion, @cinspeccion, @fdesde_pol, @fhasta_pol, @cclasificacion, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais, @id_inma, @pcasco, @pmotin, @cuso, @ctipopago, @cbanco, @cbanco_destino, @xreferencia, @mprima_bs, @mprima_pagada, @fcobro)')
+          .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, xmarca, xmodelo, xversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cplan_rc, ccorredor, ctomador, ccotizacion, cinspeccion, fdesde_pol, fhasta_pol, cclasificacion, msuma_aseg, mprima_bruta, pdescuento, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais, id_inma, pcasco, pmotin, cuso, ctipopago, cbanco, cbanco_destino, xreferencia, mprima_pagada, fcobro, fnac, iestado_civil, isexo) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cplan_rc, @ccorredor, @ctomador, @ccotizacion, @cinspeccion, @fdesde_pol, @fhasta_pol, @cclasificacion, @msuma_aseg, @mprima_bruta, @pdescuento, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais, @id_inma, @pcasco, @pmotin, @cuso, @ctipopago, @cbanco, @cbanco_destino, @xreferencia, @mprima_pagada, @fcobro, @fnac, @iestado_civil, @isexo)')
           await pool.close();
 
-          if(createIndividualContract.accesorios){
-            
-              const maxContract = await Contract.findOne({
-                attributes: ['ccontratoflota'],
-                order: [['ccontratoflota', 'DESC']],
-                limit: 1,
-              });
-              const contrato = maxContract ? maxContract.get({ plain: true }) : null;
-
-              let pool = await sql.connect(sqlConfig);
-              for(let i = 0; i < createIndividualContract.accesorios.length; i++){
-                let insert = await pool.request()
-                .input('ccontratoflota', sql.Int, contrato.ccontratoflota)
-                .input('caccesorio', sql.Int, createIndividualContract.accesorios[i].caccesorio)
-                .input('maccesoriocontratoflota', sql.Numeric(11, 2), createIndividualContract.accesorios[i].xprimaAccesorio)
-                .input('fcreacion', sql.DateTime, new Date()) 
-                .input('cusuariocreacion', sql.Int, createIndividualContract.cusuario)
-                .query('INSERT INTO SUACCESORIOCONTRATOFLOTA (ccontratoflota, caccesorio, maccesoriocontratoflota, fcreacion, cusuariocreacion) VALUES (@ccontratoflota, @caccesorio, @maccesoriocontratoflota, @fcreacion, @cusuariocreacion)');
-              }
-
-            
-          }
+          if (createIndividualContract.accesorios) {
+            const accesoriosConMonto = createIndividualContract.accesorios.filter(accesorio => accesorio.xprimaAccesorio !== '');
+        
+            if (accesoriosConMonto.length > 0) {
+                const maxContract = await Contract.findOne({
+                    attributes: ['ccontratoflota'],
+                    order: [['ccontratoflota', 'DESC']],
+                    limit: 1,
+                });
+                const contrato = maxContract ? maxContract.get({ plain: true }) : null;
+        
+                let pool = await sql.connect(sqlConfig);
+                for (let i = 0; i < accesoriosConMonto.length; i++) {
+                    const montoAccesorio = parseFloat(accesoriosConMonto[i].xprimaAccesorio);
+        
+                    let insert = await pool.request()
+                        .input('ccontratoflota', sql.Int, contrato.ccontratoflota)
+                        .input('caccesorio', sql.Int, accesoriosConMonto[i].caccesorio)
+                        .input('maccesoriocontratoflota', sql.Numeric(11, 2), montoAccesorio)
+                        .input('fcreacion', sql.DateTime, new Date())
+                        .input('cusuariocreacion', sql.Int, createIndividualContract.cusuario)
+                        .query('INSERT INTO SUACCESORIOCONTRATOFLOTA (ccontratoflota, caccesorio, maccesoriocontratoflota, fcreacion, cusuariocreacion) VALUES (@ccontratoflota, @caccesorio, @maccesoriocontratoflota, @fcreacion, @cusuariocreacion)');
+        
+                    let exec = await pool.request()
+                        .input('ccontratoflota', sql.Int, contrato.ccontratoflota)
+                        .execute('trBAcesorios_ContratoFlota');
+                }
+            }
+        }
           return { result: { rowsAffected: rowsAffected, status: true } };
   }
   catch(err){

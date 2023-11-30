@@ -250,8 +250,8 @@ const getTakers = async () => {
     return takers;
 }
 
-const getTypeOfPayment = async () => {
-    const typePayment = await Valrep.getTypeOfPayment();
+const getTypeOfPayment = async (getTypeOfPayment) => {
+    const typePayment = await Valrep.getTypeOfPayment(getTypeOfPayment);
     if (typePayment.error) {
         return {
             error: typePayment.error
@@ -260,8 +260,8 @@ const getTypeOfPayment = async () => {
     return typePayment;
 }
 
-const getBank = async () => {
-    const bank = await Valrep.getBank();
+const getBank = async (getBank) => {
+    const bank = await Valrep.getBank(getBank);
     if (bank.error) {
         return {
             error: bank.error

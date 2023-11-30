@@ -22,20 +22,31 @@ const detailCertificateCertificate = async (searchDetail) => {
             // Convierte las fechas a formato "dd/mm/yyyy"
             const fdesdeRec = new Date(getFleetContractReceiptData.result.recordset[i].FDESDE_REC);
             const fhastaRec = new Date(getFleetContractReceiptData.result.recordset[i].FHASTA_REC);
-    
+            let fcobroIN;
+            let fcobro;
+
             const dd_mm_yyyy_format = (date) => {
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0'); // Suma 1 al mes, ya que los meses en JavaScript van de 0 a 11.
                 const year = date.getFullYear();
                 return `${day}/${month}/${year}`;
             };
+
+            if(getFleetContractReceiptData.result.recordset[i].FCOBRO){
+                fcobroIN = new Date(getFleetContractReceiptData.result.recordset[i].FCOBRO);
+                fcobro = dd_mm_yyyy_format(fcobroIN);
+            }else{
+                fcobro;
+            }
     
             receiptList.push({
                 crecibo: getFleetContractReceiptData.result.recordset[i].CRECIBO,
                 fdesde_rec: dd_mm_yyyy_format(fdesdeRec),
                 fhasta_rec: dd_mm_yyyy_format(fhastaRec),
+                fcobro: fcobro,
                 xmoneda: getFleetContractReceiptData.result.recordset[i].xmoneda,
                 mprima: getFleetContractReceiptData.result.recordset[i].MPRIMA_BRUTA_EXT,
+                xestatus: getFleetContractReceiptData.result.recordset[i].XESTATUSGENERAL,
             });
         }
     }
@@ -90,6 +101,7 @@ const detailCertificateCertificate = async (searchDetail) => {
                 ititulo: getPlanCoverages.result.recordset[i].ititulo,
                 xmoneda: getPlanCoverages.result.recordset[i].xmoneda,
                 ccontratoflota: getPlanCoverages.result.recordset[i].ccontratoflota,
+                m2: ' ',
             }
             realCoverages.push(coverage);
         }
@@ -99,14 +111,14 @@ const detailCertificateCertificate = async (searchDetail) => {
             mprimaprorratatotal = Number(mprimaprorratatotal.toFixed(2)); // Redondea mprimaprorratatotal a 2 decimales si es mayor que 0
         }
         let services = [];
-        let getFleetContractServices = await Certificate.getFleetContractServices(getFleetContractData.result.recordset[0].ccarga);
+        let getFleetContractServices = await Certificate.getFleetContractServices(getFleetContractData.result.recordset[0].CPLAN_RC);
         if(getFleetContractServices.error){ console.log(getFleetContractServices.error); return { status: false, code: 500, message: getFleetContractServices.error }; }
         if(getFleetContractServices.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Service not found.' }; }
         if (getFleetContractServices.result.rowsAffected > 0) {
             for(let i = 0; i < getFleetContractServices.result.recordset.length; i++){
                 let service = {
                     cservicio: getFleetContractServices.result.recordset[i].cservicio,
-                    xservicio: getFleetContractServices.result.recordset[i].XSERVICIO,
+                    xservicio: getFleetContractServices.result.recordset[i].xservicio,
                 }
                 services.push(service);
             }
@@ -222,6 +234,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             ncapacidadcargavehiculo: getFleetContractData.result.recordset[0].NCAPACIDADCARGA,
             ncapacidadpasajerosvehiculo: getFleetContractData.result.recordset[0].NCAPACIDADPASAJEROS,
             xplancoberturas: getPlanData.result.recordset[0].XPLAN_RC,
+            xgrua: getPlanData.result.recordset[0].XGRUA,
             xtomador: xtomador,
             xrif_tomador: xrif_tomador,
             xdireccion_tomador: xdireccion_tomador,
@@ -237,7 +250,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             mprimaprorratatotal: mprimaprorratatotal,
             accesories: accesories,
             inspections: inspections,
-            services:services,
+            services: services,
             realCoverages: realCoverages,
             coverageAnnexes: coverageAnnexes,
             receipt: receiptList,
