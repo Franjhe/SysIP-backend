@@ -134,6 +134,7 @@ const detailCertificateCertificate = async (searchDetail) => {
                 let accessory = {
                     caccesorio: getFleetContractAccesories.result.recordset[i].CACCESORIO,
                     xaccesorio: getFleetContractAccesories.result.recordset[i].XACCESORIO,
+                    msuma_aseg: getFleetContractAccesories.result.recordset[i].MSUMA_ASEG,
                     maccesoriocontratoflota: getFleetContractAccesories.result.recordset[i].MACCESORIOCONTRATOFLOTA,
                 }
                 accesories.push(accessory);

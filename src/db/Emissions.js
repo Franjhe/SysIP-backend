@@ -180,14 +180,15 @@ const createIndividualContract = async(createIndividualContract) => {
                 let pool = await sql.connect(sqlConfig);
                 for (let i = 0; i < accesoriosConMonto.length; i++) {
                     const montoAccesorio = parseFloat(accesoriosConMonto[i].xprimaAccesorio);
-        
+                    const sumaAccesorio = parseFloat(accesoriosConMonto[i].sumaAsegurada);
                     let insert = await pool.request()
                         .input('ccontratoflota', sql.Int, contrato.ccontratoflota)
                         .input('caccesorio', sql.Int, accesoriosConMonto[i].caccesorio)
+                        .input('msuma_aseg', sql.Numeric(18, 2), sumaAccesorio)
                         .input('maccesoriocontratoflota', sql.Numeric(11, 2), montoAccesorio)
                         .input('fcreacion', sql.DateTime, new Date())
                         .input('cusuariocreacion', sql.Int, createIndividualContract.cusuario)
-                        .query('INSERT INTO SUACCESORIOCONTRATOFLOTA (ccontratoflota, caccesorio, maccesoriocontratoflota, fcreacion, cusuariocreacion) VALUES (@ccontratoflota, @caccesorio, @maccesoriocontratoflota, @fcreacion, @cusuariocreacion)');
+                        .query('INSERT INTO SUACCESORIOCONTRATOFLOTA (ccontratoflota, caccesorio, msuma_aseg, maccesoriocontratoflota, fcreacion, cusuariocreacion) VALUES (@ccontratoflota, @caccesorio, @msuma_aseg, @maccesoriocontratoflota, @fcreacion, @cusuariocreacion)');
         
                     let exec = await pool.request()
                         .input('ccontratoflota', sql.Int, contrato.ccontratoflota)
