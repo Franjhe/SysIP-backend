@@ -6,8 +6,8 @@ const router = express.Router();
 
 router
 
-    .post("/trade", authenticate, valrepController.getTrade)
-    .post("/coin", valrepController.getCoin)
+    .get("/trade",valrepController.getTrade)
+    .get("/coin", valrepController.getCoin)
     .post("/client", authenticate, valrepController.getClient)
     .post("/brokers", authenticate, valrepController.getBrokers)
     .post("/departament", authenticate, valrepController.getDepartament)

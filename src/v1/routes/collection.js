@@ -7,5 +7,7 @@ router
 
     .post("/search",  collectionController.searchCollectionbyClient)
     .post("/create",  collectionController.createPaymentReport)
+    .get("/search-notification",  collectionController.searchPaymentReportNotification)
+    .get("/search-pending",  collectionController.searchPaymentPending)
 
 export default router;
