@@ -121,9 +121,40 @@ const searchPaymentPending= async (req, res) => {
         });
 }
 
+const PaymentsCollected= async (req, res) => {
+    const searchPaymentsCollected = await collectionService.getAllPaymentsCollected();
+
+    if (searchPaymentsCollected.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchPaymentsCollected.permissionError
+            });
+    }
+    if (searchPaymentsCollected.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchPaymentsCollected.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchPaymentsCollected,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
     createPaymentReport,
     searchPaymentReportNotification,
-    searchPaymentPending
+    searchPaymentPending,
+    PaymentsCollected
 }

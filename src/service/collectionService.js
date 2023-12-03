@@ -40,10 +40,22 @@ const searchPaymentPendingData = async () => {
     return searchPaymentPending;
 }
 
+const getAllPaymentsCollected= async () => {
+    const searchPaymentsCollected = await Collection.searchDataPaymentsCollected();
+    if (searchPaymentsCollected.error) {
+        return {
+            error: searchPaymentsCollected.error
+        }
+    }
+    return searchPaymentsCollected;
+}
+
+
 
 export default {
     searchDataReceipt,
     createPaymentReport,
     searchPaymentReportData,
-    searchPaymentPendingData
+    searchPaymentPendingData,
+    getAllPaymentsCollected
 }
