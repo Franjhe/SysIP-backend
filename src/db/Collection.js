@@ -148,7 +148,7 @@ const searchDataPaymentReport = async(searchDataReceipt) => {
 
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
-        .query('select ncaja , casegurado, cmoneda, mpago_dec,  mpago, mpagoext,'+
+        .query('select ctransaccion , casegurado, cmoneda, mpago_dec,  mpago, mpagoext,'+
         ' ptasamon, freporte, xruta, cprog, cusuario from cbreporte_pago')
         await pool.close();
 
