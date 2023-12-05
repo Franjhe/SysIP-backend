@@ -30,9 +30,8 @@ const searchCollectionbyClient = async (req, res) => {
         });
 }
 
-const createPaymentReport = async (req, res) => {
-    console.log(req.body)
-    const searchReceipt = await collectionService.createPaymentReport(req.body);
+const createPaymentReporTrans = async (req, res) => {
+    const searchReceipt = await collectionService.createPaymentReportTrans(req.body);
 
     if (searchReceipt.permissionError) {
         return res
@@ -55,7 +54,34 @@ const createPaymentReport = async (req, res) => {
         .status(200)
         .send({
             status: true,
-            searchReceipt,
+            ctransaccion : searchReceipt,
+        });
+}
+
+const createPaymentReportSoport = async (req, res) => {
+    const searchReceipt = await collectionService.createPaymentReportSoport(req.body);
+
+    if (searchReceipt.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchReceipt.permissionError
+            });
+    }
+    if (searchReceipt.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchReceipt.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
             message: 'Su reporte de pago ha sido registrado exitosamente.'
             
         });
@@ -153,7 +179,8 @@ const PaymentsCollected= async (req, res) => {
 
 export default {
     searchCollectionbyClient,
-    createPaymentReport,
+    createPaymentReporTrans,
+    createPaymentReportSoport,
     searchPaymentReportNotification,
     searchPaymentPending,
     PaymentsCollected
