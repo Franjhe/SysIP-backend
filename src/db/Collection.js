@@ -66,9 +66,9 @@ const createPaymentReportW = async(createPaymentReport) => {
                 if (searchTransaccion.recordset[0].ctransaccion){
                     for(let i = 0; i < createPaymentReport.transfer.length; i++){
                         let insertReport = await pool.request()
-                        .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.transfer.ctransaccion)   
+                        .input('ctransaccion'   , sql.Numeric(18, 0), searchTransaccion.recordset[0].ctransaccion)   
                         .input('npago'   , sql.Numeric(18, 0), i + 1)   
-                        .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport.transfer.casegurado)   
+                        .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport.casegurado)   
                         .input('cmoneda'      , sql.Char(4, 0), createPaymentReport.transfer.cmoneda )  
                         .input('cbanco'        , sql.Numeric(18, 2), createPaymentReport.transfer.cbanco ) 
                         .input('cbanco_destino'        , sql.Numeric(18, 2), createPaymentReport.cbanco_destino ) 
