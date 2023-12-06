@@ -232,6 +232,34 @@ const updateUbii = async (req, res) => {
         });
 }
 
+const searchRiotRate = async (req, res) => {
+    const result = await emissionsService.searchRiotRate(req.body);
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                pmotin: result[0].ptasa
+            }
+        });
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
@@ -239,5 +267,6 @@ export default {
     searchAllContract,
     searchPropietary,
     searchVehicle,
-    updateUbii
+    updateUbii,
+    searchRiotRate
 }

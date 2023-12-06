@@ -111,6 +111,16 @@ const updateContract = async (updateContract) => {
     return result2;
 }
 
+const searchRiotRate = async (searchRiotRate) => {
+    const result = await Emissions.searchRiotRate(searchRiotRate);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -121,6 +131,7 @@ export default {
     searchPropietary,
     searchVehicle,
     updateUbii,
-    updateContract
+    updateContract,
+    searchRiotRate
     // createIndividualContractArys
 }
