@@ -11,7 +11,7 @@ const searchDataReceipt = async (searchDataReceipt) => {
 }
 
 const createPaymentReportTrans = async (createPaymentReport) => {
-    const createPaymentReportData = await Collection.createPaymentReportW(createPaymentReport);
+    const createPaymentReportData = await Collection.createPaymentReportTransW(createPaymentReport);
     if (createPaymentReportData.error) {
         return {
             error: createPaymentReportData.error
@@ -21,7 +21,7 @@ const createPaymentReportTrans = async (createPaymentReport) => {
 }
 
 const createPaymentReportSoport = async (createPaymentReport) => {
-    const createPaymentReportData = await Collection.createPaymentReportW(createPaymentReport);
+    const createPaymentReportData = await Collection.createPaymentReportSoportW(createPaymentReport);
     if (createPaymentReportData.error) {
         return {
             error: createPaymentReportData.error
