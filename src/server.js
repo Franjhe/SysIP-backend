@@ -62,7 +62,6 @@ app.listen(PORT, () => {
   console.log(`\n API is listening on port ${PORT}`);
 });
 
-const DOCUMENTS_PATH = './public/documents';
 
 const document_storage = multer.diskStorage({
   destination: (req, file, cb) => {
