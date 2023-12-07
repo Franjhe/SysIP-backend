@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv/config';
 import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
 import authenticate from './middlewares/authenticate.js'
 import v1AuthRouter from './v1/routes/authRoutes.js';
 import v1TradeRouter from './v1/routes/tradeRoutes.js';
@@ -33,6 +35,22 @@ app.use("/api/v1/emissions", v1EmissionsRouter);
 app.use("/api/v1/quotes", v1QuotesRouter);
 
 const PORT = process.env.PORT || 3000; 
+
+const DOCUMENTS_PATH = './public/documents';
+
+app.get('/api/get-document/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(DOCUMENTS_PATH, filename);
+  const absolutePath = path.resolve(filePath);
+
+  fs.access(absolutePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Archivo no encontrado' });
+    } else {
+      res.sendFile(absolutePath);
+    }
+  });
+});
 
 app.listen(PORT, () => { 
   console.log(`\n API is listening on port ${PORT}`);
