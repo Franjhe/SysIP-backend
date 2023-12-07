@@ -6,8 +6,8 @@ const router = express.Router();
 
 router
 
-    .post("/trade", authenticate, valrepController.getTrade)
-    .post("/coin", authenticate, valrepController.getCoin)
+    .get("/trade",valrepController.getTrade)
+    .get("/coin", valrepController.getCoin)
     .post("/client", authenticate, valrepController.getClient)
     .post("/brokers", authenticate, valrepController.getBrokers)
     .post("/departament", authenticate, valrepController.getDepartament)
@@ -32,7 +32,7 @@ router
     .post("/method-of-payment", authenticate, valrepController.getMethodOfPayment)
     .post("/takers", authenticate, valrepController.getTakers)
     .post("/type-of-payment", authenticate, valrepController.getTypeOfPayment)
-    .post("/bank", authenticate, valrepController.getBank)
-    .post("/target-bank", authenticate, valrepController.getTargetBank)
+    .post("/bank",  valrepController.getBank)
+    .post("/target-bank",  valrepController.getTargetBank)
     
 export default router;
