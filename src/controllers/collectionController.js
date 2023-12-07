@@ -117,6 +117,35 @@ const searchPaymentReportNotification= async (req, res) => {
         });
 }
 
+const searchPaymentReportNotificationData = async (req, res) => {
+    const searchPaymentReport = await collectionService.searchPaymentTransaction(req.params.id);
+    if (searchPaymentReport.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchPaymentReport.permissionError
+            });
+    }
+    if (searchPaymentReport.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchPaymentReport.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchPaymentReport,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+
 const searchPaymentPending= async (req, res) => {
     const searchPaymentPendingData = await collectionService.searchPaymentPendingData();
 
@@ -182,6 +211,7 @@ export default {
     createPaymentReporTrans,
     createPaymentReportSoport,
     searchPaymentReportNotification,
+    searchPaymentReportNotificationData,
     searchPaymentPending,
     PaymentsCollected
 }

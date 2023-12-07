@@ -12,4 +12,8 @@ router
     .get("/search-pending",  collectionController.searchPaymentPending)
     .get("/search-payments-collected",  collectionController.PaymentsCollected)
 
+    //busquedas de notificaciones
+    .get("/search-notification-data/:id",  collectionController.searchPaymentReportNotificationData)
+
+
 export default router;

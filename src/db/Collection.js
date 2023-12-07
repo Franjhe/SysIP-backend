@@ -143,7 +143,7 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
             .input('ptasamon'     , sql.Numeric(18, 2), createPaymentReport.report[i].ptasamon )        
             .input('ptasaref'     , sql.Numeric(18, 2), createPaymentReport.report[i].ptasaref )        
             .input('xreferencia'  , sql.VarChar(100, 0), createPaymentReport.report[i].xreferencia )  
-            .input('xruta'        , sql.VarChar(100, 0), createPaymentReport.report[i].xruta )  
+            .input('xruta'        , sql.VarChar(100, 0), createPaymentReport.report[i].ximagen )  
             .input('cprog'        , sql.Char(20, 0), createPaymentReport.cprog )
             .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.cusuario)  
             .query('INSERT INTO cbreporte_pago '
@@ -168,11 +168,39 @@ const searchDataPaymentReport = async(searchDataReceipt) => {
 
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
-        .query('select ctransaccion , casegurado, cmoneda, mpago_dec,  mpago, mpagoext,'+
-        ' ptasamon, xruta, cprog, ifuente, cusuario from cbreporte_tran')
+        .query('select ctransaccion ,casegurado, freporte ,mpago, mpagoext,'+
+        ' ptasamon, cprog, ifuente, cusuario from cbreporte_tran')
         await pool.close();
 
         return { recibo : searchReport.recordset};
+
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registrarons los datos ' };
+    }
+}
+
+const searchDataPaymentTransaction = async(searchDataReceipt) => {
+    try{
+
+        let pool = await sql.connect(sqlConfig);
+        let searchReport = await pool.request()
+        .input('ctransaccion'   , sql.Numeric(18, 0), searchDataReceipt)   
+        .query('select ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fdesde_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario'+
+        ' from cbreporte_pago_d where ctransaccion = @ctransaccion')
+        if(searchReport.rowsAffected) { 
+            let pool = await sql.connect(sqlConfig);
+            let searchSoport  = await pool.request()
+            .input('ctransaccion'   , sql.Numeric(18, 0), searchDataReceipt)   
+            .query(' select ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario'+
+            ' from cbreporte_pago where ctransaccion = @ctransaccion')
+
+            return { recibo : searchReport.recordset , soporte : searchSoport.recordset};
+        }
+        await pool.close();
+
+
 
 
     }
@@ -188,7 +216,7 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
         let searchReport = await pool.request()
 
         .input('iestadorec', sql.Char(1, 0), 'P')
-        .query('select cnpoliza,cnrecibo, qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
+        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
                'fdesde_pol , mprimabruta , mprimabrutaext  from adrecibos where iestadorec = @iestadorec ')
 
         await pool.close();
@@ -229,5 +257,6 @@ export default {
     createPaymentReportSoportW,
     searchDataPaymentReport,
     searchDataPaymentPending,
-    searchDataPaymentsCollected
+    searchDataPaymentsCollected,
+    searchDataPaymentTransaction
 }
