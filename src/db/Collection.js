@@ -183,7 +183,6 @@ const searchDataPaymentReport = async(searchDataReceipt) => {
 
 const searchDataPaymentTransaction = async(searchDataReceipt) => {
     try{
-
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
         .input('ctransaccion'   , sql.Numeric(18, 0), searchDataReceipt)   
