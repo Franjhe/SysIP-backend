@@ -260,6 +260,34 @@ const searchRiotRate = async (req, res) => {
         });
 }
 
+const createGroupContract = async (req, res) => {
+    const result = await emissionsService.createGroupContract(req.body);
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: 'Fino',
+            }
+        });
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
@@ -268,5 +296,6 @@ export default {
     searchPropietary,
     searchVehicle,
     updateUbii,
-    searchRiotRate
+    searchRiotRate,
+    createGroupContract
 }

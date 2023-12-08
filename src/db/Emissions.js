@@ -453,6 +453,106 @@ const searchRiotRate = async (searchRiotRate) => {
   }
 };
 
+const createGroupContract = async(createGroupContract) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let contractNoInsert = [];
+      let foundIds = [];
+
+      for(let i = 0; i < createGroupContract.group.length; i++){
+
+        //Valido si tiene codigo de inma
+        if (createGroupContract.group[i].xmarca && createGroupContract.group[i].xmodelo && createGroupContract.group[i].xversion) {
+          let searchInma = await pool.request()
+            .input('u_version', sql.Char, '!')
+            .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)  
+            .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
+            .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
+            .query(`SELECT ID AS ID_INMA FROM mainma WHERE u_version = @u_version${createGroupContract.group[i].xmarca ? ' and xmarca = @xmarca' : ''}${createGroupContract.group[i].xmodelo ? ' and xmodelo = @xmodelo' : ''}${createGroupContract.group[i].xversion ? ' and xversion = @xversion' : ''}`);
+
+            if (searchInma.recordset.length === 0) {
+              contractNoInsert.push(createGroupContract.group[i]);
+            } else {
+              foundIds.push(searchInma.recordset[0].ID_INMA);
+            }
+        }
+
+        if(createGroupContract.group[i].xplaca){
+
+        }
+        // let insert = await pool.request()
+        // .input('icedula', sql.Char, createGroupContract.icedula ? createGroupContract.icedula: undefined)
+        // .input('xrif_cliente', sql.NVarChar, createGroupContract.xrif_cliente ? createGroupContract.xrif_cliente: undefined)
+        // .input('xcedula', sql.NVarChar, createGroupContract.xrif_cliente ? createGroupContract.xrif_cliente: undefined)
+        // .input('xnombre', sql.NVarChar, createGroupContract.xnombre.toUpperCase() ? createGroupContract.xnombre: undefined)
+        // .input('xapellido', sql.NVarChar, createGroupContract.xapellido.toUpperCase() ? createGroupContract.xapellido: undefined)
+        // .input('xtelefono_emp', sql.NVarChar, createGroupContract.xtelefono_emp ? createGroupContract.xtelefono_emp: undefined)
+        // .input('email', sql.NVarChar, createGroupContract.email.toUpperCase() ? createGroupContract.email: undefined)
+        // .input('cestado', sql.Int, createGroupContract.cestado ? createGroupContract.cestado: undefined)
+        // .input('cciudad', sql.Int, createGroupContract.cciudad ? createGroupContract.cciudad: undefined)
+        // .input('fnac', sql.NVarChar, createGroupContract.fnacimiento ? createGroupContract.fnacimiento: undefined)
+        // .input('iestado_civil', sql.NVarChar, createGroupContract.iestado_civil ? createGroupContract.iestado_civil: undefined)
+        // .input('isexo', sql.NVarChar, createGroupContract.isexo ? createGroupContract.isexo: undefined)
+        // .input('xdireccionfiscal', sql.NVarChar, createGroupContract.xdireccion.toUpperCase() ? createGroupContract.xdireccion: undefined)
+        // .input('xplaca', sql.NVarChar, createGroupContract.xplaca.toUpperCase() ? createGroupContract.xplaca: undefined)
+        // .input('xmarca', sql.NVarChar, createGroupContract.xmarca.toUpperCase() ? createGroupContract.xmarca: undefined)
+        // .input('xmodelo', sql.NVarChar, createGroupContract.xmodelo.toUpperCase() ? createGroupContract.xmodelo: undefined)
+        // .input('xversion', sql.NVarChar, createGroupContract.xversion.toUpperCase() ? createGroupContract.xversion: undefined)
+        // .input('cano', sql.Int, createGroupContract.fano ? createGroupContract.fano: undefined)
+        // .input('ncapacidad_p', sql.Int, createGroupContract.npasajeros ? createGroupContract.npasajeros: undefined)
+        // .input('xcolor', sql.NVarChar, createGroupContract.xcolor.toUpperCase() ? createGroupContract.xcolor: undefined)
+        // .input('xserialcarroceria', sql.NVarChar, createGroupContract.xserialcarroceria.toUpperCase() ? createGroupContract.xserialcarroceria: undefined)
+        // .input('xserialmotor', sql.NVarChar, createGroupContract.xserialmotor.toUpperCase() ? createGroupContract.xserialmotor: undefined)
+        // .input('xcobertura', sql.NVarChar, createGroupContract.xcobertura ? createGroupContract.xcobertura: undefined)
+        // .input('ctarifa_exceso', sql.Int, createGroupContract.ctarifa_exceso ? createGroupContract.ctarifa_exceso: undefined)
+        // .input('cplan_rc', sql.Int, createGroupContract.cplan_rc ? createGroupContract.cplan_rc: undefined)
+        // .input('ccorredor', sql.Int, createGroupContract.ccorredor ? createGroupContract.ccorredor: undefined)
+        // .input('ctomador', sql.Int, createGroupContract.ctomador ? createGroupContract.ctomador: undefined)
+        // .input('ccotizacion', sql.Int, createGroupContract.ccotizacion ? createGroupContract.ccotizacion: undefined)
+        // .input('cinspeccion', sql.Int, createGroupContract.cinspeccion ? createGroupContract.cinspeccion: undefined)
+        // .input('fdesde_pol', sql.DateTime, createGroupContract.fdesde_pol ? createGroupContract.fdesde_pol: undefined)
+        // .input('fhasta_pol', sql.DateTime, createGroupContract.fhasta_pol ? createGroupContract.fhasta_pol: undefined)
+        // .input('cclasificacion', sql.Char, createGroupContract.cclasificacion ? createGroupContract.cclasificacion: undefined)
+        // .input('id_inma', sql.Int, createGroupContract.id_inma ? createGroupContract.id_inma: undefined)
+        // .input('pcasco', sql.Numeric(17, 2), createGroupContract.pcasco ? createGroupContract.pcasco: undefined)
+        // .input('msuma_aseg', sql.Numeric(17, 2), createGroupContract.msuma_aseg ? createGroupContract.msuma_aseg: undefined)
+        // .input('mprima_bruta', sql.Numeric(17, 2), createGroupContract.mprima_bruta ? createGroupContract.mprima_bruta: undefined)
+        // .input('pdescuento', sql.Numeric(17, 2), createGroupContract.pdescuento ? createGroupContract.pdescuento: undefined)
+        // .input('precarga', sql.Numeric(17, 2), createGroupContract.precarga ? createGroupContract.precarga: undefined)
+        // .input('pmotin', sql.Numeric(17, 2), createGroupContract.pmotin ? createGroupContract.pmotin: undefined)
+        // .input('pcatastrofico', sql.Numeric(17, 2), createGroupContract.pcatastrofico ? createGroupContract.pcatastrofico: undefined)
+        // .input('mprima_casco', sql.Numeric(17, 2), createGroupContract.mprima_casco ? createGroupContract.mprima_casco: undefined)
+        // .input('mcatastrofico', sql.Numeric(17, 2), createGroupContract.mcatastrofico ? createGroupContract.mcatastrofico: undefined)
+        // .input('mmotin', sql.Numeric(17, 2), createGroupContract.mmotin ? createGroupContract.mmotin: undefined)
+        // .input('pblindaje', sql.Numeric(17, 2), createGroupContract.pblindaje ? createGroupContract.pblindaje: undefined)
+        // .input('msuma_blindaje', sql.Numeric(17, 2), createGroupContract.msuma_blindaje ? createGroupContract.msuma_blindaje: undefined)
+        // .input('mprima_blindaje', sql.Numeric(17, 2), createGroupContract.mprima_blindaje ? createGroupContract.mprima_blindaje: undefined)
+        // .input('xpago', sql.NVarChar, createGroupContract.xpago ? createGroupContract.xpago: undefined)
+        // .input('femision', sql.DateTime, new Date()) 
+        // .input('cmetodologiapago', sql.Int, createGroupContract.cmetodologiapago ? createGroupContract.cmetodologiapago: undefined)
+        // .input('cpais', sql.Int, createGroupContract.cpais ? createGroupContract.cpais: undefined)
+        // .input('cuso', sql.Int, createGroupContract.cuso ? createGroupContract.cuso: undefined)
+        // .input('ctipopago', sql.Int, createGroupContract.ctipopago ? createGroupContract.ctipopago: undefined)
+        // .input('cbanco', sql.Int, createGroupContract.cbanco ? createGroupContract.cbanco: undefined)
+        // .input('cbanco_destino', sql.Int, createGroupContract.cbanco_destino ? createGroupContract.cbanco_destino: undefined)
+        // .input('fcobro', sql.DateTime, createGroupContract.fcobro ? createGroupContract.fcobro: undefined)
+        // .input('xreferencia', sql.NVarChar, createGroupContract.xreferencia ? createGroupContract.xreferencia: undefined)
+        // .input('mprima_pagada', sql.Numeric(18, 2), createGroupContract.mprima_pagada ? createGroupContract.mprima_pagada: undefined)
+        // .input('mprima_accesorio', sql.Numeric(18, 2), createGroupContract.mprima_accesorio ? createGroupContract.mprima_accesorio: undefined)
+        // .query('INSERT INTO TMEMISION_INDIVIDUAL (icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, xmarca, xmodelo, xversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cplan_rc, ccorredor, ctomador, ccotizacion, cinspeccion, fdesde_pol, fhasta_pol, cclasificacion, msuma_aseg, mprima_bruta, pdescuento, precarga, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais, id_inma, pcasco, pmotin, cuso, ctipopago, cbanco, cbanco_destino, xreferencia, mprima_pagada, fcobro, fnac, iestado_civil, isexo, mprima_accesorios) VALUES (@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cplan_rc, @ccorredor, @ctomador, @ccotizacion, @cinspeccion, @fdesde_pol, @fhasta_pol, @cclasificacion, @msuma_aseg, @mprima_bruta, @pdescuento, @precarga, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais, @id_inma, @pcasco, @pmotin, @cuso, @ctipopago, @cbanco, @cbanco_destino, @xreferencia, @mprima_pagada, @fcobro, @fnac, @iestado_civil, @isexo, @mprima_accesorio)')
+      }
+
+          await pool.close();
+
+          return { result: { rowsAffected: rowsAffected, status: true } };
+  }
+  catch(err){
+      console.log(err.message)
+      return { error: err.message };
+  }
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -464,6 +564,6 @@ export default {
     searchVehicle,
     updateUbii,
     updateContract,
-    searchRiotRate
-    // createIndividualContractArys
+    searchRiotRate,
+    createGroupContract
   };

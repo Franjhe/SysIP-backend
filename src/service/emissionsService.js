@@ -121,6 +121,16 @@ const searchRiotRate = async (searchRiotRate) => {
     return result;
 }
 
+const createGroupContract = async (createGroupContract) => {
+    const result = await Emissions.createGroupContract(createGroupContract);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -132,6 +142,6 @@ export default {
     searchVehicle,
     updateUbii,
     updateContract,
-    searchRiotRate
-    // createIndividualContractArys
+    searchRiotRate,
+    createGroupContract
 }

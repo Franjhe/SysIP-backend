@@ -13,5 +13,6 @@ router
     .post("/automobile/vehicle",  emissionsController.searchVehicle)
     .post("/automobile/ubii/update",  emissionsController.updateUbii)
     .post("/automobile/riot-rate",  emissionsController.searchRiotRate)
+    .post("/automobile/group",  emissionsController.createGroupContract)
 
 export default router;
