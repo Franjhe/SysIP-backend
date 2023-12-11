@@ -206,6 +206,35 @@ const PaymentsCollected= async (req, res) => {
         });
 }
 
+const updateReceipt = async (req, res) => {
+    const updateReceiptData = await collectionService.updateDataReceipt(req.params.id);
+    if (updateReceiptData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: updateReceiptData.permissionError
+            });
+    }
+    if (updateReceiptData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: updateReceiptData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchPaymentReport,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
     createPaymentReporTrans,
@@ -213,5 +242,6 @@ export default {
     searchPaymentReportNotification,
     searchPaymentReportNotificationData,
     searchPaymentPending,
-    PaymentsCollected
+    PaymentsCollected,
+    updateReceipt
 }

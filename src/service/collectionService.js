@@ -70,6 +70,16 @@ const searchPaymentTransaction = async (searchPaymentReport) => {
     return searchPaymentsCollected;
 }
 
+const updateDataReceipt = async (updatePaymentReport) => {
+    const updatePaymentsCollected = await Collection.updateReceiptNotifiqued(updatePaymentReport);
+    if (updatePaymentsCollected.error) {
+        return {
+            error: updatePaymentsCollected.error
+        }
+    }
+    return updatePaymentsCollected;
+}
+
 export default {
     searchDataReceipt,
     createPaymentReportTrans,
@@ -77,5 +87,6 @@ export default {
     searchPaymentReportData,
     searchPaymentPendingData,
     getAllPaymentsCollected,
-    searchPaymentTransaction
+    searchPaymentTransaction,
+    updateDataReceipt
 }
