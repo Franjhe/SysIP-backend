@@ -38,7 +38,7 @@ const searchHullPrice = async (searchHullPrice) => {
   try {
     const clasificacion = await Price.findAll({
       where: searchHullPrice,
-      attributes: ['pcobertura_amplia, pperdida_total'],
+      attributes: ['pcobertura_amplia', 'pperdida_total'],
     });
     const result = clasificacion.map((item) => item.get({ plain: true }));
     return result;
