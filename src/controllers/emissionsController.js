@@ -24,6 +24,7 @@ const searchHullPrice = async (req, res) => {
             status: true,
             data: {
                 ptasa_casco: result[0].pcobertura_amplia, 
+                pperdida_total: result[0].pperdida_total, 
             }
         });
 }
