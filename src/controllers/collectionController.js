@@ -207,7 +207,7 @@ const PaymentsCollected= async (req, res) => {
 }
 
 const updateReceipt = async (req, res) => {
-    const updateReceiptData = await collectionService.updateDataReceipt(req.params.id);
+    const updateReceiptData = await collectionService.updateDataReceipt(req.body);
     if (updateReceiptData.permissionError) {
         return res
             .status(403)
@@ -229,8 +229,7 @@ const updateReceipt = async (req, res) => {
         .status(200)
         .send({
             status: true,
-            searchPaymentReport,
-            message: 'Consulta exitosa.'
+            message: 'Actualizacion exitosa.'
             
         });
 }
