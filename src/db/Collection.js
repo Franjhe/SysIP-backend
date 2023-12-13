@@ -54,7 +54,7 @@ const createPaymentReportTransW = async(createPaymentReport) => {
             .input('ptasamon'     , sql.Numeric(18, 2), createPaymentReport.ptasamon )         
             .input('cprog'        , sql.Char(20, 0), createPaymentReport.cprog )
             .input('ifuente'     , sql.Char(10), createPaymentReport.ifuente)  
-            .input('iestado'     , sql.Bit, 0)  
+            .input('iestado'     , sql.Bit, createPaymentReport.iestado)  
             .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.cusuario)  
             .query('INSERT INTO cbreporte_tran  '
             +'(freporte, casegurado, mpago,  mpagoext, ptasamon, cprog, ifuente, iestado ,cusuario )'
@@ -251,6 +251,43 @@ const searchDataPaymentsCollected = async(searchDataReceipt) => {
     }
 }
 
+const searchDataPaymentsCollectedClient = async(searchDataReceipt) => {
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let searchReport = await pool.request()
+        .input('crecibo'   , sql.Numeric(18, 0), searchDataReceipt)   
+        .query('select cnpoliza,cnrecibo, qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
+               'fdesde_pol , mprimabruta , mprimabrutaext  from adrecibos where crecibo = @crecibo ')
+
+        await pool.close();
+
+        return { recibo : searchReport.recordset};
+
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registrarons los datos ' };
+    }
+}
+
+const searchDataClient = async(searchDataReceipt) => {
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let searchReport = await pool.request()
+        .input('xcontrato'   , sql.VarChar(18, 0), searchDataReceipt)   
+        .query('select xcliente,xtelefono,xemail from clcliente where xcontrato  = @xcontrato ')
+
+        await pool.close();
+
+        return { cliente : searchReport.recordset};
+
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registrarons los datos ' };
+    }
+}
+
 const updateReceiptNotifiqued = async(updatePayment) => {
     try{
             //actualiza los recibos cobrados
@@ -297,5 +334,7 @@ export default {
     searchDataPaymentPending,
     searchDataPaymentsCollected,
     searchDataPaymentTransaction,
-    updateReceiptNotifiqued
+    updateReceiptNotifiqued,
+    searchDataPaymentsCollectedClient,
+    searchDataClient
 }

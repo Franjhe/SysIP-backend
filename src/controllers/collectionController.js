@@ -234,6 +234,64 @@ const updateReceipt = async (req, res) => {
         });
 }
 
+const searchReceiptClient = async (req, res) => {
+    const searchReceiptClientData = await collectionService.searchReceiptCliet(req.params.id);
+    if (searchReceiptClientData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchReceiptClientData.permissionError
+            });
+    }
+    if (searchReceiptClientData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchReceiptClientData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchReceiptClientData,
+            message: 'consulta exitosa.'
+            
+        });
+}
+
+const searchClient = async (req, res) => {
+    const searchClientData = await collectionService.searchCliet(req.params.id);
+    if (searchClientData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchClientData.permissionError
+            });
+    }
+    if (searchClientData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchClientData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchClientData,
+            message: 'consulta exitosa.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
     createPaymentReporTrans,
@@ -242,5 +300,7 @@ export default {
     searchPaymentReportNotificationData,
     searchPaymentPending,
     PaymentsCollected,
-    updateReceipt
+    updateReceipt,
+    searchReceiptClient,
+    searchClient
 }
