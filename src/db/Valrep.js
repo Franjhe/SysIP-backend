@@ -12,7 +12,8 @@ const Park = sequelize.define('np_parques', {});
 const Color = sequelize.define('MACOLOR_WEB', {}, { tableName: 'MACOLOR_WEB' });
 const Rates = sequelize.define('PRTARIFA_EXCESO', {}, { tableName: 'PRTARIFA_EXCESO' });
 const TypeVehicle = sequelize.define('MATIPOVEHICULO', {}, { tableName: 'MATIPOVEHICULO' });
-const Utility = sequelize.define('MAUSOVEHICULO', {}, { tableName: 'MAUSOVEHICULO' });
+const UtilityRecharge = sequelize.define('MAUSOVEHICULO', {}, { tableName: 'MAUSOVEHICULO' });
+const Utility = sequelize.define('MAUSO', {}, { tableName: 'MAUSO' });
 const Class = sequelize.define('MACLASES_WEB', {}, { tableName: 'MACLASES_WEB' });
 const Plan = sequelize.define('PRPLAN_RC', {}, { tableName: 'PRPLAN_RC' });
 const Accesories = sequelize.define('MAACCESORIOS', {});
@@ -355,7 +356,7 @@ const getVersion = async (getVersion) => {
   try {
     const versions = await Version.findAll({
       where: getVersion,
-      attributes: ['xversion', 'npasajero', 'xclasificacion', 'id', 'xclase_rcv', 'msum', 'ctarifa_exceso'],
+      attributes: ['xversion', 'npasajero', 'xclasificacion', 'id', 'xclase_rcv', 'msum', 'ctarifa_exceso', 'xuso', 'npesovacio', 'ncapcarga'],
     });
     const version = versions.map((item) => item.get({ plain: true }));
     return version;
@@ -400,10 +401,24 @@ const getTypeVehicle = async () => {
   }
 };
 
+const getUtilityRechange = async () => {
+  console.log('hola')
+  try {
+    const uso = await UtilityRecharge.findAll({
+      attributes: ['cuso', 'xuso', 'precargo'],
+    });
+    const utilityR = uso.map((item) => item.get({ plain: true }));
+    return utilityR;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
 const getUtility = async () => {
+  console.log('todo bien?')
   try {
     const uso = await Utility.findAll({
-      attributes: ['cuso', 'xuso', 'precargo'],
+      attributes: ['cuso', 'xuso'],
     });
     const utility = uso.map((item) => item.get({ plain: true }));
     return utility;
@@ -532,6 +547,7 @@ export default {
   getColor,
   getRates,
   getTypeVehicle,
+  getUtilityRechange,
   getUtility,
   getClass,
   getPlan,

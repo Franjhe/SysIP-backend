@@ -25,6 +25,7 @@ router
     .post("/color", authenticate, valrepController.getColor)
     .post("/rates", authenticate, valrepController.getRates)
     .post("/type-vehicle", authenticate, valrepController.getTypeVehicle)
+    .post("/utility-rechange", authenticate, valrepController.getUtilityRechange)
     .post("/utility", authenticate, valrepController.getUtility)
     .post("/class", authenticate, valrepController.getClass)
     .post("/plan", authenticate, valrepController.getPlan)

@@ -538,6 +538,34 @@ const getTypeVehicle = async (req, res) => {
         });
 }
 
+const getUtilityRechange = async (req, res) => {
+    const utilityR = await valrepService.getUtilityRechange();
+    if (utilityR.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: utilityR.permissionError
+            });
+    }
+    if (utilityR.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: utilityR.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                utilityR: utilityR
+            }
+        });
+}
+
 const getUtility = async (req, res) => {
     const utility = await valrepService.getUtility();
     if (utility.permissionError) {
@@ -811,6 +839,7 @@ export default {
     getColor,
     getRates,
     getTypeVehicle,
+    getUtilityRechange,
     getUtility,
     getClass,
     getPlan,

@@ -190,6 +190,16 @@ const getTypeVehicle = async () => {
     return type;
 }
 
+const getUtilityRechange = async () => {
+    const utilityR = await Valrep.getUtilityRechange();
+    if (utilityR.error) {
+        return {
+            error: utilityR.error
+        }
+    }
+    return utilityR;
+}
+
 const getUtility = async () => {
     const utility = await Valrep.getUtility();
     if (utility.error) {
@@ -300,6 +310,7 @@ export default {
     getColor,
     getRates,
     getTypeVehicle,
+    getUtilityRechange,
     getUtility,
     getClass,
     getPlan,
