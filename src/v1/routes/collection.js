@@ -14,6 +14,11 @@ router
 
     //busquedas de notificaciones
     .get("/search-notification-data/:id",  collectionController.searchPaymentReportNotificationData)
+    .patch("/update-receipt/",  collectionController.updateReceipt)
+    .get("/search-receipt-data/:id",  collectionController.searchReceiptClient)
+    .get("/search-client/:id",  collectionController.searchClient)
+
+
 
 
 export default router;

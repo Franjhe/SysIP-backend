@@ -206,6 +206,92 @@ const PaymentsCollected= async (req, res) => {
         });
 }
 
+const updateReceipt = async (req, res) => {
+    const updateReceiptData = await collectionService.updateDataReceipt(req.body);
+    if (updateReceiptData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: updateReceiptData.permissionError
+            });
+    }
+    if (updateReceiptData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: updateReceiptData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            message: 'Actualizacion exitosa.'
+            
+        });
+}
+
+const searchReceiptClient = async (req, res) => {
+    const searchReceiptClientData = await collectionService.searchReceiptCliet(req.params.id);
+    if (searchReceiptClientData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchReceiptClientData.permissionError
+            });
+    }
+    if (searchReceiptClientData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchReceiptClientData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchReceiptClientData,
+            message: 'consulta exitosa.'
+            
+        });
+}
+
+const searchClient = async (req, res) => {
+    const searchClientData = await collectionService.searchCliet(req.params.id);
+    if (searchClientData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchClientData.permissionError
+            });
+    }
+    if (searchClientData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchClientData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchClientData,
+            message: 'consulta exitosa.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
     createPaymentReporTrans,
@@ -213,5 +299,8 @@ export default {
     searchPaymentReportNotification,
     searchPaymentReportNotificationData,
     searchPaymentPending,
-    PaymentsCollected
+    PaymentsCollected,
+    updateReceipt,
+    searchReceiptClient,
+    searchClient
 }

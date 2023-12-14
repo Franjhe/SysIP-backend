@@ -70,6 +70,36 @@ const searchPaymentTransaction = async (searchPaymentReport) => {
     return searchPaymentsCollected;
 }
 
+const searchReceiptCliet = async (searchPaymentReport) => {
+    const searchPaymentsCollected = await Collection.searchDataPaymentsCollectedClient(searchPaymentReport);
+    if (searchPaymentsCollected.error) {
+        return {
+            error: searchPaymentsCollected.error
+        }
+    }
+    return searchPaymentsCollected;
+}
+
+const searchCliet = async (searchPaymentReport) => {
+    const searchPaymentsCollected = await Collection.searchDataClient(searchPaymentReport);
+    if (searchPaymentsCollected.error) {
+        return {
+            error: searchPaymentsCollected.error
+        }
+    }
+    return searchPaymentsCollected;
+}
+
+const updateDataReceipt = async (updatePaymentReport) => {
+    const updatePaymentsCollected = await Collection.updateReceiptNotifiqued(updatePaymentReport);
+    if (updatePaymentsCollected.error) {
+        return {
+            error: updatePaymentsCollected.error
+        }
+    }
+    return updatePaymentsCollected;
+}
+
 export default {
     searchDataReceipt,
     createPaymentReportTrans,
@@ -77,5 +107,8 @@ export default {
     searchPaymentReportData,
     searchPaymentPendingData,
     getAllPaymentsCollected,
-    searchPaymentTransaction
+    searchPaymentTransaction,
+    updateDataReceipt,
+    searchReceiptCliet,
+    searchCliet
 }
