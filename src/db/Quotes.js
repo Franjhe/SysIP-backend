@@ -12,6 +12,7 @@ const sqlConfig = {
 }
 
 const createQuotes = async (createQuotes) => {
+    console.log(createQuotes)
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
@@ -22,12 +23,12 @@ const createQuotes = async (createQuotes) => {
             .input('xcorreo', sql.NVarChar, createQuotes.email)
             .input('ctarifa_exceso', sql.Int, createQuotes.ctarifa_exceso)
             .input('msuma', sql.Numeric(18, 2), createQuotes.msuma_aseg)
-            .input('xclasificacion', sql.NVarChar, createQuotes.xclasificacion)
-            .input('ncapacidad_p', sql.NVarChar, createQuotes.ncapacidad_p)
+            .input('xclasificacion', sql.NVarChar, createQuotes.xclasificacion.trim())
+            .input('ncapacidad_p', sql.Int, createQuotes.ncapacidad_p)
             .execute('trBCotizacionAuto');
 
         let query = await pool.request()
-            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mprima FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
         await pool.close();
         return { result: query.recordset };
 
