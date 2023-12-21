@@ -20,7 +20,19 @@ const updateQuotes = async (updateQuotes) => {
     return update;
 } 
 
+const searchCoverages = async () => {
+    const coverage = await Quotes.searchCoverages();
+    if (coverage.error) {
+        return {
+            error: coverage.error
+        }
+    }
+    return coverage;
+} 
+
+
 export default {
     createQuotes,
-    updateQuotes
+    updateQuotes,
+    searchCoverages
 }

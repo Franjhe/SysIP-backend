@@ -1,4 +1,7 @@
 import sql from "mssql";
+import { Sequelize, DataTypes } from 'sequelize';
+import { Op } from 'sequelize';
+import sequelize from '../config/database.js';
 
 const sqlConfig = {
     user: process.env.USER_BD,
@@ -10,6 +13,8 @@ const sqlConfig = {
         trustServerCertificate: true
     }
 }
+
+const Coverages = sequelize.define('MACOBERTURA_RCV', {}, { tableName: 'MACOBERTURA_RCV' });
 
 const createQuotes = async (createQuotes) => {
     try {
@@ -58,7 +63,30 @@ const updateQuotes = async (updateQuotes) => {
     }
 };
 
+const searchCoverages = async () => {
+    try {
+        const coverages = await Coverages.findAll({
+            attributes: ['ccobertura', 'xcobertura', 'ititulo', 'corden'],
+            where: {
+                CORDEN: {
+                    [Op.lte]: 29 // Menor o igual a 29
+                }
+            },
+            order: [
+                ['CORDEN', 'ASC'] // Ordenar por CORDEN en orden ascendente
+            ]
+        });
+
+        const coverage = coverages.map((item) => item.get({ plain: true }));
+        return coverage;
+    } catch (error) {
+        console.log(error.message)
+        return { error: error.message };
+    }
+};
+
 export default {
     createQuotes,
-    updateQuotes
+    updateQuotes,
+    searchCoverages
 }
