@@ -100,6 +100,18 @@ const updateDataReceipt = async (updatePaymentReport) => {
     return updatePaymentsCollected;
 }
 
+
+
+const searchPaymentVencidaData = async () => {
+    const searchPaymentVencidaData = await Collection.searchDataPaymentVencida();
+    if (searchPaymentVencidaData.error) {
+        return {
+            error: searchPaymentVencidaData.error
+        }
+    }
+    return searchPaymentVencidaData;
+}
+
 export default {
     searchDataReceipt,
     createPaymentReportTrans,
@@ -110,5 +122,6 @@ export default {
     searchPaymentTransaction,
     updateDataReceipt,
     searchReceiptCliet,
-    searchCliet
+    searchCliet,
+    searchPaymentVencidaData
 }

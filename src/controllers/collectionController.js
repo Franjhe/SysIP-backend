@@ -292,6 +292,37 @@ const searchClient = async (req, res) => {
         });
 }
 
+
+const searchPaymentVencin= async (req, res) => {
+    const searchPaymentData = await collectionService.searchPaymentVencidaData();
+
+    if (searchPaymentData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchPaymentData.permissionError
+            });
+    }
+    if (searchPaymentData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchPaymentData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchPaymentData,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
     createPaymentReporTrans,
@@ -302,5 +333,6 @@ export default {
     PaymentsCollected,
     updateReceipt,
     searchReceiptClient,
-    searchClient
+    searchClient,
+    searchPaymentVencin
 }

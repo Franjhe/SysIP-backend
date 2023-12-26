@@ -232,6 +232,25 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
     }
 }
 
+const searchDataPaymentVencida= async(searchDataReceipt) => {
+    try{
+
+        let pool = await sql.connect(sqlConfig);
+        let searchReport = await pool.request()
+        .input('iestadorec', sql.Char(1, 0), 'P')
+        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+               ' from adrecibos where iestadorec = @iestadorec   AND GETDATE() > fhasta')
+        await pool.close();
+
+        return { recibo : searchReport.recordset};
+
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registrarons los datos ' };
+    }
+}
+
 const searchDataPaymentsCollected = async(searchDataReceipt) => {
     try{
 
@@ -338,5 +357,6 @@ export default {
     searchDataPaymentTransaction,
     updateReceiptNotifiqued,
     searchDataPaymentsCollectedClient,
-    searchDataClient
+    searchDataClient,
+    searchDataPaymentVencida
 }

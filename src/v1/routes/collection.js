@@ -11,6 +11,8 @@ router
     .get("/search-notification",  collectionController.searchPaymentReportNotification)
     .get("/search-pending",  collectionController.searchPaymentPending)
     .get("/search-payments-collected",  collectionController.PaymentsCollected)
+    .get("/search-vencido",  collectionController.searchPaymentVencin)
+
 
     //busquedas de notificaciones
     .get("/search-notification-data/:id",  collectionController.searchPaymentReportNotificationData)
