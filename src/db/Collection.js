@@ -23,8 +23,10 @@ const searchDataReceipt = async(searchDataReceipt) => {
             let receipt = await pool.request()
             .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
             .input('iestadorec', sql.Char(1, 0), 'P')
-            .query('select qcuotas,cnpoliza,cnrecibo, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
-                   'fdesde_pol , mprimabruta , mprimabrutaext  from adrecibos where casegurado = @casegurado and iestadorec = @iestadorec ')
+            .input('fhasta'        , sql.DateTime , '2024-01-30 ')
+            .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+            ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado '+
+            ' and MONTH(fhasta) = MONTH(@fhasta) AND YEAR(fhasta) = YEAR(@fhasta) AND GETDATE() < fhasta')
             await pool.close();
             return { 
                 receipt: receipt.recordset ,
@@ -214,11 +216,11 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
 
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
-
+        .input('fhasta'        , sql.DateTime , '2024-01-30')
         .input('iestadorec', sql.Char(1, 0), 'P')
-        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , ' + 
-               'fdesde_pol , mprimabruta , mprimabrutaext  from adrecibos where iestadorec = @iestadorec ')
-
+        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+               ' from adrecibos where iestadorec = @iestadorec '+
+               ' and MONTH(fhasta) = MONTH(@fhasta) AND YEAR(fhasta) = YEAR(@fhasta) AND GETDATE() < fhasta')
         await pool.close();
 
         return { recibo : searchReport.recordset};
