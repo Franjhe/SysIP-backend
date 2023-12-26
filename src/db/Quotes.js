@@ -15,6 +15,7 @@ const sqlConfig = {
 }
 
 const Coverages = sequelize.define('MACOBERTURA_RCV', {}, { tableName: 'MACOBERTURA_RCV' });
+const Detail = sequelize.define('TMEMISION_COTIZACION', {}, { tableName: 'TMEMISION_COTIZACION' });
 
 const createQuotes = async (createQuotes) => {
     try {
@@ -69,11 +70,11 @@ const searchCoverages = async () => {
             attributes: ['ccobertura', 'xcobertura', 'ititulo', 'corden'],
             where: {
                 CORDEN: {
-                    [Op.lte]: 29 // Menor o igual a 29
+                    [Op.lte]: 29
                 }
             },
             order: [
-                ['CORDEN', 'ASC'] // Ordenar por CORDEN en orden ascendente
+                ['CORDEN', 'ASC']
             ]
         });
 
@@ -85,8 +86,40 @@ const searchCoverages = async () => {
     }
 };
 
+const detailQuotes = async (detailQuotes) => {
+    try {
+        const quotes = await Detail.findAll({
+            attributes: ['msuma_persona', 
+                         'msuma_dc', 
+                         'msuma_exceso', 
+                         'msuma_defensa',
+                         'msuma_muerte',
+                         'msuma_invalidez',
+                         'msuma_gm',
+                         'msuma_gf',
+                         'msuma_amplia',
+                         'msuma_total',
+                         'msuma_catastrofico',
+                         'msuma_motin',
+                         'mprima_motin_pt',
+                         'msuma_indem'],
+            where: {
+                ccotizacion: detailQuotes.ccotizacion,
+                cplan_rc: detailQuotes.cplan,
+            }
+        });
+
+        const detail = quotes.map((item) => item.get({ plain: true }));
+        return detail;
+    } catch (error) {
+        console.log(error.message)
+        return { error: error.message };
+    }
+};
+
 export default {
     createQuotes,
     updateQuotes,
-    searchCoverages
+    searchCoverages,
+    detailQuotes
 }

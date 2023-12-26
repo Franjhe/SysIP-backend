@@ -30,9 +30,20 @@ const searchCoverages = async () => {
     return coverage;
 } 
 
+const detailQuotes = async (detailQuotes) => {
+    const detail = await Quotes.detailQuotes(detailQuotes);
+    if (detail.error) {
+        return {
+            error: detail.error
+        }
+    }
+    return detail;
+} 
+
 
 export default {
     createQuotes,
     updateQuotes,
-    searchCoverages
+    searchCoverages,
+    detailQuotes
 }
