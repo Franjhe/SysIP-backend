@@ -96,7 +96,6 @@ const searchCoverages = async (req, res) => {
 
 const detailQuotes = async (req, res) => {
     const detail = await quotesService.detailQuotes(req.body);
-    console.log(req.body)
     if (detail.permissionError) {
         return res
             .status(403)
@@ -113,13 +112,42 @@ const detailQuotes = async (req, res) => {
                 message: detail.error
             });
     }
-    console.log(detail)
+    let comparativeList = [];
+    const mapping = {
+      'Cobertura Amplia': 'msuma_amplia',
+      'Perdida Total': 'msuma_total',
+      'Riesgo Catastrofico': 'msuma_catastrofico',
+      'Indemnizacion Diaria por Robo': 'msuma_indem',
+      'Indemnizacion Diaria por Perdida Total': 'msuma_indem',
+      'Daños a Cosas': 'msuma_dc',
+      'Daños a Personas': 'msuma_persona',
+      'Defensa Penal': 'msuma_defensa',
+      'Exceso de Limite': 'msuma_exceso',
+      'Muerte Accidental': 'msuma_muerte',
+      'Invalidez Permanente': 'msuma_invalidez',
+      'Gastos Médicos': 'msuma_gm',
+      'Gastos Funerarios': 'msuma_gf',
+    };
+    
+    for (let i = 0; i < req.body.coverage.length; i++) {
+      const currentCoverage = req.body.coverage[i].xcobertura;
+      const mappedField = mapping[currentCoverage];
+    
+      if (mappedField) {
+        const newItem = {
+          xcobertura: currentCoverage,
+          [mappedField]: detail[0][mappedField],
+        };
+    
+        comparativeList.push(newItem);
+      }
+    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                message: "Cotización exitosa"
+                list: comparativeList
             }
         });
 }

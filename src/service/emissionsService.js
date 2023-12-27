@@ -131,6 +131,16 @@ const createGroupContract = async (createGroupContract) => {
     return result;
 }
 
+const searchQuotes = async (searchQuotes) => {
+    const result = await Emissions.searchQuotes(searchQuotes);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -143,5 +153,6 @@ export default {
     updateUbii,
     updateContract,
     searchRiotRate,
-    createGroupContract
+    createGroupContract,
+    searchQuotes
 }

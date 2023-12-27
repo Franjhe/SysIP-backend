@@ -289,6 +289,42 @@ const createGroupContract = async (req, res) => {
         });
 }
 
+const searchQuotes = async (req, res) => {
+    const result = await emissionsService.searchQuotes(req.body);
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                xnombre: result[0].xnombre, 
+                xapellido: result[0].xapellido, 
+                email: result[0].xcorreo, 
+                xmarca: result[0].xmarca, 
+                xmodelo: result[0].xmodelo, 
+                xversion: result[0].xversion, 
+                npasajeros: result[0].npasajero, 
+                fano: result[0].qano, 
+                cplan: result[0].cplan_rc, 
+            }
+        });
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
@@ -298,5 +334,6 @@ export default {
     searchVehicle,
     updateUbii,
     searchRiotRate,
-    createGroupContract
+    createGroupContract,
+    searchQuotes
 }

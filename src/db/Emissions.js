@@ -32,6 +32,7 @@ const AllContract = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableN
 const Propietary = sequelize.define('TRPROPIETARIO', {}, { tableName: 'TRPROPIETARIO' });
 const Vehicle = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableName: 'VWBUSCARSUCONTRATOFLOTADATA' });
 const Motin = sequelize.define('PRTARIFA_MOTIN_CAT', {}, { tableName: 'PRTARIFA_MOTIN_CAT' });
+const Quotes = sequelize.define('VWBUSCARCOTIZACION', {}, { tableName: 'VWBUSCARCOTIZACION' });
 
 const searchHullPrice = async (searchHullPrice) => {
   console.log(searchHullPrice)
@@ -588,6 +589,43 @@ function areObjectsEqual(obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
 
+// const searchQuotes = async (searchQuotes) => {
+//   try {
+//     const quotes = await Quotes.findAll({
+//       where: {ccotizacion: searchQuotes, iaceptado: 1},
+//       attributes: ['xnombre', 
+//                    'xapellido',
+//                    'xcorreo',
+//                    'xmarca',
+//                    'xmodelo',
+//                    'xversion',
+//                    'npasajero',
+//                    'qano',
+//                    'cplan_rc',],
+//     });
+//     const result = quotes.map((item) => item.get({ plain: true }));
+//     return result;
+//   } catch (error) {
+//     console.log(error.message)
+//     return { error: error.message };
+//   }
+// };
+
+const searchQuotes = async (searchQuotes) => {
+  try {
+    const quotes = await Quotes.findAll({
+      where: { ccotizacion: searchQuotes.ccotizacion, iaceptado: 1 },
+      attributes: ['xnombre', 'xapellido', 'xcorreo', 'xmarca', 'xmodelo', 'xversion', 'npasajero', 'qano', 'cplan_rc'],
+    });
+
+    const result = quotes.map((item) => item.get({ plain: true }));
+    return result;
+  } catch (error) {
+    console.log(error.message);
+    return { error: error.message };
+  }
+};
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -600,5 +638,6 @@ export default {
     updateUbii,
     updateContract,
     searchRiotRate,
-    createGroupContract
+    createGroupContract,
+    searchQuotes
   };

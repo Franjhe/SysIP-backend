@@ -14,5 +14,6 @@ router
     .post("/automobile/ubii/update",  emissionsController.updateUbii)
     .post("/automobile/riot-rate",  emissionsController.searchRiotRate)
     .post("/automobile/group",  emissionsController.createGroupContract)
+    .post("/automobile/search-quote",  emissionsController.searchQuotes)
 
 export default router;
