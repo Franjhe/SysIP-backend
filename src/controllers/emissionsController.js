@@ -251,7 +251,17 @@ const searchRiotRate = async (req, res) => {
                 message: result.error
             });
     }
-    return res
+    if(req.body.xcobertura == 'Rcv'){
+        return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                pmotin: 0
+            }
+        });
+    }else{
+        return res
         .status(200)
         .send({
             status: true,
@@ -259,6 +269,8 @@ const searchRiotRate = async (req, res) => {
                 pmotin: result[0].ptasa
             }
         });
+    }
+
 }
 
 const createGroupContract = async (req, res) => {
@@ -307,6 +319,14 @@ const searchQuotes = async (req, res) => {
                 message: result.error
             });
     }
+    let xcobertura;
+    if(result[0].brcv == 1){
+        xcobertura = 'Rcv';
+    }else if(result[0].bamplia == 1){
+        xcobertura = 'Cobertura Amplia';
+    }else if(result[0].bperdida == 1){
+        xcobertura = 'Perdida Total';
+    }
     return res
         .status(200)
         .send({
@@ -321,6 +341,8 @@ const searchQuotes = async (req, res) => {
                 npasajeros: result[0].npasajero, 
                 fano: result[0].qano, 
                 cplan: result[0].cplan_rc, 
+                xcobertura: xcobertura,
+                mtotal_rcv: result[0].mtotal_rcv
             }
         });
 }
