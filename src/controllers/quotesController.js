@@ -152,9 +152,93 @@ const detailQuotes = async (req, res) => {
         });
 }
 
+const detailQuotesAutomobile = async (req, res) => {
+    const result = await quotesService.detailQuotesAutomobile();
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    let auto = [];
+    for(let i = 0; i < result.length; i++){
+        auto.push({
+            ccotizacion: result[i].ccotizacion,
+            xnombres: result[i].xnombre + ' ' + result[i].xapellido,
+            xvehiculo: result[i].xmarca + ' ' + result[i].xmodelo + ' ' + result[i].xversion,
+        })
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                auto: auto
+            }
+        });
+}
+
+const searchQuotes = async (req, res) => {
+    const result = await quotesService.searchQuotes(req.body);
+    if (result.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: result.permissionError
+            });
+    }
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    let quote = []
+    for(let i = 0; i < result.length; i++){
+        quote.push({
+            mtotal_rcv: result[i].mtotal_rcv,
+            mtotal_amplia: result[i].mtotal_amplia,
+            mtotal_perdida: result[i].mtotal_perdida,
+            xplan_rc: result[i].xplan_rc,
+            cplan_rc: result[i].cplan_rc,
+        })
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                xmarca: result[0].xmarca, 
+                xmodelo: result[0].xmodelo,
+                xversion: result[0].xversion,
+                nombres: result[0].xnombre + ' ' + result[0].xapellido,
+                vehiculo: result[0].xmarca + ' ' + result[0].xmodelo + ' ' + result[0].xversion,
+                fano: result[0].qano,
+                xcorreo: result[0].xcorreo,
+                list: quote
+            }
+        });
+}
+
+
 export default {
     createQuotes,
     updateQuotes,
     searchCoverages,
-    detailQuotes
+    detailQuotes,
+    detailQuotesAutomobile,
+    searchQuotes
 }

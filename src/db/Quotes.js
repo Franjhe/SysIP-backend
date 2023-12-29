@@ -16,6 +16,8 @@ const sqlConfig = {
 
 const Coverages = sequelize.define('MACOBERTURA_RCV', {}, { tableName: 'MACOBERTURA_RCV' });
 const Detail = sequelize.define('TMEMISION_COTIZACION', {}, { tableName: 'TMEMISION_COTIZACION' });
+const DetailAuto = sequelize.define('VWBUSCARCOTIZACION', {}, { tableName: 'VWBUSCARCOTIZACION' });
+const Search = sequelize.define('VWBUSCARCOTIZACION', {}, { tableName: 'VWBUSCARCOTIZACION' });
 
 const createQuotes = async (createQuotes) => {
     try {
@@ -117,9 +119,65 @@ const detailQuotes = async (detailQuotes) => {
     }
 };
 
+const detailQuotesAutomobile = async () => {
+    try {
+      const quotes = await DetailAuto.findAll({
+        where: {iaceptado: 0},
+        attributes: [
+            [Sequelize.literal('DISTINCT ccotizacion'), 'ccotizacion'],
+            'xnombre',
+            'xapellido',
+            'xmarca',
+            'xmodelo',
+            'xversion',
+            'iaceptado',
+          ],
+      });
+  
+      const result = quotes.map((item) => item.get({ plain: true }));
+      return result;
+    } catch (error) {
+        console.log(error.message)
+      return { error: error.message };
+    }
+  };
+
+  const searchQuotes = async (searchQuotes) => {
+    try {
+      const quotes = await DetailAuto.findAll({
+        where: {ccotizacion: searchQuotes.ccotizacion},
+        attributes: [
+            'ccotizacion',
+            'cplan_rc',
+            'xmarca',
+            'xmodelo',
+            'xversion',
+            'xnombre',
+            'xapellido',
+            'mtotal_rcv',
+            'mtotal_amplia',
+            'mtotal_perdida',
+            'xplan_rc',
+            'npasajero',
+            'qano',
+            'xcorreo',
+          ],
+      });
+  
+      const result = quotes.map((item) => item.get({ plain: true }));
+      return result;
+    } catch (error) {
+        console.log(error.message)
+      return { error: error.message };
+    }
+  };
+
+
 export default {
     createQuotes,
     updateQuotes,
     searchCoverages,
-    detailQuotes
+    detailQuotes,
+    detailQuotesAutomobile,
+    searchQuotes
 }

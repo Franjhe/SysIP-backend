@@ -40,10 +40,31 @@ const detailQuotes = async (detailQuotes) => {
     return detail;
 } 
 
+const detailQuotesAutomobile = async () => {
+    const result = await Quotes.detailQuotesAutomobile();
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+} 
+
+const searchQuotes = async (searchQuotes) => {
+    const result = await Quotes.searchQuotes(searchQuotes);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+} 
 
 export default {
     createQuotes,
     updateQuotes,
     searchCoverages,
-    detailQuotes
+    detailQuotes,
+    detailQuotesAutomobile,
+    searchQuotes
 }
