@@ -88,36 +88,55 @@ const searchCoverages = async () => {
     }
 };
 
+// const detailQuotes = async (detailQuotes) => {
+//     try {
+//         const quotes = await Detail.findAll({
+//             attributes: ['msuma_persona', 
+//                          'msuma_dc', 
+//                          'msuma_exceso', 
+//                          'msuma_defensa',
+//                          'msuma_muerte',
+//                          'msuma_invalidez',
+//                          'msuma_gm',
+//                          'msuma_gf',
+//                          'msuma_amplia',
+//                          'msuma_total',
+//                          'msuma_catastrofico',
+//                          'msuma_motin',
+//                          'mprima_motin_pt',
+//                          'msuma_indem'],
+//             where: {
+//                 ccotizacion: detailQuotes.ccotizacion,
+//                 cplan_rc: detailQuotes.cplan,
+//             }
+//         });
+
+//         const detail = quotes.map((item) => item.get({ plain: true }));
+//         return detail;
+//     } catch (error) {
+//         console.log(error.message)
+//         return { error: error.message };
+//     }
+// };
+
 const detailQuotes = async (detailQuotes) => {
     try {
-        const quotes = await Detail.findAll({
-            attributes: ['msuma_persona', 
-                         'msuma_dc', 
-                         'msuma_exceso', 
-                         'msuma_defensa',
-                         'msuma_muerte',
-                         'msuma_invalidez',
-                         'msuma_gm',
-                         'msuma_gf',
-                         'msuma_amplia',
-                         'msuma_total',
-                         'msuma_catastrofico',
-                         'msuma_motin',
-                         'mprima_motin_pt',
-                         'msuma_indem'],
-            where: {
-                ccotizacion: detailQuotes.ccotizacion,
-                cplan_rc: detailQuotes.cplan,
-            }
-        });
+        let pool = await sql.connect(sqlConfig);
+        let result = await pool.request()
+            .input('ncotizacion', sql.Int, detailQuotes.ccotizacion)
+            .input('cplan_rc', sql.Int, detailQuotes.cplan)
+            .execute('trBReporte_Cot');
 
-        const detail = quotes.map((item) => item.get({ plain: true }));
-        return detail;
-    } catch (error) {
-        console.log(error.message)
-        return { error: error.message };
+        let query = await pool.request()
+            .query('select * from TMREPORTE_COTIZA order by corden');
+        await pool.close();
+        return { result: query.recordset };
+
+    } catch (err) {
+        console.log(err.message);
+        return { error: err.message };
     }
-};
+}
 
 const detailQuotesAutomobile = async () => {
     try {

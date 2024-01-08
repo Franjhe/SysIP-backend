@@ -112,42 +112,12 @@ const detailQuotes = async (req, res) => {
                 message: detail.error
             });
     }
-    let comparativeList = [];
-    const mapping = {
-      'Cobertura Amplia': 'msuma_amplia',
-      'Perdida Total': 'msuma_total',
-      'Riesgo Catastrofico': 'msuma_catastrofico',
-      'Indemnizacion Diaria por Robo': 'msuma_indem',
-      'Indemnizacion Diaria por Perdida Total': 'msuma_indem',
-      'Daños a Cosas': 'msuma_dc',
-      'Daños a Personas': 'msuma_persona',
-      'Defensa Penal': 'msuma_defensa',
-      'Exceso de Limite': 'msuma_exceso',
-      'Muerte Accidental': 'msuma_muerte',
-      'Invalidez Permanente': 'msuma_invalidez',
-      'Gastos Médicos': 'msuma_gm',
-      'Gastos Funerarios': 'msuma_gf',
-    };
-    
-    for (let i = 0; i < req.body.coverage.length; i++) {
-      const currentCoverage = req.body.coverage[i].xcobertura;
-      const mappedField = mapping[currentCoverage];
-    
-      if (mappedField) {
-        const newItem = {
-          xcobertura: currentCoverage,
-          [mappedField]: detail[0][mappedField],
-        };
-    
-        comparativeList.push(newItem);
-      }
-    }
     return res
         .status(200)
         .send({
             status: true,
             data: {
-                list: comparativeList
+                list: detail.result
             }
         });
 }
@@ -183,7 +153,7 @@ const detailQuotesAutomobile = async (req, res) => {
         .send({
             status: true,
             data: {
-                auto: auto
+                auto: auto,
             }
         });
 }
@@ -228,6 +198,7 @@ const searchQuotes = async (req, res) => {
                 vehiculo: result[0].xmarca + ' ' + result[0].xmodelo + ' ' + result[0].xversion,
                 fano: result[0].qano,
                 xcorreo: result[0].xcorreo,
+                npasajero: result[0].npasajero,
                 list: quote
             }
         });
