@@ -348,30 +348,56 @@ const updateReceiptNotifiqued = async(updatePayment) => {
 
 const receiptDifference = async(receiptDifference, receipt) => {
     try{
-        for(let i = 0; i < updatePayment.receipt.length; i++){
+        
+        for(let i = 0; i < receipt.length; i++){
             let pool = await sql.connect(sqlConfig);
             let updateReceipt= await pool.request()
-            .input('cpoliza'   , sql.Numeric(19, 0), updatePayment.receipt[i].cpoliza )   
-            .input('crecibo'      , sql.Numeric(19, 0), updatePayment.receipt[i].crecibo )  
-            .input('iestadorec'     , sql.Char(1, 0),  updatePayment.iestadorec) 
-            .query('update adrecibos set iestadorec = @iestadorec where  cpoliza = @cpoliza and crecibo = @crecibo' );
+            .input('cpoliza'   , sql.Numeric(19, 0), receipt[i].cpoliza )   
+            .input('crecibo'      , sql.Numeric(19, 0), receipt[i].crecibo )  
+            .input('mprimabruta'     , sql.Numeric(1, 0),  receipt[i].mprimabruta) 
+            .input('mprimabrutaext'      , sql.Numeric(19, 0), receipt[i].mprimabrutaext )  
+            .input('cramo'     , sql.SmallInt,  receipt[i].cramo) 
+            .input('mdiferencia'      , sql.Numeric(19, 0), receiptDifference.mdiferencia )  
+            .input('fingreso'     , sql.DateTime,  new Date()) 
+            .input('iestado'     , sql.Bit,  0) 
+
+            .query('INSERT INTO adrecibo_dif'
+            +'(cpoliza, crecibo, mprimabruta,  mprimabrutaext, mdiferencia, fingreso, iestado)'
+            +'VALUES (@cpoliza, @crecibo, @mprimabruta, @mprimabrutaext,  @mdiferencia, @fingreso, @iestado)')
    
             if(updateReceipt.rowsAffected){
                 let pool = await sql.connect(sqlConfig);
                 let receipt = await pool.request()
-                .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
-                .input('iestadorec', sql.Char(1, 0), 'P')
-                .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-                ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
+                .input('ctransaccion', sql.Numeric(18, 0), receiptDifference.transacccion)
+                .input('iestado_tran', sql.Char(2, 0), 'ER')
+                .query('update cbreporte_tran set iestado_tran = @iestado_tran where ctransaccion = @ctransaccion' );
                 await pool.close();
                 return { 
-                    receipt: receipt.recordset ,
-                    client : search.recordset
+                    updateReceipt: updateReceipt.rowsAffected ,
+                    receipt : receipt.rowsAffected
                 };
     
             }
 
         }
+        await pool.close();
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se actualizaron los datos ' };
+    }
+}
+
+const searchReceiptDifference = async(receipt) => {
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let updateReceipt= await pool.request()
+        .input('crecibo'   , sql.Numeric(19, 0), receipt )   
+        .input('iestado'   , sql.Bit, 0 )   
+        .query('select crecibo, mdiferencia from adrecibo_dif where ')
+
+           return { recibo : updateReceipt.rowsAffected}
+
         await pool.close();
 
     }
@@ -392,5 +418,6 @@ export default {
     searchDataPaymentsCollectedClient,
     searchDataClient,
     searchDataPaymentVencida,
-    receiptDifference
+    receiptDifference,
+    searchReceiptDifference
 }

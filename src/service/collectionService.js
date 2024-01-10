@@ -33,6 +33,14 @@ const searchDataReceipt = async (searchDataReceipt) => {
             error: searchReceipt.error
         }
     }
+    for(let i = 0; i < searchReceipt.receipt.length; i++){
+
+        const receipt = await Collection.searchReceiptDifference(searchReceipt.receipt[i].crecibo)
+
+
+    }
+
+    
     return searchReceipt;
 }
 
@@ -145,12 +153,12 @@ const receiptUnderReviewData = async (receiptUnderReview) => {
 
         if(receiptUnderReview.receipt[i].crecibo == receiptUnderReview.crecibo){
             receipt.push({
-                cpoliza : receiptUnderReview.receipt[i].crecibo,
+                cpoliza : receiptUnderReview.receipt[i].cpoliza,
                 crecibo : receiptUnderReview.receipt[i].crecibo,
-                casegurado : receiptUnderReview.receipt[i].crecibo,
-                cramo : receiptUnderReview.receipt[i].crecibo,
-                mprimabrutaext : receiptUnderReview.receipt[i].crecibo,
-                mprimabruta : receiptUnderReview.receipt[i].crecibo
+                casegurado : receiptUnderReview.receipt[i].casegurado,
+                cramo : receiptUnderReview.receipt[i].cramo,
+                mprimabrutaext : receiptUnderReview.receipt[i].mprimabrutaext,
+                mprimabruta : receiptUnderReview.receipt[i].mprimabruta
             })
 
         }
