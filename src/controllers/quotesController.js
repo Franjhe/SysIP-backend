@@ -1,4 +1,19 @@
 import quotesService from '../service/quotesService.js';
+import PdfPrinter from 'pdfmake';
+import nodemailer from 'nodemailer';
+import { SMTPClient } from 'emailjs';
+import fs from 'fs';
+
+const fonts = {
+  Roboto: {
+    normal: 'node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf',
+    bold: 'node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf',
+    italics: 'node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf',
+    bolditalics: 'node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf'
+  }
+};
+
+const printer = new PdfPrinter(fonts);
 
 const createQuotes = async (req, res) => {
     const result = await quotesService.createQuotes(req.body);
@@ -205,6 +220,75 @@ const searchQuotes = async (req, res) => {
         });
 }
 
+const generatePdf = (pdfDefinition) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const pdfDoc = printer.createPdfKitDocument(pdfDefinition);
+        const chunks = [];
+  
+        pdfDoc.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
+  
+        pdfDoc.on('end', () => {
+          const buffer = Buffer.concat(chunks);
+          const fileName = 'output.pdf';
+          fs.writeFileSync(fileName, buffer);
+          console.log('PDF generado con éxito.');
+          resolve(fileName);
+        });
+  
+        pdfDoc.end();
+      } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        reject(error);
+      }
+    });
+  };
+  
+  const sendEmail = async (req, res) => {
+
+      const to = req.body.to;
+      const subject = req.body.subject;
+      const text = req.body.text;
+  
+      const pdfFileName = await generatePdf(req.body.pdfDefinition);
+
+      const client = new SMTPClient({
+        user: 'alenjhon9@gmail.com',
+        password: 'nnvwygxnvdpjegbj',
+        host: 'smtp.gmail.com',
+        ssl: true
+      });
+    
+      // Detalles del correo electrónico
+      const mensaje = {
+        text,
+        from: 'alenjhon9@gmail.com',
+        to,
+        subject,
+        attachments: [
+          {
+            path: pdfFileName,
+            name: 'Cotización.pdf',
+            type: 'application/pdf',
+            encoding: 'base64'
+          }
+        ]
+      };
+    
+      try {
+        // Envía el correo electrónico
+        await client.send(mensaje);
+    
+        console.log('Correo electrónico enviado exitosamente.');
+        res.status(200).json({ message: 'Correo electrónico enviado exitosamente.' });
+      } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).json({ error: 'Error al enviar el correo electrónico.' });
+      }
+  };
+
 
 export default {
     createQuotes,
@@ -212,5 +296,6 @@ export default {
     searchCoverages,
     detailQuotes,
     detailQuotesAutomobile,
-    searchQuotes
+    searchQuotes,
+    sendEmail
 }

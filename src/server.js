@@ -3,6 +3,7 @@ import dotenv from 'dotenv/config';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
+import bodyParser from 'body-parser';
 import authenticate from './middlewares/authenticate.js'
 import v1AuthRouter from './v1/routes/authRoutes.js';
 import v1TradeRouter from './v1/routes/tradeRoutes.js';
@@ -24,8 +25,16 @@ const { diskStorage } = multer;
 const app = express(); 
 dotenv;
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: '*',  // o especifica el dominio permitido
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.use(express.json({ limit: '10mb' }));
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use("/api/v1/auth", v1AuthRouter);
 app.use("/api/v1/trade", v1TradeRouter);
