@@ -129,8 +129,13 @@ const detailQuotes = async (detailQuotes) => {
 
         let query = await pool.request()
             .query('select * from TMREPORTE_COTIZA order by corden');
+
+
+        let query2 = await pool.request()
+        .query('select * from TMFRACCIONAMIENTO order by cmetodologiapago desc');
+        
         await pool.close();
-        return { result: query.recordset };
+        return { result: query.recordset, metodology: query2.recordset };
 
     } catch (err) {
         console.log(err.message);

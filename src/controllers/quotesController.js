@@ -117,7 +117,8 @@ const detailQuotes = async (req, res) => {
         .send({
             status: true,
             data: {
-                list: detail.result
+                list: detail.result,
+                payment: detail.metodology
             }
         });
 }
