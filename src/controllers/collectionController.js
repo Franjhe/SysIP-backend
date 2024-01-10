@@ -292,7 +292,6 @@ const searchClient = async (req, res) => {
         });
 }
 
-
 const searchPaymentVencin= async (req, res) => {
     const searchPaymentData = await collectionService.searchPaymentVencidaData();
 
@@ -323,6 +322,35 @@ const searchPaymentVencin= async (req, res) => {
         });
 }
 
+const receiptUnderReview = async (req, res) => {
+    const searchReceipt = await collectionService.receiptUnderReviewData(req.body);
+
+    if (searchReceipt.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchReceipt.permissionError
+            });
+    }
+    if (searchReceipt.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchReceipt.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            message: 'El recibo ha sido actualizado con exito.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
     createPaymentReporTrans,
@@ -334,5 +362,6 @@ export default {
     updateReceipt,
     searchReceiptClient,
     searchClient,
-    searchPaymentVencin
+    searchPaymentVencin,
+    receiptUnderReview
 }

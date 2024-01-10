@@ -13,6 +13,7 @@ router
     .get("/search-payments-collected",  collectionController.PaymentsCollected)
     .get("/search-vencido",  collectionController.searchPaymentVencin)
 
+    .post("/receipt-under-review",  collectionController.receiptUnderReview) //abjuncion de las imagenes para el transaccion del reporte de pago
 
     //busquedas de notificaciones
     .get("/search-notification-data/:id",  collectionController.searchPaymentReportNotificationData)

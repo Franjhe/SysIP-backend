@@ -1,4 +1,30 @@
 import Collection from '../db/Collection.js';
+import PdfPrinter from 'pdfmake';
+import fs from 'fs'
+
+var fonts = {
+    Roboto: {
+        normal: 'node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf',
+        bold: 'node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf',
+        italics: 'node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf',
+        bolditalics: 'node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf'
+    }
+};
+
+var printer = new PdfPrinter(fonts);
+
+var dd = {
+    content: [
+        'First paragraph',
+        'Another paragraph'
+    ]
+}
+var pdfDoc = printer.createPdfKitDocument(dd);
+pdfDoc.pipe(fs.createWriteStream('basics.pdf')).on('finish',function(){
+    //success
+});
+pdfDoc.end();
+
 
 const searchDataReceipt = async (searchDataReceipt) => {
     const searchReceipt = await Collection.searchDataReceipt(searchDataReceipt);
@@ -112,6 +138,33 @@ const searchPaymentVencidaData = async () => {
     return searchPaymentVencidaData;
 }
 
+const receiptUnderReviewData = async (receiptUnderReview) => {
+
+    const receipt = []
+    for(let i = 0; i < receiptUnderReview.receipt.length; i++){
+
+        if(receiptUnderReview.receipt[i].crecibo == receiptUnderReview.crecibo){
+            receipt.push({
+                cpoliza : receiptUnderReview.receipt[i].crecibo,
+                crecibo : receiptUnderReview.receipt[i].crecibo,
+                casegurado : receiptUnderReview.receipt[i].crecibo,
+                cramo : receiptUnderReview.receipt[i].crecibo,
+                mprimabrutaext : receiptUnderReview.receipt[i].crecibo,
+                mprimabruta : receiptUnderReview.receipt[i].crecibo
+            })
+
+        }
+
+    }
+    const updateReceiptDifference = await Collection.receiptDifference(receiptUnderReview,receipt);
+    if (updateReceiptDifference.error) {
+        return {
+            error: updateReceiptDifference.error
+        }
+    }
+    return updateReceiptDifference;
+}
+
 export default {
     searchDataReceipt,
     createPaymentReportTrans,
@@ -123,5 +176,6 @@ export default {
     updateDataReceipt,
     searchReceiptCliet,
     searchCliet,
-    searchPaymentVencidaData
+    searchPaymentVencidaData,
+    receiptUnderReviewData
 }
