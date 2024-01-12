@@ -215,7 +215,10 @@ const searchQuotes = async (req, res) => {
                 fano: result[0].qano,
                 xcorreo: result[0].xcorreo,
                 npasajero: result[0].npasajero,
-                list: quote
+                list: quote,
+                xcorredor: result[0].xcorredor,
+                xcorreocorredor: result[0].xcorreocorredor,
+                xtelefonocorredor: result[0].xtelefonocorredor,
             }
         });
 }

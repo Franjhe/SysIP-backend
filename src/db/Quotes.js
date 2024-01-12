@@ -32,11 +32,12 @@ const createQuotes = async (createQuotes) => {
             .input('ncapacidad_p', sql.Int, createQuotes.ncapacidad_p)
             .input('msuma', sql.Numeric(18, 2), createQuotes.msum)
             .input('xclasificacion', sql.NVarChar, createQuotes.xclasificacion.trim())
+            .input('ccorredor', sql.Int, createQuotes.ccorredor)
             
             .execute('trBCotizacionAuto');
 
         let query = await pool.request()
-            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
         await pool.close();
         return { result: query.recordset };
 
@@ -125,6 +126,7 @@ const detailQuotes = async (detailQuotes) => {
         let result = await pool.request()
             .input('ncotizacion', sql.Int, detailQuotes.ccotizacion)
             .input('cplan_rc', sql.Int, detailQuotes.cplan)
+            .input('fano', sql.Int, detailQuotes.fano)
             .execute('trBReporte_Cot');
 
         let query = await pool.request()
@@ -185,6 +187,9 @@ const detailQuotesAutomobile = async () => {
             'npasajero',
             'qano',
             'xcorreo',
+            'xcorredor',
+            'xcorreocorredor',
+            'xtelefonocorredor',
           ],
       });
   
