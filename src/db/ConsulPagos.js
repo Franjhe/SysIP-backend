@@ -12,7 +12,6 @@ const sqlConfig = {
 }
 
 const createUsersFromConsulPagos = async(createUsersFromConsulPagos) => {
-    console.log(createUsersFromConsulPagos)
     try{
         let rowsAffected = 0;
         let pool = await sql.connect(sqlConfig);

@@ -1,29 +1,4 @@
 import Collection from '../db/Collection.js';
-import PdfPrinter from 'pdfmake';
-import fs from 'fs'
-
-var fonts = {
-    Roboto: {
-        normal: 'node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf',
-        bold: 'node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf',
-        italics: 'node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf',
-        bolditalics: 'node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf'
-    }
-};
-
-var printer = new PdfPrinter(fonts);
-
-var dd = {
-    content: [
-        'First paragraph',
-        'Another paragraph'
-    ]
-}
-var pdfDoc = printer.createPdfKitDocument(dd);
-pdfDoc.pipe(fs.createWriteStream('basics.pdf')).on('finish',function(){
-    //success
-});
-pdfDoc.end();
 
 
 const searchDataReceipt = async (searchDataReceipt) => {
@@ -33,6 +8,7 @@ const searchDataReceipt = async (searchDataReceipt) => {
             error: searchReceipt.error
         }
     }
+
     return searchReceipt;
 }
 
@@ -63,7 +39,19 @@ const searchPaymentReportData = async (searchPaymentReport) => {
             error: searchPaymentReportN.error
         }
     }
-    return searchPaymentReportN;
+
+    const receipt = [];
+
+    for (let i = 0; i < searchPaymentReportN.recibo.length; i++) {
+        const result = await Collection.differenceOfNotification(searchPaymentReportN.recibo[i].ctransaccion);
+        receipt.push(result);
+    }
+
+    return {
+        searchPaymentReportN,
+        receipt
+    };
+
 }
 
 const searchPaymentPendingData = async () => {
@@ -145,18 +133,40 @@ const receiptUnderReviewData = async (receiptUnderReview) => {
 
         if(receiptUnderReview.receipt[i].crecibo == receiptUnderReview.crecibo){
             receipt.push({
-                cpoliza : receiptUnderReview.receipt[i].crecibo,
+                cpoliza : receiptUnderReview.receipt[i].cpoliza,
                 crecibo : receiptUnderReview.receipt[i].crecibo,
-                casegurado : receiptUnderReview.receipt[i].crecibo,
-                cramo : receiptUnderReview.receipt[i].crecibo,
-                mprimabrutaext : receiptUnderReview.receipt[i].crecibo,
-                mprimabruta : receiptUnderReview.receipt[i].crecibo
+                casegurado : receiptUnderReview.receipt[i].casegurado,
+                cramo : receiptUnderReview.receipt[i].cramo,
+                mprimabrutaext : receiptUnderReview.receipt[i].mprimabrutaext,
+                mprimabruta : receiptUnderReview.receipt[i].mprimabruta
             })
 
         }
 
     }
     const updateReceiptDifference = await Collection.receiptDifference(receiptUnderReview,receipt);
+    if (updateReceiptDifference.error) {
+        return {
+            error: updateReceiptDifference.error
+        }
+    }
+    return updateReceiptDifference;
+}
+
+const differenceOfNotificationData = async (notification) => {
+
+    const updateReceiptDifference = await Collection.differenceOfNotification(notification);
+    if (updateReceiptDifference.error) {
+        return {
+            error: updateReceiptDifference.error
+        }
+    }
+    return updateReceiptDifference;
+}
+
+const updateDifferenceOfNotificationData = async (notification) => {
+
+    const updateReceiptDifference = await Collection.updateReceiptDifference(notification);
     if (updateReceiptDifference.error) {
         return {
             error: updateReceiptDifference.error
@@ -177,5 +187,7 @@ export default {
     searchReceiptCliet,
     searchCliet,
     searchPaymentVencidaData,
-    receiptUnderReviewData
+    receiptUnderReviewData,
+    differenceOfNotificationData,
+    updateDifferenceOfNotificationData
 }

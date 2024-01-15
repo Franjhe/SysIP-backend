@@ -29,7 +29,6 @@ const verifyIfUsernameExists = async (xlogin) => {
 }
 
 const verifyIfPasswordMatchs = async (xlogin, xcontrasena) => {
-    console.log(xlogin + ' ' + xcontrasena)
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()

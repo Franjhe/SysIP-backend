@@ -351,6 +351,48 @@ const receiptUnderReview = async (req, res) => {
         });
 }
 
+const differenceOfNotification = async (req, res) => {
+    const searchDifferenceOfNotification = await collectionService.differenceOfNotificationData(req.params.id);
+
+    if (searchDifferenceOfNotification.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchDifferenceOfNotification.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            message: 'Consulta realizada con exito.'
+            
+        });
+}
+
+const updateDifferenceOfNotification = async (req, res) => {
+    const searchDifferenceOfNotification = await collectionService.updateDifferenceOfNotificationData(req.body);
+
+    if (searchDifferenceOfNotification.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchDifferenceOfNotification.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            message: 'Consulta realizada con exito.'
+            
+        });
+}
+
 export default {
     searchCollectionbyClient,
     createPaymentReporTrans,
@@ -363,5 +405,7 @@ export default {
     searchReceiptClient,
     searchClient,
     searchPaymentVencin,
-    receiptUnderReview
+    receiptUnderReview,
+    differenceOfNotification,
+    updateDifferenceOfNotification
 }

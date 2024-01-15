@@ -14,6 +14,9 @@ router
     .get("/search-vencido",  collectionController.searchPaymentVencin)
 
     .post("/receipt-under-review",  collectionController.receiptUnderReview) //abjuncion de las imagenes para el transaccion del reporte de pago
+    .get("/search-difference-of-notification",  collectionController.differenceOfNotification) //abjuncion de las imagenes para el transaccion del reporte de pago
+    .patch("/update-difference-of-notification",  collectionController.updateDifferenceOfNotification) 
+
 
     //busquedas de notificaciones
     .get("/search-notification-data/:id",  collectionController.searchPaymentReportNotificationData)
