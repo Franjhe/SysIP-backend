@@ -12,7 +12,6 @@ const sqlConfig = {
 }
 
 const createQuotes = async (createQuotes) => {
-    console.log(createQuotes)
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()

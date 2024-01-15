@@ -34,7 +34,6 @@ const Vehicle = sequelize.define('VWBUSCARSUCONTRATOFLOTADATA', {}, { tableName:
 const Motin = sequelize.define('PRTARIFA_MOTIN_CAT', {}, { tableName: 'PRTARIFA_MOTIN_CAT' });
 
 const searchHullPrice = async (searchHullPrice) => {
-  console.log(searchHullPrice)
   try {
     const clasificacion = await Price.findAll({
       where: searchHullPrice,

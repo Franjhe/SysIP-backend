@@ -1,7 +1,6 @@
 import Emissions from '../db/Emissions.js';
 
 const searchHullPrice = async (searchHullPrice) => {
-    console.log(searchHullPrice)
     const result = await Emissions.searchHullPrice(searchHullPrice);
     if (result.error) {
         return {

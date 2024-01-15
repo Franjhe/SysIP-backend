@@ -226,7 +226,6 @@ const getTakersQuery = async(ccontratoflota) => {
             .input('ccontratoflota', sql.Int, ccontratoflota)
             .query('SELECT * FROM VWBUSCARTOMADORESXCONTRATOS WHERE ccontratoflota = @ccontratoflota')
             await pool.close();
-            console.log(result)
         return { result: result}
     }catch(err){
         return { error: err.message };
