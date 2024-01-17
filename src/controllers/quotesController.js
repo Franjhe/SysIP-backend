@@ -250,46 +250,42 @@ const generatePdf = (pdfDefinition) => {
   };
   
   const sendEmail = async (req, res) => {
-
-    //   const to = req.body.to;
-    //   const subject = req.body.subject;
-    //   const text = req.body.text;
+    const to = req.body.to;
+    const subject = req.body.subject;
+    const text = req.body.text;
   
-    //   const pdfFileName = await generatePdf(req.body.pdfDefinition);
-
-    //   const client = new SMTPClient({
-    //     user: 'alenjhon9@gmail.com',
-    //     password: 'nnvwygxnvdpjegbj',
-    //     host: 'smtp.gmail.com',
-    //     ssl: true
-    //   });
-    
-    //   // Detalles del correo electrónico
-    //   const mensaje = {
-    //     text,
-    //     from: 'alenjhon9@gmail.com',
-    //     to,
-    //     subject,
-    //     attachments: [
-    //       {
-    //         path: 'C:/Users/jalen/Desktop/Proyectos_Angular/SysIP-backend/output.pdf',
-    //         name: 'Cotización.pdf',
-    //         type: 'application/pdf',
-    //         encoding: 'base64'
-    //       }
-    //     ]
-    //   };
-    
-    //   try {
-    //     // Envía el correo electrónico
-    //     await client.send(mensaje);
-    
-    //     console.log('Correo electrónico enviado exitosamente.');
-    //     res.status(200).json({ message: 'Correo electrónico enviado exitosamente.' });
-    //   } catch (error) {
-    //     console.error('Error al enviar el correo:', error);
-    //     res.status(500).json({ error: 'Error al enviar el correo electrónico.' });
-    //   }
+    try {
+      // Generar el PDF y obtener el nombre de archivo
+      const pdfFileName = await generatePdf(req.body.pdfDefinition);
+  
+      // Crear instancia del cliente SMTP
+      const client = new SMTPClient({
+        user: 'alenjhon9@gmail.com',
+        password: 'nnvwygxnvdpjegbj',
+        host: 'smtp.gmail.com',
+        ssl: true
+      });
+  
+      const mensaje = {
+        text,
+        from: 'alenjhon9@gmail.com',
+        to,
+        subject,
+        attachment: [
+          { data: `<html>${text}</html>`, alternative: true },
+          { path: pdfFileName, type: 'application/pdf', name: 'Cotización.pdf' }
+        ]
+      };
+  
+      // Envía el correo electrónico
+      await client.send(mensaje);
+  
+      console.log('Correo electrónico enviado exitosamente.');
+      res.status(200).json({ message: 'Correo electrónico enviado exitosamente.' });
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      res.status(500).json({ error: 'Error al enviar el correo electrónico.' });
+    }
   };
 
 
