@@ -354,18 +354,18 @@ const receiptDifference = async(receiptDifference, receipt) => {
         for (let i = 0; i < receipt.length; i++) {
             let pool = await sql.connect(sqlConfig);
             let updateReceipt = await pool.request()
-                .input('cpoliza', sql.Numeric(19, 0), receipt[i].cpoliza)
-                .input('crecibo', sql.Numeric(19, 0), receipt[i].crecibo)
-                .input('mprimabruta', sql.Numeric(1, 0), receipt[i].mprimabruta)
-                .input('mprimabrutaext', sql.Numeric(19, 0), receipt[i].mprimabrutaext)
-                .input('cramo', sql.SmallInt, receipt[i].cramo)
+            console.log(receiptDifference.transacccion)
+            console.log(receipt.mdiferencia)
+            console.log(receipt.xobservacion)
+
+                .input('ctransaccion', sql.Numeric(19, 0), receiptDifference.transacccion)
                 .input('mdiferencia', sql.Numeric(19, 0), receipt.mdiferencia)
+                .input('xobservacion', sql.VarChar(500, 0), receipt.xobservacion)
                 .input('fingreso', sql.DateTime, new Date())
                 .input('iestado', sql.Bit, 0)
-                // .input('ctransaccion', sql.Numeric(19, 0), receiptDifference.transacccion)
                 .query('INSERT INTO adrecibo_dif' +
-                    '(cpoliza, crecibo, mprimabruta,  mprimabrutaext, mdiferencia, fingreso, iestado)' +
-                    'VALUES (@cpoliza, @crecibo, @mprimabruta, @mprimabrutaext,  @mdiferencia, @fingreso, @iestado)');
+                    '(ctransaccion, mdiferencia, xobservacion,  fingreso, iestado)' +
+                    'VALUES (@ctransaccion, @mdiferencia, @xobservacion, @fingreso,  @iestado)');
             if (updateReceipt.rowsAffected) {
                 let pool = await sql.connect(sqlConfig);
                 let receiptUpdate = await pool.request()
@@ -395,8 +395,7 @@ const differenceOfNotification = async(receipt) => {
         let updateReceipt= await pool.request()
         .input('ctransaccion'   , sql.Numeric(19, 0), receipt )   
         .input('iestado'   , sql.Bit, 0 )   
-        .query('select crecibo, mdiferencia from adrecibo_dif where iestado = @iestado and ctransaccion = @ctransaccion')
-            await pool.close();
+        .query('select  mdiferencia from adrecibo_dif where iestado = @iestado and ctransaccion = @ctransaccion')
            return { differenceOfNotification : updateReceipt.recordset}
     }
     catch(err){
