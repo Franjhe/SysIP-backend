@@ -218,8 +218,8 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
         .input('fhasta'        , sql.DateTime , new Date())
         .input('iestadorec', sql.Char(1, 0), 'P')
         .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-               ' from adrecibos where iestadorec = @iestadorec '+
-               ' and MONTH(fhasta) = MONTH(@fhasta) AND YEAR(fhasta) = YEAR(@fhasta) AND GETDATE() < fhasta')
+               ' from adrecibos where iestadorec = @iestadorec AND GETDATE() < fhasta' )
+            //    ' and MONTH(fhasta) = MONTH(@fhasta) AND YEAR(fhasta) = YEAR(@fhasta) '
         await pool.close();
 
         return { recibo : searchReport.recordset};
