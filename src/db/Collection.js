@@ -174,7 +174,7 @@ const searchDataPaymentReport = async(searchDataReceipt) => {
         ' ptasamon, cprog, ifuente,iestado_tran , qagrupado ,cusuario , ivalida from cbreporte_tran where iestado = @iestado')
         await pool.close();
 
-        return { recibo : searchReport.recordset};
+        return { transacciones : searchReport.recordset};
 
 
     }
@@ -218,8 +218,7 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
         .input('fhasta'        , sql.DateTime , new Date())
         .input('iestadorec', sql.Char(1, 0), 'P')
         .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-               ' from adrecibos where iestadorec = @iestadorec AND GETDATE() < fhasta' )
-            //    ' and MONTH(fhasta) = MONTH(@fhasta) AND YEAR(fhasta) = YEAR(@fhasta) '
+               ' from adrecibos where iestadorec = @iestadorec AND @fhasta < fhasta' )
         await pool.close();
 
         return { recibo : searchReport.recordset};
@@ -354,16 +353,13 @@ const receiptDifference = async(receiptDifference, receipt) => {
         for (let i = 0; i < receipt.length; i++) {
             let pool = await sql.connect(sqlConfig);
             let updateReceipt = await pool.request()
-            console.log(receiptDifference.transacccion)
-            console.log(receipt.mdiferencia)
-            console.log(receipt.xobservacion)
 
                 .input('ctransaccion', sql.Numeric(19, 0), receiptDifference.transacccion)
                 .input('mdiferencia', sql.Numeric(19, 0), receipt.mdiferencia)
                 .input('xobservacion', sql.VarChar(500, 0), receipt.xobservacion)
                 .input('fingreso', sql.DateTime, new Date())
                 .input('iestado', sql.Bit, 0)
-                .query('INSERT INTO adrecibo_dif' +
+                .query('INSERT INTO cbreporte_tran_dif' +
                     '(ctransaccion, mdiferencia, xobservacion,  fingreso, iestado)' +
                     'VALUES (@ctransaccion, @mdiferencia, @xobservacion, @fingreso,  @iestado)');
             if (updateReceipt.rowsAffected) {
@@ -395,7 +391,7 @@ const differenceOfNotification = async(receipt) => {
         let updateReceipt= await pool.request()
         .input('ctransaccion'   , sql.Numeric(19, 0), receipt )   
         .input('iestado'   , sql.Bit, 0 )   
-        .query('select  mdiferencia from adrecibo_dif where iestado = @iestado and ctransaccion = @ctransaccion')
+        .query('select  mdiferencia, ctransaccion from cbreporte_tran_dif where iestado = @iestado and ctransaccion = @ctransaccion')
            return { differenceOfNotification : updateReceipt.recordset}
     }
     catch(err){
@@ -411,7 +407,7 @@ const updateReceiptDifference = async(notification) => {
             let updateReceipt= await pool.request()
             .input('iestado'     , sql.Bit,  1) 
             .input('ctransaccion'      , sql.Numeric(19, 0), notification )  
-            .query('update adrecibo_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
+            .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
             if(updateReceipt.rowsAffected){
                 let pool = await sql.connect(sqlConfig);
                 let receipt = await pool.request()
@@ -424,7 +420,7 @@ const updateReceiptDifference = async(notification) => {
                     let pool = await sql.connect(sqlConfig);
                     let search = await pool.request()
                     .input('ctransaccion'      , sql.Numeric(19, 0), notification )  
-                    .query('select crecibo from adrecibo_dif where ctransaccion  = @ctransaccion')
+                    .query('select crecibo from cbreporte_tran_dif where ctransaccion  = @ctransaccion')
                     if(search.rowsAffected){
                         let pool = await sql.connect(sqlConfig);
                         let updateReceipt= await pool.request()

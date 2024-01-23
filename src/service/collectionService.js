@@ -40,16 +40,27 @@ const searchPaymentReportData = async (searchPaymentReport) => {
         }
     }
 
-    const receipt = [];
+    const transactionDetail = [];
+    const diference = []
 
-    for (let i = 0; i < searchPaymentReportN.recibo.length; i++) {
-        const result = await Collection.differenceOfNotification(searchPaymentReportN.recibo[i].ctransaccion);
-        receipt.push(result);
+    for (let i = 0; i < searchPaymentReportN.transacciones.length; i++) {
+
+        const transactionDetailData = await Collection.searchDataPaymentTransaction(searchPaymentReportN.transacciones[i].ctransaccion);
+        transactionDetail.push(transactionDetailData);
+
+        const diferenceData = await Collection.differenceOfNotification(searchPaymentReportN.transacciones[i].ctransaccion);
+        diference.push(diferenceData.differenceOfNotification);
     }
 
+    const dataTransaction = []
+    dataTransaction.push({
+        transaccion : searchPaymentReportN.transacciones,
+        transaccionDetalle : transactionDetail, 
+        diferencia : diference
+    })
+
     return {
-        searchPaymentReportN,
-        receipt
+        dataTransaction
     };
 
 }
