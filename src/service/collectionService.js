@@ -33,34 +33,15 @@ const createPaymentReportSoport = async (createPaymentReport) => {
 }
 
 const searchPaymentReportData = async (searchPaymentReport) => {
-    const searchPaymentReportN = await Collection.searchDataPaymentReport(searchPaymentReport);
-    if (searchPaymentReportN.error) {
+    const searchDataNotifiqued = await Collection.searchDataPaymentReport(searchPaymentReport);
+    if (searchDataNotifiqued.error) {
         return {
-            error: searchPaymentReportN.error
+            error: searchDataNotifiqued.error
         }
     }
 
-    const transactionDetail = [];
-    const diference = []
-
-    for (let i = 0; i < searchPaymentReportN.transacciones.length; i++) {
-
-        const transactionDetailData = await Collection.searchDataPaymentTransaction(searchPaymentReportN.transacciones[i].ctransaccion);
-        transactionDetail.push(transactionDetailData);
-
-        const diferenceData = await Collection.differenceOfNotification(searchPaymentReportN.transacciones[i].ctransaccion);
-        diference.push(diferenceData.differenceOfNotification);
-    }
-
-    const dataTransaction = []
-    dataTransaction.push({
-        transaccion : searchPaymentReportN.transacciones,
-        transaccionDetalle : transactionDetail, 
-        diferencia : diference
-    })
-
     return {
-        dataTransaction
+        searchDataNotifiqued
     };
 
 }

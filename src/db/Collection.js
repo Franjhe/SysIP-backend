@@ -165,17 +165,57 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
     }
 }
 
-const searchDataPaymentReport = async(searchDataReceipt) => {
+const searchDataPaymentReport = async() => {
     try{
+        const dataTransaction = []
         let pool = await sql.connect(sqlConfig);
-        let searchReport = await pool.request()
+        let searchDataTransaction = await pool.request()
         .input('iestado'     , sql.Bit, 0)  
         .query('select ctransaccion ,casegurado, freporte ,mpago, mpagoext,'+
         ' ptasamon, cprog, ifuente,iestado_tran , qagrupado ,cusuario , ivalida from cbreporte_tran where iestado = @iestado')
-        await pool.close();
 
-        return { transacciones : searchReport.recordset};
+        if(searchDataTransaction.rowsAffected){
+            let pool = await sql.connect(sqlConfig);
+            await pool.request()
 
+            for(let i = 0; i < searchDataTransaction.recordset.length; i++){
+                let pool = await sql.connect(sqlConfig);
+                let searchDetailTransacion  = await pool.request()
+
+                .input('ctransaccion'   , sql.Numeric(18, 0), searchDataTransaction.recordset[i].ctransaccion)   
+                .query('select ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fdesde_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario'+
+                ' from cbreporte_pago_d where ctransaccion = @ctransaccion')
+
+                let pool1 = await sql.connect(sqlConfig);
+                let searchSoport  = await pool1.request()
+                .input('ctransaccion'   , sql.Numeric(18, 0), searchDataTransaction.recordset[i].ctransaccion)   
+                .query(' select ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario'+
+                ' from cbreporte_pago where ctransaccion = @ctransaccion')
+
+                let pool2 = await sql.connect(sqlConfig);
+                let searchDiference = await pool2.request()
+                .input('ctransaccion'   , sql.Numeric(19, 0), searchDataTransaction.recordset[i].ctransaccion )   
+                .input('iestado'   , sql.Bit, 0 )   
+                .query('select  mdiferencia, ctransaccion from cbreporte_tran_dif where iestado = @iestado and ctransaccion = @ctransaccion')
+
+                dataTransaction.push({
+                    transaccion: {
+                        id : searchDataTransaction.recordset[i].ctransaccion,
+                        casegurado : searchDataTransaction.recordset[i].casegurado,
+                        freporte: searchDataTransaction.recordset[i].freporte,
+                        iestado_tran: searchDataTransaction.recordset[i].iestado_tran,
+                        mpagoext: searchDataTransaction.recordset[i].mpagoext,
+                        mpago: searchDataTransaction.recordset[i].mpago,
+                        ptasamon: searchDataTransaction.recordset[i].ptasamon,
+                    },
+                    detalle : searchDetailTransacion.recordset,
+                    soporte : searchSoport.recordset,
+                    diference : searchDiference.recordset
+                })
+            }
+        }
+
+        return { dataTransaction };
 
     }
     catch(err){
@@ -200,10 +240,6 @@ const searchDataPaymentTransaction = async(searchDataReceipt) => {
             return { recibo : searchReport.recordset , soporte : searchSoport.recordset};
         }
         await pool.close();
-
-
-
-
     }
     catch(err){
         return { error: err.message, message: 'No se registrarons los datos ' };
