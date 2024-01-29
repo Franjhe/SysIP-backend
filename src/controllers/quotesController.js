@@ -141,7 +141,7 @@ const detailQuotes = async (req, res) => {
 }
 
 const detailQuotesAutomobile = async (req, res) => {
-    const result = await quotesService.detailQuotesAutomobile();
+    const result = await quotesService.detailQuotesAutomobile(req.body);
     if (result.permissionError) {
         return res
             .status(403)

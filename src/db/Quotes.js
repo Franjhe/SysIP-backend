@@ -145,28 +145,36 @@ const detailQuotes = async (detailQuotes) => {
     }
 }
 
-const detailQuotesAutomobile = async () => {
+const detailQuotesAutomobile = async (detailQuotesAutomobile) => {
     try {
-      const quotes = await DetailAuto.findAll({
-        where: {iaceptado: 0},
-        attributes: [
-            [Sequelize.literal('DISTINCT ccotizacion'), 'ccotizacion'],
-            'xnombre',
-            'xapellido',
-            'xmarca',
-            'xmodelo',
-            'xversion',
-            'iaceptado',
-          ],
-      });
-  
-      const result = quotes.map((item) => item.get({ plain: true }));
-      return result;
+        const whereCondition = {
+            iaceptado: 0
+        };
+
+        if (detailQuotesAutomobile.ccorredor !== null) {
+            whereCondition.ccorredor = detailQuotesAutomobile.ccorredor;
+        }
+
+        const quotes = await DetailAuto.findAll({
+            where: whereCondition,
+            attributes: [
+                [Sequelize.literal('DISTINCT ccotizacion'), 'ccotizacion'],
+                'xnombre',
+                'xapellido',
+                'xmarca',
+                'xmodelo',
+                'xversion',
+                'iaceptado',
+            ],
+        });
+
+        const result = quotes.map((item) => item.get({ plain: true }));
+        return result;
     } catch (error) {
-        console.log(error.message)
-      return { error: error.message };
+        console.log(error.message);
+        return { error: error.message };
     }
-  };
+};
 
   const searchQuotes = async (searchQuotes) => {
     try {

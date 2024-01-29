@@ -46,6 +46,8 @@ const createJWT = async (req, res) => {
                 bconsultar: user.bconsultar,
                 bmodificar: user.bmodificar,
                 beliminar: user.beliminar,
+                ccorredor: user.ccorredor,
+                xcorredor: user.xcorredor,
                 token: 'Bearer ' + jwt
             }
         });

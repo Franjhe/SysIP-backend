@@ -40,8 +40,8 @@ const detailQuotes = async (detailQuotes) => {
     return detail;
 } 
 
-const detailQuotesAutomobile = async () => {
-    const result = await Quotes.detailQuotesAutomobile();
+const detailQuotesAutomobile = async (detailQuotesAutomobile) => {
+    const result = await Quotes.detailQuotesAutomobile(detailQuotesAutomobile);
     if (result.error) {
         return {
             error: result.error
