@@ -13,6 +13,7 @@ const sqlConfig = {
 
 const searchDataReceipt = async(searchDataReceipt) => {
     try{
+
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
         .input('xcontrato', sql.Numeric(18, 0), searchDataReceipt)
@@ -25,16 +26,26 @@ const searchDataReceipt = async(searchDataReceipt) => {
             .input('iestadorec', sql.Char(1, 0), 'P')
             .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
             ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
-            await pool.close();
+
+            let diferenceList = []
+            if(receipt.rowsAffected){
+                let diference = await pool.request()
+                .input('casegurado'   , sql.Numeric(19, 0), searchDataReceipt)   
+                .input('iestado'   , sql.Bit, 1)   
+                .query('select mdiferencia, ctransaccion ,xobservacion , cmoneda from cbreporte_tran_dif where casegurado = @casegurado')
+                diferenceList = diference.recordset
+
+            }
             return { 
                 receipt: receipt.recordset ,
-                client : search.recordset
+                client : search.recordset,
+                diferenceList
             };
 
         }
 
         await pool.close();
-        return { result: search.recordset };
+        return { result: search.recordset};
 
     }
     catch(err){
@@ -103,7 +114,7 @@ const createPaymentReportTransW = async(createPaymentReport) => {
                                             .input('cnpoliza'   , sql.Char(30, 0), createPaymentReport.receipt[i].cnpoliza)   
                                             .input('cnrecibo'      , sql.Char(30, 0), createPaymentReport.receipt[i].cnrecibo )  
                                             .input('iestadorec'     , sql.Char(1, 0),  createPaymentReport.iestadorec) 
-                                            .query('update adrecibos set iestadorec = @iestadorec where casegurado = @casegurado and cnpoliza = @cnpoliza and cnrecibo = @cnrecibo' );
+                                            .query('update adrecibos set iestadorec = @iestadorec  where casegurado = @casegurado and cnpoliza = @cnpoliza and cnrecibo = @cnrecibo' );
                                         }
                                     }catch(err){
                                         return { error: err.message, message: 'No se registraron los datos ' };
@@ -165,17 +176,57 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
     }
 }
 
-const searchDataPaymentReport = async(searchDataReceipt) => {
+const searchDataPaymentReport = async() => {
     try{
+        const dataTransaction = []
         let pool = await sql.connect(sqlConfig);
-        let searchReport = await pool.request()
+        let searchDataTransaction = await pool.request()
         .input('iestado'     , sql.Bit, 0)  
         .query('select ctransaccion ,casegurado, freporte ,mpago, mpagoext,'+
         ' ptasamon, cprog, ifuente,iestado_tran , qagrupado ,cusuario , ivalida from cbreporte_tran where iestado = @iestado')
-        await pool.close();
 
-        return { recibo : searchReport.recordset};
+        if(searchDataTransaction.rowsAffected){
+            let pool = await sql.connect(sqlConfig);
+            await pool.request()
 
+            for(let i = 0; i < searchDataTransaction.recordset.length; i++){
+                let pool = await sql.connect(sqlConfig);
+                let searchDetailTransacion  = await pool.request()
+
+                .input('ctransaccion'   , sql.Numeric(18, 0), searchDataTransaction.recordset[i].ctransaccion)   
+                .query('select ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fhasta_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario'+
+                ' from cbreporte_pago_d where ctransaccion = @ctransaccion')
+
+                let pool1 = await sql.connect(sqlConfig);
+                let searchSoport  = await pool1.request()
+                .input('ctransaccion'   , sql.Numeric(18, 0), searchDataTransaction.recordset[i].ctransaccion)   
+                .query(' select ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario'+
+                ' from cbreporte_pago where ctransaccion = @ctransaccion')
+
+                let pool2 = await sql.connect(sqlConfig);
+                let searchDiference = await pool2.request()
+                .input('ctransaccion'   , sql.Numeric(19, 0), searchDataTransaction.recordset[i].ctransaccion )   
+                .input('iestado'   , sql.Bit, 1)   
+                .query('select mdiferencia, ctransaccion ,xobservacion from cbreporte_tran_dif where iestado = @iestado and ctransaccion = @ctransaccion')
+
+                dataTransaction.push({
+                    transaccion: {
+                        id : searchDataTransaction.recordset[i].ctransaccion,
+                        casegurado : searchDataTransaction.recordset[i].casegurado,
+                        freporte: searchDataTransaction.recordset[i].freporte,
+                        iestado_tran: searchDataTransaction.recordset[i].iestado_tran,
+                        mpagoext: searchDataTransaction.recordset[i].mpagoext,
+                        mpago: searchDataTransaction.recordset[i].mpago,
+                        ptasamon: searchDataTransaction.recordset[i].ptasamon,
+                    },
+                    detalle : searchDetailTransacion.recordset,
+                    soporte : searchSoport.recordset,
+                    diference : searchDiference.recordset
+                })
+            }
+        }
+
+        return { dataTransaction };
 
     }
     catch(err){
@@ -200,10 +251,6 @@ const searchDataPaymentTransaction = async(searchDataReceipt) => {
             return { recibo : searchReport.recordset , soporte : searchSoport.recordset};
         }
         await pool.close();
-
-
-
-
     }
     catch(err){
         return { error: err.message, message: 'No se registrarons los datos ' };
@@ -218,8 +265,7 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
         .input('fhasta'        , sql.DateTime , new Date())
         .input('iestadorec', sql.Char(1, 0), 'P')
         .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-               ' from adrecibos where iestadorec = @iestadorec AND GETDATE() < fhasta' )
-            //    ' and MONTH(fhasta) = MONTH(@fhasta) AND YEAR(fhasta) = YEAR(@fhasta) '
+               ' from adrecibos where iestadorec = @iestadorec AND @fhasta < fhasta' )
         await pool.close();
 
         return { recibo : searchReport.recordset};
@@ -249,6 +295,25 @@ const searchDataPaymentVencida= async(searchDataReceipt) => {
         return { error: err.message, message: 'No se registrarons los datos ' };
     }
 }
+
+const searchPaymentCollected= async() => {
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let searchReport = await pool.request()
+        .input('iestadorec', sql.Char(1, 0), 'C')
+        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+               ' from adrecibos where iestadorec = @iestadorec')
+        await pool.close();
+
+        return { recibo : searchReport.recordset};
+
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registrarons los datos ' };
+    }
+}
+
 
 const searchDataPaymentsCollected = async(searchDataReceipt) => {
     try{
@@ -309,6 +374,7 @@ const searchDataClient = async(searchDataReceipt) => {
 }
 
 const updateReceiptNotifiqued = async(updatePayment) => {
+
     try{
             //actualiza los recibos cobrados
             let pool = await sql.connect(sqlConfig);
@@ -322,6 +388,7 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                     .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
                     .input('itransaccion', sql.Char(2, 0) , updatePayment.itransaccion ) 
                     .query('update cbreporte_pago set itransaccion = @itransaccion where ctransaccion = @ctransaccion' );
+
                     if(updateReport.rowsAffected > 0 ){
                         for(let i = 0; i < updatePayment.receipt.length; i++){
                             let pool = await sql.connect(sqlConfig);
@@ -329,16 +396,17 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                             .input('cpoliza'   , sql.Numeric(19, 0), updatePayment.receipt[i].cpoliza )   
                             .input('crecibo'      , sql.Numeric(19, 0), updatePayment.receipt[i].crecibo )  
                             .input('iestadorec'     , sql.Char(1, 0),  updatePayment.iestadorec) 
-                            .query('update adrecibos set iestadorec = @iestadorec where  cpoliza = @cpoliza and crecibo = @crecibo' );
-                            
-                            return { update: updateReceipt.rowsAffected };
+                            .input('fcobro', sql.DateTime, new Date())
+                            .query('update adrecibos set iestadorec = @iestadorec , fcobro = @fcobro where  cpoliza = @cpoliza and crecibo = @crecibo' );
+                            console.log(updateReceipt)
 
-        
+
                         }
                     }           
             }
-    
-        await pool.close();
+
+            await pool.close();
+            return { updateTransaccion};
 
     }
     catch(err){
@@ -348,28 +416,25 @@ const updateReceiptNotifiqued = async(updatePayment) => {
 
 
 
-const receiptDifference = async(receiptDifference, receipt) => {
+const receiptDifference = async(receipt) => {
     try {
         let results = [];
-        for (let i = 0; i < receipt.length; i++) {
             let pool = await sql.connect(sqlConfig);
             let updateReceipt = await pool.request()
-            console.log(receiptDifference.transacccion)
-            console.log(receipt.mdiferencia)
-            console.log(receipt.xobservacion)
 
-                .input('ctransaccion', sql.Numeric(19, 0), receiptDifference.transacccion)
+                .input('ctransaccion', sql.Numeric(19, 0), receipt.transacccion)
                 .input('mdiferencia', sql.Numeric(19, 0), receipt.mdiferencia)
                 .input('xobservacion', sql.VarChar(500, 0), receipt.xobservacion)
+                .input('casegurado', sql.Numeric(19, 0), receipt.casegurado)
                 .input('fingreso', sql.DateTime, new Date())
-                .input('iestado', sql.Bit, 0)
-                .query('INSERT INTO adrecibo_dif' +
-                    '(ctransaccion, mdiferencia, xobservacion,  fingreso, iestado)' +
-                    'VALUES (@ctransaccion, @mdiferencia, @xobservacion, @fingreso,  @iestado)');
+                .input('iestado', sql.Bit, receipt.iestadorec)
+                .query('INSERT INTO cbreporte_tran_dif' +
+                    '(ctransaccion, mdiferencia, xobservacion,  fingreso, iestado, casegurado)' +
+                    'VALUES (@ctransaccion, @mdiferencia, @xobservacion, @fingreso,  @iestado, @casegurado)');
             if (updateReceipt.rowsAffected) {
                 let pool = await sql.connect(sqlConfig);
                 let receiptUpdate = await pool.request()
-                    .input('ctransaccion', sql.Numeric(18, 0), receiptDifference.transacccion)
+                    .input('ctransaccion', sql.Numeric(18, 0), receipt.transacccion)
                     .input('iestado_tran', sql.Char(2, 0), 'ER')
                     .query('update cbreporte_tran set iestado_tran = @iestado_tran where ctransaccion = @ctransaccion');
                 await pool.close();
@@ -379,7 +444,7 @@ const receiptDifference = async(receiptDifference, receipt) => {
                     receipt: receiptUpdate.rowsAffected
                 });
             }
-        }
+        
 
         return results;
     }
@@ -395,7 +460,7 @@ const differenceOfNotification = async(receipt) => {
         let updateReceipt= await pool.request()
         .input('ctransaccion'   , sql.Numeric(19, 0), receipt )   
         .input('iestado'   , sql.Bit, 0 )   
-        .query('select  mdiferencia from adrecibo_dif where iestado = @iestado and ctransaccion = @ctransaccion')
+        .query('select  mdiferencia, ctransaccion , xobservacion from cbreporte_tran_dif where iestado = @iestado and ctransaccion = @ctransaccion')
            return { differenceOfNotification : updateReceipt.recordset}
     }
     catch(err){
@@ -411,7 +476,7 @@ const updateReceiptDifference = async(notification) => {
             let updateReceipt= await pool.request()
             .input('iestado'     , sql.Bit,  1) 
             .input('ctransaccion'      , sql.Numeric(19, 0), notification )  
-            .query('update adrecibo_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
+            .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
             if(updateReceipt.rowsAffected){
                 let pool = await sql.connect(sqlConfig);
                 let receipt = await pool.request()
@@ -424,7 +489,7 @@ const updateReceiptDifference = async(notification) => {
                     let pool = await sql.connect(sqlConfig);
                     let search = await pool.request()
                     .input('ctransaccion'      , sql.Numeric(19, 0), notification )  
-                    .query('select crecibo from adrecibo_dif where ctransaccion  = @ctransaccion')
+                    .query('select crecibo from cbreporte_tran_dif where ctransaccion  = @ctransaccion')
                     if(search.rowsAffected){
                         let pool = await sql.connect(sqlConfig);
                         let updateReceipt= await pool.request()
@@ -460,5 +525,6 @@ export default {
     searchDataPaymentVencida,
     receiptDifference,
     differenceOfNotification,
-    updateReceiptDifference
+    updateReceiptDifference,
+    searchPaymentCollected
 }

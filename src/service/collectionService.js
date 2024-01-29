@@ -33,23 +33,15 @@ const createPaymentReportSoport = async (createPaymentReport) => {
 }
 
 const searchPaymentReportData = async (searchPaymentReport) => {
-    const searchPaymentReportN = await Collection.searchDataPaymentReport(searchPaymentReport);
-    if (searchPaymentReportN.error) {
+    const searchDataNotifiqued = await Collection.searchDataPaymentReport(searchPaymentReport);
+    if (searchDataNotifiqued.error) {
         return {
-            error: searchPaymentReportN.error
+            error: searchDataNotifiqued.error
         }
     }
 
-    const receipt = [];
-
-    for (let i = 0; i < searchPaymentReportN.recibo.length; i++) {
-        const result = await Collection.differenceOfNotification(searchPaymentReportN.recibo[i].ctransaccion);
-        receipt.push(result);
-    }
-
     return {
-        searchPaymentReportN,
-        receipt
+        searchDataNotifiqued
     };
 
 }
@@ -126,25 +118,20 @@ const searchPaymentVencidaData = async () => {
     return searchPaymentVencidaData;
 }
 
+
+const searchPaymentCollected = async () => {
+    const searchPaymentCollected = await Collection.searchPaymentCollected();
+    if (searchPaymentCollected.error) {
+        return {
+            error: searchPaymentCollected.error
+        }
+    }
+    return searchPaymentCollected;
+}
+
 const receiptUnderReviewData = async (receiptUnderReview) => {
 
-    const receipt = []
-    for(let i = 0; i < receiptUnderReview.receipt.length; i++){
-
-        if(receiptUnderReview.receipt[i].crecibo == receiptUnderReview.crecibo){
-            receipt.push({
-                cpoliza : receiptUnderReview.receipt[i].cpoliza,
-                crecibo : receiptUnderReview.receipt[i].crecibo,
-                casegurado : receiptUnderReview.receipt[i].casegurado,
-                cramo : receiptUnderReview.receipt[i].cramo,
-                mprimabrutaext : receiptUnderReview.receipt[i].mprimabrutaext,
-                mprimabruta : receiptUnderReview.receipt[i].mprimabruta
-            })
-
-        }
-
-    }
-    const updateReceiptDifference = await Collection.receiptDifference(receiptUnderReview,receipt);
+    const updateReceiptDifference = await Collection.receiptDifference(receiptUnderReview);
     if (updateReceiptDifference.error) {
         return {
             error: updateReceiptDifference.error
@@ -189,5 +176,6 @@ export default {
     searchPaymentVencidaData,
     receiptUnderReviewData,
     differenceOfNotificationData,
-    updateDifferenceOfNotificationData
+    updateDifferenceOfNotificationData,
+    searchPaymentCollected
 }

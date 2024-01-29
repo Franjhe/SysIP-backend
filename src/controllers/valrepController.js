@@ -808,7 +808,6 @@ const getTargetBank = async (req, res) => {
                 message: targetBank.error
             });
     }
-    console.log(targetBank)
     return res
         .status(200)
         .send({

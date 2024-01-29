@@ -402,7 +402,6 @@ const getTypeVehicle = async () => {
 };
 
 const getUtilityRechange = async () => {
-  console.log('hola')
   try {
     const uso = await UtilityRecharge.findAll({
       attributes: ['cuso', 'xuso', 'precargo'],
@@ -415,7 +414,6 @@ const getUtilityRechange = async () => {
 };
 
 const getUtility = async () => {
-  console.log('todo bien?')
   try {
     const uso = await Utility.findAll({
       attributes: ['cuso', 'xuso'],
