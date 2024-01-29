@@ -2,7 +2,6 @@ import collectionService from '../service/collectionService.js';
 
 const searchCollectionbyClient = async (req, res) => {
     const searchReceipt = await collectionService.searchDataReceipt(req.body.cedula);
-
     if (searchReceipt.permissionError) {
         return res
             .status(403)
@@ -322,6 +321,35 @@ const searchPaymentVencin= async (req, res) => {
         });
 }
 
+const searchPaymentCollected= async (req, res) => {
+    const searchPaymentCollected = await collectionService.searchPaymentCollected();
+    if (searchPaymentCollected.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchPaymentCollected.permissionError
+            });
+    }
+    if (searchPaymentCollected.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchPaymentCollected.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            searchPaymentCollected,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+
 const receiptUnderReview = async (req, res) => {
     const searchReceipt = await collectionService.receiptUnderReviewData(req.body);
 
@@ -407,5 +435,6 @@ export default {
     searchPaymentVencin,
     receiptUnderReview,
     differenceOfNotification,
-    updateDifferenceOfNotification
+    updateDifferenceOfNotification,
+    searchPaymentCollected
 }
