@@ -6,6 +6,6 @@ const router = express.Router();
 
 router
 
-    .post("/search", authenticate, tradeController.getAllTrade);
+    .post("/search", tradeController.getAllTrade);
 
 export default router;

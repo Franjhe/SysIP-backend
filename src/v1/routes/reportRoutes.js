@@ -7,6 +7,6 @@ const router = express.Router();
 router
 
     .post("/search",  reportController.searchPremiums)
-    .post("/receipt",  authenticate, reportController.searchReceipt)
+    .post("/receipt", reportController.searchReceipt)
 
 export default router;

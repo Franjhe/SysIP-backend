@@ -6,6 +6,6 @@ const router = express.Router();
 
 router
 
-    .post("/get-menu", authenticate, menuController.getAllMenu);
+    .post("/get-menu", menuController.getAllMenu);
 
 export default router;
