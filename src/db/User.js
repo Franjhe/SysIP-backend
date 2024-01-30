@@ -71,12 +71,10 @@ const getOneUserPhp = async (getOneUserPhp) => {
         if (result.rowsAffected < 1) {
             return false;
         }
-        console.log(result.recordset[0])
         await pool.close();
         return result.recordset[0];
     }
     catch (error) {
-        console.log(error.message)
         return { error: error.message };
     }
 }
