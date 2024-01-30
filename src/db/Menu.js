@@ -5,6 +5,7 @@ const MenuPrincipal = sequelize.define('seVmenu', {}, { tableName: 'seVmenu' });
 
 // Realiza la busqueda en la tabla pasandole los campos.
 const getAllMainMenu = async (menuData) => {
+  console.log(menuData)
   try {
     const menuPrincipalQuery = await MenuPrincipal.findAll({
       where: menuData,
@@ -12,8 +13,10 @@ const getAllMainMenu = async (menuData) => {
                    'xmenu', 'xrutamenu', 'xsubmenu', 'xrutasubmenu'],
     });
     const menuPrincipal = menuPrincipalQuery.map((item) => item.get({ plain: true }));
+    console.log(menuPrincipal)
     return menuPrincipal;
   } catch (error) {
+    console.log(error.message)
     return { error: error.message };
   }
 };
