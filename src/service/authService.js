@@ -49,9 +49,36 @@ const getOneUser = async (xlogin) => {
     return user;
 }
 
+const getOneUserPhp = async (getOneUserPhp) => {
+    const user = await User.getOneUserPhp(getOneUserPhp);
+    if (user.error) {
+        return { error: user.error };
+    }
+    if (!user) {
+        return { errorNotFound: "User not found" };
+    }
+    if (user.xlogin) {
+        user.xlogin
+    }
+    return user;
+}
+
+const createJWTPHP = (user) => {
+    const payload = {
+        cusuario: user.cusuario,
+        xusuario: user.xusuario,
+        xlogin: user.xlogin,
+        iat: moment().unix(),
+        exp: moment().add(1, 'day').unix(),
+    }
+    return jwt.sign(payload, process.env.JWT_SECRET)
+}
+
 export default {
     verifyIfUsernameExists,
     verifyIfPasswordMatchs,
     createJWT,
-    getOneUser
+    getOneUser,
+    getOneUserPhp,
+    createJWTPHP
 }

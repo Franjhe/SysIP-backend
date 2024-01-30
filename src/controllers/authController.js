@@ -74,7 +74,40 @@ const getUserModules = async (req, res) => {
         })
 }
 
+const createJWTPHP = async (req, res) => {
+    const user = await authService.getOneUserPhp(req.body);
+    if (user.error) {
+        return res
+            .status(user.code)
+            .send({
+                status: false,
+                message: user.error
+            });
+    }
+    const jwt = authService.createJWTPHP(user);
+    res
+        .status(201).send({ 
+            status: true, 
+            message: 'Usuario Autenticado',
+            data: {
+                cusuario: user.cusuario,
+                xusuario: user.xusuario,
+                cdepartamento: user.cdepartamento,
+                crol: user.crol,
+                bcrear: user.bcrear,
+                bconsultar: user.bconsultar,
+                bmodificar: user.bmodificar,
+                beliminar: user.beliminar,
+                ccorredor: user.ccorredor,
+                xcorredor: user.xcorredor,
+                token: 'Bearer ' + jwt
+            }
+        });
+    return;
+};
+
 export default {
     createJWT,
-    getUserModules
+    getUserModules,
+    createJWTPHP
 }

@@ -61,8 +61,29 @@ const getOneUser = async (xlogin) => {
     }
 }
 
+const getOneUserPhp = async (getOneUserPhp) => {
+    console.log(getOneUserPhp.xcorreo)
+    try {
+        let pool = await sql.connect(sqlConfig);
+        let result = await pool.request()
+           .input('xcorreo', sql.NVarChar, getOneUserPhp.xcorreo)
+           .query('select * from seVlogin where xcorreo_corredor = @xcorreo')
+        if (result.rowsAffected < 1) {
+            return false;
+        }
+        console.log(result.recordset[0])
+        await pool.close();
+        return result.recordset[0];
+    }
+    catch (error) {
+        console.log(error.message)
+        return { error: error.message };
+    }
+}
+
 export default {
     verifyIfUsernameExists,
     verifyIfPasswordMatchs,
-    getOneUser
+    getOneUser,
+    getOneUserPhp
 }
