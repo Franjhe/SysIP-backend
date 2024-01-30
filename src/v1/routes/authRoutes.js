@@ -7,7 +7,7 @@ const router = express.Router();
 router
 
     .post("/signIn", authController.createJWT)
-    .post("/user-modules", authenticate, authController.getUserModules)
+    .post("/user-modules", authController.getUserModules)
     .post("/user-brokerphp", authController.createJWTPHP)
 
 export default router;
