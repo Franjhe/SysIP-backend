@@ -24,7 +24,8 @@ const searchDataReceipt = async(searchDataReceipt) => {
             let receipt = await pool.request()
             .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
             .input('iestadorec', sql.Char(1, 0), 'P')
-            .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+            .query('select fpago,mpendiente, mpendientext,  xobserva, cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
+            ' cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
             ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
 
             let diferenceList = []
@@ -139,6 +140,7 @@ const createPaymentReportTransW = async(createPaymentReport) => {
 const createPaymentReportSoportW = async(createPaymentReport) => {
     try{
         let pool = await sql.connect(sqlConfig);
+        let data ;
         for(let i = 0; i < createPaymentReport.report.length; i++){
             let insertReport = await pool.request()
             .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.ctransaccion)   
@@ -162,13 +164,12 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
             .query('INSERT INTO cbreporte_pago '
             +'(ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext, mtotal , mtotalext ,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario ) VALUES'
             +'(@ctransaccion, @npago, @casegurado, @cmoneda, @cbanco, @cbanco_destino, @mpago, @mpagoext, @mpagoigtf, @mpagoigtfext , @mtotal ,@mtotalext , @ptasamon, @ptasaref,  @xreferencia, @xruta, @cprog, @cusuario )')
-
-            return insertReport
+            data = insertReport
         }
         
  
         await pool.close();
-        return { result: insertReport };
+        return { result: data };
 
     }
     catch(err){
@@ -277,14 +278,15 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
     }
 }
 
-const searchDataPaymentVencida= async(searchDataReceipt) => {
+const searchDataPaymentVencida= async() => {
     try{
-
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
         .input('iestadorec', sql.Char(1, 0), 'P')
         .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
                ' from adrecibos where iestadorec = @iestadorec   AND GETDATE() > fhasta')
+
+
         await pool.close();
 
         return { recibo : searchReport.recordset};
@@ -375,6 +377,8 @@ const searchDataClient = async(searchDataReceipt) => {
 
 const updateReceiptNotifiqued = async(updatePayment) => {
 
+    console.log(updatePayment)
+
     try{
             //actualiza los recibos cobrados
             let pool = await sql.connect(sqlConfig);
@@ -393,13 +397,11 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                         for(let i = 0; i < updatePayment.receipt.length; i++){
                             let pool = await sql.connect(sqlConfig);
                             let updateReceipt= await pool.request()
-                            .input('cpoliza'   , sql.Numeric(19, 0), updatePayment.receipt[i].cpoliza )   
-                            .input('crecibo'      , sql.Numeric(19, 0), updatePayment.receipt[i].crecibo )  
+                            .input('cpoliza'   , sql.Numeric(19, 0), updatePayment.detalle[i].cpoliza )   
+                            .input('crecibo'      , sql.Numeric(19, 0), updatePayment.detalle[i].crecibo )  
                             .input('iestadorec'     , sql.Char(1, 0),  updatePayment.iestadorec) 
                             .input('fcobro', sql.DateTime, new Date())
                             .query('update adrecibos set iestadorec = @iestadorec , fcobro = @fcobro where  cpoliza = @cpoliza and crecibo = @crecibo' );
-                            console.log(updateReceipt)
-
 
                         }
                     }           
@@ -421,7 +423,6 @@ const receiptDifference = async(receipt) => {
         let results = [];
             let pool = await sql.connect(sqlConfig);
             let updateReceipt = await pool.request()
-
                 .input('ctransaccion', sql.Numeric(19, 0), receipt.transacccion)
                 .input('mdiferencia', sql.Numeric(19, 0), receipt.mdiferencia)
                 .input('xobservacion', sql.VarChar(500, 0), receipt.xobservacion)
@@ -438,6 +439,20 @@ const receiptDifference = async(receipt) => {
                     .input('iestado_tran', sql.Char(2, 0), 'ER')
                     .query('update cbreporte_tran set iestado_tran = @iestado_tran where ctransaccion = @ctransaccion');
                 await pool.close();
+                if (receiptUpdate.rowsAffected) {
+                    let pool = await sql.connect(sqlConfig);
+                    let receiptUpdateSys = await pool.request()
+                        .input('fpago', sql.DateTime, new Date())
+                        .input('iestadorec', sql.Char(2, 0), 'P')
+                        .input('mpendiente', sql.Numeric(19, 2), receipt.mdiferencia)
+                        .input('mpendientext', sql.Numeric(19, 2), receipt.mdiferenciaext)
+                        .input('xobserva', sql.Char(150, 0), receipt.xobservacion)
+                        .input('crecibo', sql.Numeric(19, 0), receipt.recibo)
+                        .query('update adrecibos set iestadorec = @iestadorec ,mpendiente = @mpendiente, mpendientext = @mpendientext , xobserva = @xobserva, fpago = @fpago '+
+                        ' where crecibo = @crecibo ' );
+                    await pool.close();
+ 
+                }
 
                 results.push({
                     updateReceipt: updateReceipt.rowsAffected,
@@ -475,34 +490,31 @@ const updateReceiptDifference = async(notification) => {
             let pool = await sql.connect(sqlConfig);
             let updateReceipt= await pool.request()
             .input('iestado'     , sql.Bit,  1) 
-            .input('ctransaccion'      , sql.Numeric(19, 0), notification )  
+            .input('ctransaccion'      , sql.Numeric(19, 0), notification[i].transacccion )  
             .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
             if(updateReceipt.rowsAffected){
                 let pool = await sql.connect(sqlConfig);
                 let receipt = await pool.request()
-                .input('ctransaccion', sql.Numeric(18, 0), notification)
+                .input('ctransaccion', sql.Numeric(18, 0), notification[i].transacccion)
                 .input('iestado_tran', sql.Char(2, 0), 'TR')
                 .input('iestado'     , sql.Bit,  1) 
                 .query('update cbreporte_tran set iestado_tran = @iestado_tran, iestado = @iestado where ctransaccion = @ctransaccion' );
                 //actualizamos el estado del recibo
+
                 if(receipt.rowsAffected){
-                    let pool = await sql.connect(sqlConfig);
-                    let search = await pool.request()
-                    .input('ctransaccion'      , sql.Numeric(19, 0), notification )  
-                    .query('select crecibo from cbreporte_tran_dif where ctransaccion  = @ctransaccion')
-                    if(search.rowsAffected){
+                    for(let j = 0; j < notification[i].recibo.length; i++){
                         let pool = await sql.connect(sqlConfig);
                         let updateReceipt= await pool.request()
-                        .input('crecibo'   , sql.Numeric(18, 0), search.recordset[0].crecibo)   
+                        .input('crecibo'   , sql.Numeric(18, 0), notification[i].recibo[j].crecibo)   
                         .input('iestadorec'     , sql.Char(1, 0),  'C') 
-                        .query('update adrecibos set iestadorec = @iestadorec where crecibo = @crecibo ' );
+                        .input('mpendiente'     , sql.Numeric(15, 0),  0) 
+                        .query('update adrecibos set iestadorec = @iestadorec ,mpendiente = @mpendiente where crecibo = @crecibo ' );
                         await pool.close();
-
+                        return { differenceOfNotification : updateReceipt.rowsAffected}
                     }
                 }
             }
         }
-        return { differenceOfNotification : updateReceipt.rowsAffected}
 
 
     }
