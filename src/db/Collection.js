@@ -224,6 +224,8 @@ const searchDataPaymentReport = async() => {
                     soporte : searchSoport.recordset,
                     diference : searchDiference.recordset
                 })
+
+                console.log(searchDataTransaction,searchDetailTransacion,searchSoport)
             }
         }
 
@@ -265,8 +267,7 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
         let searchReport = await pool.request()
         .input('fhasta'        , sql.DateTime , new Date())
         .input('iestadorec', sql.Char(1, 0), 'P')
-        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-               ' from adrecibos where iestadorec = @iestadorec AND @fhasta < fhasta' )
+        .query('select * from VWBUSCARECIBOYCLIENTE where iestadorec = @iestadorec AND @fhasta < fhasta' )
         await pool.close();
 
         return { recibo : searchReport.recordset};
@@ -283,8 +284,7 @@ const searchDataPaymentVencida= async() => {
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
         .input('iestadorec', sql.Char(1, 0), 'P')
-        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-               ' from adrecibos where iestadorec = @iestadorec   AND GETDATE() > fhasta')
+        .query('select * from VWBUSCARECIBOYCLIENTE where iestadorec = @iestadorec  AND GETDATE() > fhasta')
 
 
         await pool.close();
@@ -303,8 +303,7 @@ const searchPaymentCollected= async() => {
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
         .input('iestadorec', sql.Char(1, 0), 'C')
-        .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol , cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-               ' from adrecibos where iestadorec = @iestadorec')
+        .query('select * from vwbuscarcobranza where iestadorec = @iestadorec')
         await pool.close();
 
         return { recibo : searchReport.recordset};
@@ -376,9 +375,6 @@ const searchDataClient = async(searchDataReceipt) => {
 }
 
 const updateReceiptNotifiqued = async(updatePayment) => {
-
-    console.log(updatePayment)
-
     try{
             //actualiza los recibos cobrados
             let pool = await sql.connect(sqlConfig);
@@ -394,7 +390,7 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                     .query('update cbreporte_pago set itransaccion = @itransaccion where ctransaccion = @ctransaccion' );
 
                     if(updateReport.rowsAffected > 0 ){
-                        for(let i = 0; i < updatePayment.receipt.length; i++){
+                        for(let i = 0; i < updatePayment.detalle.length; i++){
                             let pool = await sql.connect(sqlConfig);
                             let updateReceipt= await pool.request()
                             .input('cpoliza'   , sql.Numeric(19, 0), updatePayment.detalle[i].cpoliza )   
