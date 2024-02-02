@@ -302,6 +302,7 @@ const createGroupContract = async (req, res) => {
 }
 
 const searchQuotes = async (req, res) => {
+    console.log(req.body)
     const result = await emissionsService.searchQuotes(req.body);
     if (result.permissionError) {
         return res
@@ -342,7 +343,9 @@ const searchQuotes = async (req, res) => {
                 fano: result[0].qano, 
                 cplan: result[0].cplan_rc, 
                 xcobertura: xcobertura,
-                mtotal_rcv: result[0].mtotal_rcv
+                mtotal_rcv: result[0].mtotal_rcv,
+                ccorredor: result[0].ccorredor,
+                xcorredor: result[0].xcorredor
             }
         });
 }

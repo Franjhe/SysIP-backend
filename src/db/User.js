@@ -61,23 +61,96 @@ const getOneUser = async (xlogin) => {
     }
 }
 
+// const getOneUserPhp = async (getOneUserPhp) => {
+//     console.log(getOneUserPhp.xcorreo)
+//     try {
+//         let pool = await sql.connect(sqlConfig);
+//         let result = await pool.request()
+//            .input('xcorreo', sql.NVarChar, getOneUserPhp.xcorreo)
+//            .query('select * from seVlogin where xcorreo_corredor = @xcorreo')
+//         if (result.rowsAffected < 1) {
+//             return false;
+//         }
+//         console.log(result.recordset[0])
+//         await pool.close();
+//         return result.recordset[0];
+//     }
+//     catch (error) {
+//         console.log(error.message);
+//         return { error: error.message };
+//     }
+// }
+
 const getOneUserPhp = async (getOneUserPhp) => {
-    console.log(getOneUserPhp.xcorreo)
+    console.log(getOneUserPhp.xcorreo);
     try {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
-           .input('xcorreo', sql.NVarChar, getOneUserPhp.xcorreo)
-           .query('select * from seVlogin where xcorreo_corredor = @xcorreo')
+            .input('xcorreo', sql.NVarChar, getOneUserPhp.xcorreo)
+            .query(`
+                SELECT
+                    ccorredor,
+                    xcorredor,
+                    xcorreo_corredor,
+                    cagencia,
+                    xnombre_agencia,
+                    xcorreo_agencia,
+                    cproductor,
+                    xnombre_productor,
+                    xcorreo_productor,
+                    CASE
+                        WHEN xcorreo_corredor = @xcorreo THEN 'Corredor'
+                        WHEN xcorreo_agencia = @xcorreo THEN 'Agente'
+                        WHEN xcorreo_productor = @xcorreo THEN 'Productor'
+                        ELSE 'No encontrado'
+                    END AS TipoEmisor
+                FROM
+                    maVagenciasxcorredor
+                WHERE
+                    xcorreo_corredor = @xcorreo OR xcorreo_agencia = @xcorreo OR xcorreo_productor = @xcorreo
+            `);
+
         if (result.rowsAffected < 1) {
             return false;
         }
+
+        const tipoEmisor = result.recordset[0].TipoEmisor;
+
+        // Construir objeto de respuesta según el tipo de emisor
+        let respuesta = {};
+        if (tipoEmisor === 'Corredor') {
+            respuesta = {
+                ccorredor: result.recordset[0].ccorredor,
+                xcorreo_corredor: result.recordset[0].xcorreo_corredor
+            };
+        } else if (tipoEmisor === 'Agente') {
+            respuesta = {
+                ccorredor: result.recordset[0].ccorredor,
+                xcorreo_corredor: result.recordset[0].xcorreo_corredor,
+                cagencia: result.recordset[0].cagencia
+            };
+        } else if (tipoEmisor === 'Productor') {
+            respuesta = {
+                ccorredor: result.recordset[0].ccorredor,
+                xcorreo_corredor: result.recordset[0].xcorreo_corredor,
+                cagencia: result.recordset[0].cagencia,
+                cproductor: result.recordset[0].cproductor
+            };
+        }
+
+        const loginResult = await pool.request()
+            .input('xcorreo_corredor', sql.NVarChar, respuesta.xcorreo_corredor)
+            .query('select * from seVlogin where xcorreo_corredor = @xcorreo_corredor');
+
+        respuesta.loginResult = loginResult.recordset[0];
+
         await pool.close();
-        return result.recordset[0];
-    }
-    catch (error) {
+        return respuesta;
+    } catch (error) {
+        console.log(error.message);
         return { error: error.message };
     }
-}
+};
 
 export default {
     verifyIfUsernameExists,
