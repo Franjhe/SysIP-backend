@@ -105,7 +105,7 @@ const getOneUserPhp = async (getOneUserPhp) => {
                         ELSE 'No encontrado'
                     END AS TipoEmisor
                 FROM
-                maVagenciasxcorredor
+                    maVagenciasxcorredor
                 WHERE
                     xcorreo_corredor = @xcorreo OR xcorreo_agencia = @xcorreo OR xcorreo_productor = @xcorreo
             `);
@@ -114,9 +114,30 @@ const getOneUserPhp = async (getOneUserPhp) => {
             return false;
         }
 
-        console.log(result.recordset[0]);
+        const tipoEmisor = result.recordset[0].TipoEmisor;
+
+        // Construir objeto de respuesta según el tipo de emisor
+        let respuesta = {};
+        if (tipoEmisor === 'Corredor') {
+            respuesta = {
+                ccorredor: result.recordset[0].ccorredor
+            };
+        } else if (tipoEmisor === 'Agente') {
+            respuesta = {
+                ccorredor: result.recordset[0].ccorredor,
+                cagencia: result.recordset[0].cagencia
+            };
+        } else if (tipoEmisor === 'Productor') {
+            respuesta = {
+                ccorredor: result.recordset[0].ccorredor,
+                cagencia: result.recordset[0].cagencia,
+                cproductor: result.recordset[0].cproductor
+            };
+        }
+
+        console.log(respuesta);
         await pool.close();
-        return result.recordset[0];
+        return respuesta;
     } catch (error) {
         console.log(error.message);
         return { error: error.message };
