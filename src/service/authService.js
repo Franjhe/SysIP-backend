@@ -65,9 +65,9 @@ const getOneUserPhp = async (getOneUserPhp) => {
 
 const createJWTPHP = (user) => {
     const payload = {
-        cusuario: user.cusuario,
-        xusuario: user.xusuario,
-        xlogin: user.xlogin,
+        cusuario: user.loginResult.cusuario,
+        xusuario: user.loginResult.xusuario,
+        xlogin: user.loginResult.xlogin,
         iat: moment().unix(),
         exp: moment().add(1, 'day').unix(),
     }

@@ -84,23 +84,24 @@ const createJWTPHP = async (req, res) => {
                 message: user.error
             });
     }
-    console.log(user)
     const jwt = authService.createJWTPHP(user);
     res
         .status(201).send({ 
             status: true, 
             message: 'Usuario Autenticado',
             data: {
-                cusuario: user.cusuario,
-                xusuario: user.xusuario,
-                cdepartamento: user.cdepartamento,
-                crol: user.crol,
-                bcrear: user.bcrear,
-                bconsultar: user.bconsultar,
-                bmodificar: user.bmodificar,
-                beliminar: user.beliminar,
-                ccorredor: user.ccorredor,
-                xcorredor: user.xcorredor,
+                cusuario: user.loginResult.cusuario,
+                xusuario: user.loginResult.xusuario,
+                cdepartamento: user.loginResult.cdepartamento,
+                crol: user.loginResult.crol,
+                bcrear: user.loginResult.bcrear,
+                bconsultar: user.loginResult.bconsultar,
+                bmodificar: user.loginResult.bmodificar,
+                beliminar: user.loginResult.beliminar,
+                ccorredor: user.loginResult.ccorredor,
+                xcorredor: user.loginResult.xcorredor,
+                cagencia: user.cagencia,
+                cproductor: user.productor,
                 token: 'Bearer ' + jwt
             }
         });
