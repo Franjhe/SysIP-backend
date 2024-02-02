@@ -100,14 +100,14 @@ const getOneUserPhp = async (getOneUserPhp) => {
                     xcorreo_productor,
                     CASE
                         WHEN xcorreo_corredor = @xcorreo THEN 'Corredor'
-                        WHEN xcorreo_agente = @xcorreo THEN 'Agente'
+                        WHEN xcorreo_agencia = @xcorreo THEN 'Agente'
                         WHEN xcorreo_productor = @xcorreo THEN 'Productor'
                         ELSE 'No encontrado'
                     END AS TipoEmisor
                 FROM
                 maVagenciasxcorredor
                 WHERE
-                    xcorreo_corredor = @xcorreo OR xcorreo_agente = @xcorreo OR xcorreo_productor = @xcorreo
+                    xcorreo_corredor = @xcorreo OR xcorreo_agencia = @xcorreo OR xcorreo_productor = @xcorreo
             `);
 
         if (result.rowsAffected < 1) {
