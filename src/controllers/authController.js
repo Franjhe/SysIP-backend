@@ -102,6 +102,7 @@ const createJWTPHP = async (req, res) => {
                 xcorredor: user.loginResult.xcorredor,
                 cagencia: user.cagencia,
                 cproductor: user.productor,
+                xcorreo: req.body.xcorreo,
                 token: 'Bearer ' + jwt
             }
         });
