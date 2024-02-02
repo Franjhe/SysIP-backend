@@ -472,7 +472,7 @@ const searchQuotes = async (searchQuotes) => {
   try {
     const quotes = await Quotes.findAll({
       where: { ccotizacion: searchQuotes.ccotizacion, iaceptado: 1 },
-      attributes: ['xnombre', 'xapellido', 'xcorreo', 'xmarca', 'xmodelo', 'xversion', 'npasajero', 'qano', 'cplan_rc', 'brcv', 'bamplia', 'bperdida', 'mtotal_rcv'],
+      attributes: ['xnombre', 'xapellido', 'xcorreo', 'xmarca', 'xmodelo', 'xversion', 'npasajero', 'qano', 'cplan_rc', 'brcv', 'bamplia', 'bperdida', 'mtotal_rcv', 'ccorredor', 'xcorredor'],
     });
 
     const result = quotes.map((item) => item.get({ plain: true }));
