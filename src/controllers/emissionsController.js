@@ -302,6 +302,7 @@ const createGroupContract = async (req, res) => {
 }
 
 const searchQuotes = async (req, res) => {
+    console.log(req.body)
     const result = await emissionsService.searchQuotes(req.body);
     if (result.permissionError) {
         return res
