@@ -84,6 +84,7 @@ const createJWTPHP = async (req, res) => {
                 message: user.error
             });
     }
+    console.log(user)
     const jwt = authService.createJWTPHP(user);
     res
         .status(201).send({ 

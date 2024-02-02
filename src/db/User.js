@@ -120,22 +120,30 @@ const getOneUserPhp = async (getOneUserPhp) => {
         let respuesta = {};
         if (tipoEmisor === 'Corredor') {
             respuesta = {
-                ccorredor: result.recordset[0].ccorredor
+                ccorredor: result.recordset[0].ccorredor,
+                xcorreo_corredor: result.recordset[0].xcorreo_corredor
             };
         } else if (tipoEmisor === 'Agente') {
             respuesta = {
                 ccorredor: result.recordset[0].ccorredor,
+                xcorreo_corredor: result.recordset[0].xcorreo_corredor,
                 cagencia: result.recordset[0].cagencia
             };
         } else if (tipoEmisor === 'Productor') {
             respuesta = {
                 ccorredor: result.recordset[0].ccorredor,
+                xcorreo_corredor: result.recordset[0].xcorreo_corredor,
                 cagencia: result.recordset[0].cagencia,
                 cproductor: result.recordset[0].cproductor
             };
         }
 
-        console.log(respuesta);
+        const loginResult = await pool.request()
+            .input('xcorreo_corredor', sql.NVarChar, respuesta.xcorreo_corredor)
+            .query('select * from seVlogin where xcorreo_corredor = @xcorreo_corredor');
+
+        respuesta.loginResult = loginResult.recordset[0];
+
         await pool.close();
         return respuesta;
     } catch (error) {
