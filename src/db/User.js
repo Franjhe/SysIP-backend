@@ -105,7 +105,7 @@ const getOneUserPhp = async (getOneUserPhp) => {
                         ELSE 'No encontrado'
                     END AS TipoEmisor
                 FROM
-                    maVagentesxcorredor
+                maVagenciasxcorredor
                 WHERE
                     xcorreo_corredor = @xcorreo OR xcorreo_agente = @xcorreo OR xcorreo_productor = @xcorreo
             `);
