@@ -99,7 +99,7 @@ const createPaymentReportTransW = async(createPaymentReport) => {
                                 .input('fhasta_pol'        , sql.DateTime , createPaymentReport.receipt[i].fhasta_pol )
                                 .input('fdesde_rec'     , sql.DateTime, createPaymentReport.receipt[i].fdesde_rec)  
                                 .input('fhasta_rec'   , sql.DateTime, createPaymentReport.receipt[i].fhasta_rec)   
-                                .input('mprimabruta'      , sql.Numeric(4, 2), createPaymentReport.receipt[i].mprimabruta )  
+                                .input('mprimabruta'      , sql.Numeric(18, 2), createPaymentReport.receipt[i].mprimabruta )  
                                 .input('mprimabrutaext'        , sql.Numeric(18, 2), createPaymentReport.receipt[i].mprimabrutaext ) 
                                 .input('ptasamon'        , sql.Numeric(18, 2), createPaymentReport.receipt[i].ptasamon ) 
                                 .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.cusuario) 
@@ -983,24 +983,21 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                 let np_acompanantes = generateTableHtml()
     
                 let transporter = nodemailer.createTransport({
-                    host:'192.168.12.22',
-                    port:25,
-                    secure:false,
-                //   auth: {
-                //     user: 'info@lamundialdeseguros.com',
-                //     pass: 'Zxc2020*'
-                //   },
-                    service:'Gmail',
-                    auth: {
+                  host: "smtp.gmail.com",
+                  port:465,
+                  // secure:true,
+                  // auth: {
+                  //   user: 'info@lamundialdeseguros.com',
+                  //   pass: 'Zxc2020*'
+                  // },
+                  service:'Gmail',
+                  auth: {
                     user: 'seguroslamundial@gmail.com',
                     pass: 'vyeazhrymlylxsdb'
-                    },
-                    tls:{
-                    rejectUnauthorized: false,
-                    authorized: false,
-                    servername: 'mail.lamundialdeseguros.com',
-                    }
-    
+                  },
+                  tls:{
+                    rejectUnauthorized: false
+                  }
                 });
                 
                 let mailOptions = {
@@ -1099,17 +1096,17 @@ const differenceOfNotification = async(receipt) => {
 
 const updateReceiptDifference = async(notification) => {
     try{
-        let cedula = any
-        let recibo = []
-        let cliente = string
+        // let cedula = any
+        // let recibo = []
+        // let cliente = string
         for(let i = 0; i < notification.length; i++){
 
-            cedula = notification[i].casegurado 
-            recibo.push(notification[i].recibo[j].crecibo)
+            // cedula = notification[i].casegurado 
+            //recibo.push(notification[i].recibo[j].crecibo)
 
             let pool = await sql.connect(sqlConfig);
             let updateReceipt= await pool.request()
-            .input('iestado'     , sql.Bit,  1) 
+            .input('iestado'     , sql.Bit,  0) 
             .input('ctransaccion'      , sql.Numeric(19, 0), notification[i].transacccion )  
             .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
             if(updateReceipt.rowsAffected){
@@ -1117,7 +1114,7 @@ const updateReceiptDifference = async(notification) => {
                 let receipt = await pool.request()
                 .input('ctransaccion', sql.Numeric(18, 0), notification[i].transacccion)
                 .input('iestado_tran', sql.Char(2, 0), 'TR')
-                .input('iestado'     , sql.Bit,  1) 
+                .input('iestado'     , sql.Bit,  0) 
                 .query('update cbreporte_tran set iestado_tran = @iestado_tran, iestado = @iestado where ctransaccion = @ctransaccion' );
                 //actualizamos el estado del recibo
 
@@ -1719,24 +1716,21 @@ const updateReceiptDifference = async(notification) => {
         let np_acompanantes = generateTableHtml()
 
         let transporter = nodemailer.createTransport({
-            host:'192.168.12.22',
-            port:25,
-            secure:false,
-        //   auth: {
-        //     user: 'info@lamundialdeseguros.com',
-        //     pass: 'Zxc2020*'
-        //   },
-            service:'Gmail',
-            auth: {
+          // host:'192.168.12.22',
+          // port:587,
+          // secure:true,
+          // auth: {
+          //   user: 'info@lamundialdeseguros.com',
+          //   pass: 'Zxc2020*'
+          // },
+          service:'Gmail',
+          auth: {
             user: 'seguroslamundial@gmail.com',
             pass: 'vyeazhrymlylxsdb'
-            },
-            tls:{
-            rejectUnauthorized: false,
-            authorized: false,
-            servername: 'mail.lamundialdeseguros.com',
-            }
-
+          },
+          tls:{
+            rejectUnauthorized: false
+          }
         });
         
         let mailOptions = {
