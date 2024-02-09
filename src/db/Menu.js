@@ -13,7 +13,6 @@ const getAllMainMenu = async (menuData) => {
                    'xmenu', 'xrutamenu', 'xsubmenu', 'xrutasubmenu'],
     });
     const menuPrincipal = menuPrincipalQuery.map((item) => item.get({ plain: true }));
-    console.log(menuPrincipal)
     return menuPrincipal;
   } catch (error) {
     console.log(error.message)
