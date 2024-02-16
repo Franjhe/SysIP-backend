@@ -29,6 +29,39 @@ const searchCollectionbyClient = async (req, res) => {
         });
 }
 
+
+const createNotificationMovement = async (req, res) => {
+    const searchReceipt = await collectionService.createNotificationMovement(req.body);
+
+    if (searchReceipt.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: searchReceipt.permissionError
+            });
+    }
+    if (searchReceipt.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: searchReceipt.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            ctransaccion : searchReceipt,
+        });
+}
+
+
+
+
+
 const createPaymentReporTrans = async (req, res) => {
     const searchReceipt = await collectionService.createPaymentReportTrans(req.body);
 
@@ -423,6 +456,7 @@ const updateDifferenceOfNotification = async (req, res) => {
 
 export default {
     searchCollectionbyClient,
+    createNotificationMovement,
     createPaymentReporTrans,
     createPaymentReportSoport,
     searchPaymentReportNotification,

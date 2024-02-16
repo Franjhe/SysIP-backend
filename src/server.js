@@ -90,7 +90,7 @@ let document_upload = multer({
     fileFilter(req, file, cb) {
       cb(null, true);
     }
-  });
+});
 
 app.post('/api/upload/documents', document_upload.array('xdocumentos', 5), (req, res) => {
   const files = req.files;
