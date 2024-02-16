@@ -24,6 +24,7 @@ const sqlConfigArys = {
   }
 }
 
+
 const Clasification = sequelize.define('MACLASIFICACION_VEH', {}, { tableName: 'MACLASIFICACION_VEH' });
 const Price = sequelize.define('MATARIFA_CASCO', {}, { tableName: 'MATARIFA_CASCO' });
 const OtherPrice = sequelize.define('MATARIFA_OTROS', {}, { tableName: 'MATARIFA_OTROS' });
@@ -485,6 +486,95 @@ const searchQuotes = async (searchQuotes) => {
   }
 };
 
+
+const createEmmisionGH = async(create) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let createEmmi = await pool.request()
+      .input('cramo', sql.Int, create.cramo)
+      .input('xcanal_venta', sql.Int, create.xcanal_venta)
+      .input('icedula_tomador', sql.Char(1), create.icedula_tomador)
+      .input('xrif_tomador', sql.Numeric(17,0), create.xrif_tomador)
+      .input('xnombre_tomador', sql.NVarChar(17,2), create.xnombre_tomador)
+      .input('xapellido_tomador', sql.NVarChar(17,2), create.xapellido_tomador)
+      .input('xdireccion_tomador', sql.NVarChar(17,2), create.xdireccion_tomador)
+      .input('xcorreo_tomador', sql.NVarChar(17,2), create.xcorreo_tomador)
+      .input('icedula_asegurado', sql.Char(1), create.icedula_asegurado)
+      .input('xrif_asegurado', sql.Numeric(17,0), create.xrif_asegurado)
+      .input('xnombre_asegurado', sql.NVarChar(17,2), create.xnombre_asegurado)
+      .input('xapellido_asegurado', sql.NVarChar(17,2), create.xapellido_asegurado)
+      .input('isexo_segurado', sql.Char(1), create.isexo_segurado)
+      .input('iestado_civil', sql.Char(1), create.iestado_civil)
+      .input('fnac_asegurado', sql.DateTime, create.fnac_asegurado)
+      .input('xdireccion_asegurado', sql.NVarChar(17,2), create.xdireccion_asegurado)
+      .input('xcorreo_segurado', sql.NVarChar(17,2), create.xcorreo_segurado)
+      .input('xtelefono_segurado', sql.NVarChar(17,2), create.xtelefono_segurado)
+      .input('nbeneficiarios', sql.Int, create.nbeneficiarios)
+      .input('msumaasegext', sql.Numeric(17,2), create.msumaasegext)
+      .input('cmetodologiapago', sql.Int, create.cmetodologiapago)
+      .query('INSERT INTO eePoliza_Salud ' +
+      '( cramo, xcanal_venta,'+
+      'icedula_tomador, xrif_tomador, xnombre_tomador, xapellido_tomador, xdireccion_tomador, xcorreo_tomador,'+ 
+      'icedula_asegurado, xrif_asegurado, xnombre_asegurado, xapellido_asegurado, isexo_segurado, iestado_civil, fnac_asegurado, xdireccion_asegurado, xcorreo_segurado, xtelefono_segurado,'+
+      'nbeneficiarios, msumaasegext,cmetodologiapago) '
+      +'VALUES ( @cramo, @xcanal_venta,'+
+      '@icedula_tomador, @xrif_tomador, @xnombre_tomador, @xapellido_tomador, @xdireccion_tomador, @xcorreo_tomador,'+ 
+      '@icedula_asegurado, @xrif_asegurado, @xnombre_asegurado, @xapellido_asegurado, @isexo_segurado, @iestado_civil, @fnac_asegurado, @xdireccion_asegurado, @xcorreo_segurado, @xtelefono_segurado,'+
+      '@nbeneficiarios, @msumaasegext,@cmetodologiapago)');
+  
+      //sql.close();
+      return { rowsAffected  };
+  }
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
+
+const createEmmisionGHB = async(create) => {
+  try{
+      let pool = await sql.connect(sqlConfig);
+      let createEmmiBen = await pool.request()
+      .input('xrif_asegurado', sql.Int, create.xrif_asegurado)
+      .query('select * from eePoliza_Salud where xrif_asegurado = @xrif_asegurado');
+
+      let dataEmmiBen = createEmmiBen.recordset[0]
+      if(createEmmiBen){
+        for(let i = 0; i < create.beneficiarios.length; i++){
+          let insertEmmiBen = await pool.request()
+          .input('id_salud', sql.Int, dataEmmiBen.id)
+          .input('icedula_beneficiario', sql.Char(1), create.beneficiarios[i].icedula_beneficiario)
+          .input('xrif_beneficiario', sql.Numeric(17,0), create.beneficiarios[i].xrif_beneficiario)
+          .input('xnombre_beneficiario', sql.NVarChar(17,2), create.beneficiarios[i].xnombre_beneficiario)
+          .input('xapellido_beneficiario', sql.NVarChar(17,2), create.beneficiarios[i].xapellido_beneficiario)
+          .input('xparentesco_beneficiario', sql.NVarChar(20), create.beneficiarios[i].xparentesco_beneficiario)
+          .input('fnac_beneficiario', sql.DateTime, create.beneficiarios[i].fnac_beneficiario)
+          .input('cpoliza', sql.Numeric(19, 0), dataEmmiBen.cpoliza)
+          .input('fanopol', sql.SmallInt, dataEmmiBen.fanopol)
+          .input('fmespol', sql.TinyInt, dataEmmiBen.fmespol)
+          .input('cnpoliza', sql.VarChar(50), dataEmmiBen.cnpoliza)
+          .query('INSERT INTO eePoliza_Salud_Ben ' +
+          '(id_salud,'+
+          'icedula_beneficiario, xrif_beneficiario, xnombre_beneficiario, xapellido_beneficiario, xparentesco_beneficiario, fnac_beneficiario,'+ 
+          'cpoliza, fanopol,fmespol , cnpoliza) '
+          +'VALUES (@id_salud, '+
+          '@icedula_beneficiario, @xrif_beneficiario, @xnombre_beneficiario, @xapellido_beneficiario, @xparentesco_beneficiario, @fnac_beneficiario,'+ 
+          '@cpoliza, @fanopol,@fmespol , @cnpoliza)');
+
+        }
+
+      }
+      return { status : true  };
+  
+      //sql.close();
+  }
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -498,5 +588,7 @@ export default {
     updateContract,
     searchRiotRate,
     createGroupContract,
-    searchQuotes
+    searchQuotes,
+    createEmmisionGH,
+    createEmmisionGHB
   };

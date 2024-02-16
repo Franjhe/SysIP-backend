@@ -349,6 +349,23 @@ const searchQuotes = async (req, res) => {
         });
 }
 
+
+const createEmmisionHealthGeneric = async (req, res) => {
+    const createEmmision = await emissionsService.createEmmisionHealth(req.body);
+    if (createEmmision.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createEmmision.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({status : true, messaje: "Se ha generado la Emisión de Salud con éxito"});
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
@@ -359,5 +376,6 @@ export default {
     updateUbii,
     searchRiotRate,
     createGroupContract,
-    searchQuotes
+    searchQuotes,
+    createEmmisionHealthGeneric
 }

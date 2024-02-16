@@ -16,4 +16,8 @@ router
     .post("/automobile/group",  emissionsController.createGroupContract)
     .post("/automobile/search-quote",  emissionsController.searchQuotes)
 
+    //emissions generic
+    .post("/health",  emissionsController.createEmmisionHealthGeneric)
+
+
 export default router;
