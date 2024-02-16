@@ -447,33 +447,33 @@ const createEmmisionGH = async(create) => {
       let createEmmi = await pool.request()
       .input('cramo', sql.Int, create.cramo)
       .input('xcanal_venta', sql.Int, create.xcanal_venta)
-      .input('icedula_tomador', sql.Char(1), create.icedula_tomador)
+      .input('icedula_tomador', sql.Char(1), create.icedula_tomador.toUpperCase())
       .input('xrif_tomador', sql.Numeric(17,0), create.xrif_tomador)
       .input('xnombre_tomador', sql.NVarChar(17,2), create.xnombre_tomador)
       .input('xapellido_tomador', sql.NVarChar(17,2), create.xapellido_tomador)
       .input('xdireccion_tomador', sql.NVarChar(17,2), create.xdireccion_tomador)
       .input('xcorreo_tomador', sql.NVarChar(17,2), create.xcorreo_tomador)
-      .input('icedula_asegurado', sql.Char(1), create.icedula_asegurado)
+      .input('icedula_asegurado', sql.Char(1), create.icedula_asegurado.toUpperCase())
       .input('xrif_asegurado', sql.Numeric(17,0), create.xrif_asegurado)
       .input('xnombre_asegurado', sql.NVarChar(17,2), create.xnombre_asegurado)
       .input('xapellido_asegurado', sql.NVarChar(17,2), create.xapellido_asegurado)
-      .input('isexo_segurado', sql.Char(1), create.isexo_segurado)
-      .input('iestado_civil', sql.Char(1), create.iestado_civil)
+      .input('isexo_asegurado', sql.Char(1), create.isexo_asegurado.toUpperCase())
+      .input('iestado_civil', sql.Char(1), create.iestado_civil.toUpperCase())
       .input('fnac_asegurado', sql.DateTime, create.fnac_asegurado)
       .input('xdireccion_asegurado', sql.NVarChar(17,2), create.xdireccion_asegurado)
-      .input('xcorreo_segurado', sql.NVarChar(17,2), create.xcorreo_segurado)
-      .input('xtelefono_segurado', sql.NVarChar(17,2), create.xtelefono_segurado)
+      .input('xcorreo_asegurado', sql.NVarChar(17,2), create.xcorreo_asegurado)
+      .input('xtelefono_asegurado', sql.NVarChar(17,2), create.xtelefono_asegurado)
       .input('nbeneficiarios', sql.Int, create.nbeneficiarios)
       .input('msumaasegext', sql.Numeric(17,2), create.msumaasegext)
       .input('cmetodologiapago', sql.Int, create.cmetodologiapago)
       .query('INSERT INTO eePoliza_Salud ' +
       '( cramo, xcanal_venta,'+
       'icedula_tomador, xrif_tomador, xnombre_tomador, xapellido_tomador, xdireccion_tomador, xcorreo_tomador,'+ 
-      'icedula_asegurado, xrif_asegurado, xnombre_asegurado, xapellido_asegurado, isexo_segurado, iestado_civil, fnac_asegurado, xdireccion_asegurado, xcorreo_segurado, xtelefono_segurado,'+
+      'icedula_asegurado, xrif_asegurado, xnombre_asegurado, xapellido_asegurado, isexo_asegurado, iestado_civil, fnac_asegurado, xdireccion_asegurado, xcorreo_asegurado, xtelefono_asegurado,'+
       'nbeneficiarios, msumaasegext,cmetodologiapago) '
       +'VALUES ( @cramo, @xcanal_venta,'+
       '@icedula_tomador, @xrif_tomador, @xnombre_tomador, @xapellido_tomador, @xdireccion_tomador, @xcorreo_tomador,'+ 
-      '@icedula_asegurado, @xrif_asegurado, @xnombre_asegurado, @xapellido_asegurado, @isexo_segurado, @iestado_civil, @fnac_asegurado, @xdireccion_asegurado, @xcorreo_segurado, @xtelefono_segurado,'+
+      '@icedula_asegurado, @xrif_asegurado, @xnombre_asegurado, @xapellido_asegurado, @isexo_asegurado, @iestado_civil, @fnac_asegurado, @xdireccion_asegurado, @xcorreo_asegurado, @xtelefono_asegurado,'+
       '@nbeneficiarios, @msumaasegext,@cmetodologiapago)');
   
       //sql.close();
