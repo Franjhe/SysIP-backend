@@ -51,7 +51,7 @@ const detailCertificateCertificate = async (searchDetail) => {
         }
     }
     let getFleetContractOwnerData = await Certificate.getFleetContractOwnerDataQuery(searchDetail, getFleetContractData.result.recordset[0].CPROPIETARIO).then((res) => res);
-        if(getFleetContractOwnerData.error){console.log(getFleetContractOwnerData.error); return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
+        if(getFleetContractOwnerData.error){return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
         let telefonopropietario;
         if(getFleetContractOwnerData.result.recordset[0].XTELEFONOCELULAR){
             telefonopropietario = getFleetContractOwnerData.result.recordset[0].XTELEFONOCELULAR;
@@ -66,11 +66,11 @@ const detailCertificateCertificate = async (searchDetail) => {
         let mprimaprorratatotal = 0; 
         let getPlanData = await Certificate.getPlanData(getFleetContractData.result.recordset[0].CPLAN_RC);
         if(getPlanData.error){ return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
-        if(getPlanData.result.rowsAffected < 0){ console.log(getPlanData.error); return { status: false, code: 404, message: 'Fleet Contract Plan not found.' }; }
+        if(getPlanData.result.rowsAffected < 0){ ; return { status: false, code: 404, message: 'Fleet Contract Plan not found.' }; }
         let realCoverages = [];
         let coverageAnnexes = [];
         let getPlanCoverages = await Certificate.getPlanCoverages(getFleetContractData.result.recordset[0].CPLAN_RC, getFleetContractData.result.recordset[0].CCONTRATOFLOTA);
-        if(getPlanCoverages.error){ console.log(getPlanCoverages.error); return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
+        if(getPlanCoverages.error){ return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
         if(getPlanCoverages.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Plan Coverages not found.' }; }
         for (let i = 0; i < getPlanCoverages.result.recordset.length; i++) {
             // Solo se suma si el codigo de la moneda es 2 (usd), si la moneda es bs no lo toma en cuenta
@@ -112,7 +112,7 @@ const detailCertificateCertificate = async (searchDetail) => {
         }
         let services = [];
         let getFleetContractServices = await Certificate.getFleetContractServices(getFleetContractData.result.recordset[0].CPLAN_RC);
-        if(getFleetContractServices.error){ console.log(getFleetContractServices.error); return { status: false, code: 500, message: getFleetContractServices.error }; }
+        if(getFleetContractServices.error){  return { status: false, code: 500, message: getFleetContractServices.error }; }
         if(getFleetContractServices.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Service not found.' }; }
         if (getFleetContractServices.result.rowsAffected > 0) {
             for(let i = 0; i < getFleetContractServices.result.recordset.length; i++){
@@ -124,7 +124,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             }
         }
         let getBroker = await Certificate.getBroker(getFleetContractData.result.recordset[0].ccorredor);
-        if(getBroker.error){ console.log(getBroker.error); return { status: false, code: 500, message: getBroker.error }; }
+        if(getBroker.error){ return { status: false, code: 500, message: getBroker.error }; }
         if(getBroker.result.rowsAffected < 0){ return { status: false, code: 404, message: 'Fleet Contract Service not found.' }; }
         let accesories = []
         let getFleetContractAccesories = await Certificate.getFleetContractAccesoriesQuery(searchDetail.ccontratoflota);

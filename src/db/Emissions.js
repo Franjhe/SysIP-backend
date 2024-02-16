@@ -324,7 +324,6 @@ const updateContract = async(updateContract) => {
 }
 
 const searchRiotRate = async (searchRiotRate) => {
-  console.log(searchRiotRate)
   try {
     const motin = await Motin.findAll({
       where: {

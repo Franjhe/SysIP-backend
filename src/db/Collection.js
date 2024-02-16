@@ -2,6 +2,9 @@ import sql from "mssql";
 
 import EmailService from "./../config/email.service.js";
 
+import ejs from "ejs";
+import * as fs from 'node:fs/promises';
+
 const emailService = new EmailService();
 
 const sqlConfig = {
@@ -106,28 +109,12 @@ const createPaymentReportTransW = async(createPaymentReport) => {
                                 .input('ptasamon'        , sql.Numeric(18, 2), createPaymentReport.receipt[i].ptasamon ) 
                                 .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.cusuario) 
                                 .query('INSERT INTO cbreporte_pago_d  '
-                                +'(ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fdesde_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario)'
-                                +'VALUES (@ctransaccion, @crecibo, @casegurado, @cnpoliza, @cnrecibo, @cpoliza, @fanopol, @fmespol, @cramo, @cmoneda, @fdesde_pol, @fhasta_pol, @fdesde_rec, @mprimabruta , @mprimabrutaext, @ptasamon, @cusuario )')
+                                +'(ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fdesde_rec,fhasta_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario)'
+                                +'VALUES (@ctransaccion, @crecibo, @casegurado, @cnpoliza, @cnrecibo, @cpoliza, @fanopol, @fmespol, @cramo, @cmoneda, @fdesde_pol, @fhasta_pol, @fdesde_rec, @fhasta_rec ,@mprimabruta , @mprimabrutaext, @ptasamon, @cusuario )')
         
-                                //actualizasmos el estado del recibo
-                                if(insertReportDet.rowsAffected){
-                                    try{
-                                        for(let i = 0; i < createPaymentReport.receipt.length; i++){
-                                            let pool = await sql.connect(sqlConfig);
-                                            let updateReceipt= await pool.request()
-                                            .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport.casegurado)   
-                                            .input('cnpoliza'   , sql.Char(30, 0), createPaymentReport.receipt[i].cnpoliza)   
-                                            .input('cnrecibo'      , sql.Char(30, 0), createPaymentReport.receipt[i].cnrecibo )  
-                                            .input('iestadorec'     , sql.Char(1, 0),  createPaymentReport.iestadorec) 
-                                            .query('update adrecibos set iestadorec = @iestadorec  where casegurado = @casegurado and cnpoliza = @cnpoliza and cnrecibo = @cnrecibo' );
-                                        }
-                                    }catch(err){
-                                        return { error: err.message, message: 'No se registraron los datos ' };
-                                    }
-                                }
                             }
 
-                            return { result: searchTransaccion.recordset[0].ctransaccion };
+                            return searchTransaccion.recordset[0].ctransaccion 
                         }
                 }
             }
@@ -147,24 +134,24 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
         let data ;
         for(let i = 0; i < createPaymentReport.report.length; i++){
             let insertReport = await pool.request()
-            .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.ctransaccion)   
+            .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport[i].ctransaccion)   
             .input('npago'   , sql.Numeric(18, 0), i + 1)   
-            .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport.casegurado)   
-            .input('cmoneda'      , sql.Char(4, 0), createPaymentReport.report[i].cmoneda )  
-            .input('cbanco'        , sql.Numeric(18, 2), createPaymentReport.report[i].cbanco ) 
-            .input('cbanco_destino'        , sql.Numeric(18, 2), createPaymentReport.report[i].cbanco_destino ) 
-            .input('mpago'        , sql.Numeric(18, 2), createPaymentReport.report[i].mpago ) 
-            .input('mpagoext'     , sql.Numeric(18, 2), createPaymentReport.report[i].mpagoext) 
-            .input('mpagoigtf'     , sql.Numeric(18, 2), createPaymentReport.report[i].mpagoigtf)  
-            .input('mpagoigtfext'     , sql.Numeric(18, 2), createPaymentReport.report[i].mpagoigtfext)      
-            .input('mtotal'     , sql.Numeric(18, 2), createPaymentReport.report[i].mtotal)  
-            .input('mtotalext'     , sql.Numeric(18, 2), createPaymentReport.report[i].mtotalext)     
-            .input('ptasamon'     , sql.Numeric(18, 2), createPaymentReport.report[i].ptasamon )        
-            .input('ptasaref'     , sql.Numeric(18, 2), createPaymentReport.report[i].ptasaref )        
-            .input('xreferencia'  , sql.VarChar(100, 0), createPaymentReport.report[i].xreferencia )  
-            .input('xruta'        , sql.VarChar(100, 0), createPaymentReport.report[i].ximagen )  
-            .input('cprog'        , sql.Char(20, 0), createPaymentReport.cprog )
-            .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.cusuario)  
+            .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport[i].casegurado)   
+            .input('cmoneda'      , sql.Char(4, 0), createPaymentReport[i].cmoneda )  
+            .input('cbanco'        , sql.Numeric(18, 2), createPaymentReport[i].cbanco ) 
+            .input('cbanco_destino'        , sql.Numeric(18, 2), createPaymentReport[i].cbanco_destino ) 
+            .input('mpago'        , sql.Numeric(18, 2), createPaymentReport[i].mpago ) 
+            .input('mpagoext'     , sql.Numeric(18, 2), createPaymentReport[i].mpagoext) 
+            .input('mpagoigtf'     , sql.Numeric(18, 2), createPaymentReport[i].mpagoigtf)  
+            .input('mpagoigtfext'     , sql.Numeric(18, 2), createPaymentReport[i].mpagoigtfext)      
+            .input('mtotal'     , sql.Numeric(18, 2), createPaymentReport[i].mtotal)  
+            .input('mtotalext'     , sql.Numeric(18, 2), createPaymentReport[i].mtotalext)     
+            .input('ptasamon'     , sql.Numeric(18, 2), createPaymentReport[i].ptasamon )        
+            .input('ptasaref'     , sql.Numeric(18, 2), createPaymentReport[i].ptasaref )        
+            .input('xreferencia'  , sql.VarChar(100, 0), createPaymentReport[i].xreferencia )  
+            .input('xruta'        , sql.VarChar(100, 0), createPaymentReport[i].ximagen )  
+            .input('cprog'        , sql.Char(20, 0), createPaymentReport[i].cprog )
+            .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport[i].cusuario)  
             .query('INSERT INTO cbreporte_pago '
             +'(ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext, mtotal , mtotalext ,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario ) VALUES'
             +'(@ctransaccion, @npago, @casegurado, @cmoneda, @cbanco, @cbanco_destino, @mpago, @mpagoext, @mpagoigtf, @mpagoigtfext , @mtotal ,@mtotalext , @ptasamon, @ptasaref,  @xreferencia, @xruta, @cprog, @cusuario )')
@@ -411,15 +398,23 @@ const updateReceiptNotifiqued = async(updatePayment) => {
             }
 
 
-            // Usar el servicio para enviar un correo
-            emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', 'Cuerpo del correo').then((enviado) => {
+            const template = await fs.readFile('src/templates/welcome.ejs', 'utf-8');
+            const datosPlantilla = {
+              nombre: 'Juan',
+            };
+            
+            const html = ejs.render(template, datosPlantilla);
+            try {
+              const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
               if (enviado) {
                 console.log('Correo enviado con éxito');
               } else {
                 console.log('Error al enviar el correo');
               }
-            });
-
+            } catch (error) {
+              console.error('Error al procesar el correo:', error);
+            }
+            
 
             await pool.close();
             return { updateTransaccion};
@@ -548,7 +543,7 @@ const updateReceiptDifference = async(notification) => {
           });
         
           
-    }
+                   }
     catch(err){
         return { error: err.message, message: 'No se actualizaron los datos ' };
     }

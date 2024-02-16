@@ -12,24 +12,28 @@ class EmailService {
   }
 
   async enviarCorreo(destinatario, asunto, cuerpo) {
-    // Configuración del mensaje
-    const message = {
+    const mailOptions = {
+      text: '',
       from: process.env.USER_EMAIL,
       to: destinatario,
       subject: asunto,
-      text: cuerpo,
+      attachment: [
+        { data: cuerpo, alternative: true },
+      ],
     };
 
-    try {
-      // Conectar y enviar el mensaje
-      await this.client.send(message);
-
-      console.log('Correo enviado exitosamente.');
-      return true;
-    } catch (error) {
-      console.error('Error al enviar el correo: ', error);
-      return false;
-    }
+    return new Promise((resolve, reject) => {
+      // Enviar el correo con emailjs
+      this.client.send(mailOptions, (err, message) => {
+        if (err) {
+          console.error('Error al enviar el correo: ', err);
+          reject(false);
+        } else {
+          console.log('Correo enviado con éxito: ', message);
+          resolve(true);
+        }
+      });
+    });
   }
 }
 
