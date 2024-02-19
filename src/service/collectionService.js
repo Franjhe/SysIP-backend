@@ -1,5 +1,27 @@
 import Collection from '../db/Collection.js';
+import fileExtension from 'file-extension';
+import multer from 'multer';
+import path from 'path';
 
+const document_storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, DOCUMENTS_PATH);
+    },
+  
+    filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now() + '.' + fileExtension(file.originalname));
+    }
+  });
+  
+  let document_upload = multer({
+      storage: document_storage,
+      limits: {
+        fileSize: 5000000
+      },
+      fileFilter(req, file, cb) {
+        cb(null, true);
+      }
+  });
 
 const searchDataReceipt = async (searchDataReceipt) => {
     const searchReceipt = await Collection.searchDataReceipt(searchDataReceipt);
@@ -11,6 +33,62 @@ const searchDataReceipt = async (searchDataReceipt) => {
 
     return searchReceipt;
 }
+
+
+const createNotificationMovement = async (createPaymentReport) => {
+
+    const createTransMovement = await Collection.createPaymentReportTransW(createPaymentReport);
+    if (createTransMovement.error) {
+        return {
+            error: createTransMovement.error
+        }
+    }
+    // return createPaymentReportData;
+
+    let soportMovement = []
+    for(let i = 0; i < createPaymentReport.soport.length; i++){
+
+        const files = createPaymentReport.soport[i].ximagen;
+        if (!files || files.length === 0) {
+            const error = new Error('Please upload at least one file');
+            error.httpStatusCode = 400;
+            return res.status(400).json({  status: false, code: 400, message: error.message  });
+        }
+      
+        soportMovement.push({
+                ctransaccion : createTransMovement,
+                cmoneda: createPaymentReport.soport[i].cmoneda,
+                cbanco: createPaymentReport.soport[i].cbanco,
+                cbanco_destino: createPaymentReport.soport[i].cbanco_destino,
+                mpago: createPaymentReport.soport[i].mpago,
+                mpagoext: createPaymentReport.soport[i].mpagoext,
+                mpagoigtf: createPaymentReport.soport[i].mpagoigtf,
+                mpagoigtfext: createPaymentReport.soport[i].mpagoigtfext,
+                mtotal: createPaymentReport.soport[i].mtotal,
+                mtotalext: createPaymentReport.soport[i].mtotalext,
+                ptasamon: createPaymentReport.soport[i].ptasamon,
+                ptasaref:createPaymentReport.soport[i].ptasaref, 
+                xreferencia: createPaymentReport.soport[i].xreferencia,
+                ximagen: files.filename ,
+                cprog: createPaymentReport.cprog ,
+                cusuario: createPaymentReport.cusuario,
+                casegurado: createPaymentReport.casegurado,
+
+        })
+    }
+
+    console.log(soportMovement)
+
+    const createsoportMovement = await Collection.createPaymentReportSoportW(soportMovement);
+    if (createsoportMovement.error) {
+        return {
+            error: createsoportMovement.error
+        }
+    }
+}
+
+
+
 
 const createPaymentReportTrans = async (createPaymentReport) => {
     const createPaymentReportData = await Collection.createPaymentReportTransW(createPaymentReport);
@@ -164,6 +242,7 @@ const updateDifferenceOfNotificationData = async (notification) => {
 
 export default {
     searchDataReceipt,
+    createNotificationMovement,
     createPaymentReportTrans,
     createPaymentReportSoport,
     searchPaymentReportData,
@@ -177,5 +256,6 @@ export default {
     receiptUnderReviewData,
     differenceOfNotificationData,
     updateDifferenceOfNotificationData,
-    searchPaymentCollected
+    searchPaymentCollected,
+    createNotificationMovement
 }

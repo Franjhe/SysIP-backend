@@ -140,6 +140,25 @@ const searchQuotes = async (searchQuotes) => {
     return result;
 }
 
+
+const createEmmisionHealth = async (create) => {
+    const createEmmision = await Emissions.createEmmisionGH(create);
+    if (createEmmision.error) {
+        return {
+            error: createEmmision.error
+        }
+    }
+    const createEmmisionBen = await Emissions.createEmmisionGHB(create);
+
+    if (createEmmisionBen.error) {
+        return {
+            error: createEmmisionBen.error
+        }
+    }
+    
+    return createEmmision;
+}
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -153,5 +172,6 @@ export default {
     updateContract,
     searchRiotRate,
     createGroupContract,
-    searchQuotes
+    searchQuotes,
+    createEmmisionHealth
 }

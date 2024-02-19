@@ -900,7 +900,6 @@ const deleteSubMenu = async (deleteSubMenu) => {
 };
 
 const distributionMenu = async(distributionMenu) => {
-  console.log(distributionMenu)
   try{
       let rowsAffected = 0;
       let pool = await sql.connect(sqlConfig);
