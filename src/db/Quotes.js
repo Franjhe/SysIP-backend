@@ -37,7 +37,7 @@ const createQuotes = async (createQuotes) => {
             .execute('trBCotizacionAuto');
 
         let query = await pool.request()
-            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+            .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, pperdida_total, pcobertura_amplia FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
         await pool.close();
         return { result: query.recordset };
 
