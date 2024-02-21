@@ -372,22 +372,15 @@ const createGroupContract = async (createGroupContract) => {
       .input('xcolor', sql.NVarChar, createGroupContract.group[i].xcolor)
       .input('xcobertura', sql.NVarChar, createGroupContract.group[i].xcobertura)
       .input('msuma_aseg', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
-      .input('pcasco', sql.Numeric(17, 2), createGroupContract.group[i].pcasco ? createGroupContract.group[i].pcasco: undefined)
-      .input('mprima_bruta', sql.Numeric(17, 2),createGroupContract.group[i].mprima_bruta ? createGroupContract.group[i].mprima_bruta: undefined)
-      .input('mprima_casco', sql.Numeric(17, 2),createGroupContract.group[i].mprima_casco ? createGroupContract.group[i].mprima_casco: undefined)
-      .input('pcatastrofico', sql.Numeric(17, 2), createGroupContract.group[i].pcatastrofico ? createGroupContract.group[i].pcatastrofico: undefined)
-      .input('mcatastrofico', sql.Numeric(17, 2), createGroupContract.group[i].mcatastrofico ? createGroupContract.group[i].mcatastrofico: undefined)
-      .input('pmotin', sql.Numeric(17, 2), createGroupContract.group[i].pmotin ? createGroupContract.group[i].pmotin: undefined)
-      .input('mmotin', sql.Numeric(17, 2), createGroupContract.group[i].mmotin ? createGroupContract.group[i].mmotin: undefined)
+      .input('mcatastrofico', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+      .input('mmotin', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
       .input('msuma_blindaje', sql.Numeric(17, 2), createGroupContract.group[i].msuma_blindaje ? createGroupContract.group[i].msuma_blindaje: undefined)
-      .input('pblindaje', sql.Numeric(17, 2), createGroupContract.group[i].pblindaje ? createGroupContract.group[i].pblindaje: undefined)
-      .input('mprima_blindaje', sql.Numeric(17, 2), createGroupContract.group[i].mprima_blindaje ? createGroupContract.group[i].mprima_blindaje: undefined)
       .input('xdireccionfiscal', sql.NVarChar, createGroupContract.group[i].xdireccionfiscal ? createGroupContract.group[i].xdireccionfiscal: undefined)
       .input('xtelefono_emp', sql.NVarChar, createGroupContract.group[i].xtelefono_emp ? createGroupContract.group[i].xtelefono_emp: undefined)
       .input('email', sql.NVarChar, createGroupContract.group[i].email ? createGroupContract.group[i].email: undefined)
       .input('femision', sql.DateTime, new Date())
-      .input('fdesde_pol', sql.DateTime, createGroupContract.group[i].fdesde_pol)
-      .input('fhasta_pol', sql.DateTime, createGroupContract.group[i].fhasta_pol)
+      .input('fdesde_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fdesde_pol))
+      .input('fhasta_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fhasta_pol))
       .input('ncapacidad_p', sql.Int, createGroupContract.group[i].ncapacidad_p)
       .input('xuso', sql.NVarChar, createGroupContract.group[i].xuso)
       .input('ccorredor', sql.Int, createGroupContract.group[i].ccorredor)
@@ -397,7 +390,7 @@ const createGroupContract = async (createGroupContract) => {
       .input('cestatusgeneral', sql.Int, 7)
       .input('cclasificacion', sql.Char, createGroupContract.group[i].cclasificacion)
       .input('xzona_postal', sql.NVarChar, createGroupContract.group[i].xzona_postal)
-      .query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, fnac, cmetodologiapago, cplan_rc, ctarifa_exceso, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, pcasco, mprima_bruta, mprima_casco, pcatastrofico, mcatastrofico, pmotin, mmotin, msuma_blindaje, pblindaje, mprima_blindaje, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ncapacidad_p, xuso, ccorredor, cpais, cestado, cciudad, cestatusgeneral, cclasificacion, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @fnac, @cmetodologiapago, @cplan_rc, @ctarifa_exceso, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @pcasco, @mprima_bruta, @mprima_casco, @pcatastrofico, @mcatastrofico, @pmotin, @mmotin, @msuma_blindaje, @pblindaje, @mprima_blindaje, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ncapacidad_p, @xuso, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @cclasificacion, @xzona_postal)`);
+      .query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, fnac, cmetodologiapago, cplan_rc, ctarifa_exceso, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, mcatastrofico, mmotin, msuma_blindaje, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ncapacidad_p, xuso, ccorredor, cpais, cestado, cciudad, cestatusgeneral, cclasificacion, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @fnac, @cmetodologiapago, @cplan_rc, @ctarifa_exceso, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @mcatastrofico, @mmotin, @msuma_blindaje, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ncapacidad_p, @xuso, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @cclasificacion, @xzona_postal)`);
     }
     
     await pool.close();
