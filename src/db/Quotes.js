@@ -209,6 +209,29 @@ const detailQuotesAutomobile = async (detailQuotesAutomobile) => {
     }
   };
 
+  const updatePremiums = async (updatePremiums) => {
+    try {
+        let pool = await sql.connect(sqlConfig);
+        
+        for (let i = 0; i < updatePremiums.quotes.length; i++) {
+            let update = await pool.request()
+                .input('ccotizacion', sql.Int, updatePremiums.ccotizacion)
+                .input('msuma_amplia', sql.Numeric(18, 2), updatePremiums.msuma_aseg)
+                .input('msuma_total', sql.Numeric(18, 2), updatePremiums.msuma_aseg)
+                .input('msuma_catastrofico', sql.Numeric(18, 2), updatePremiums.msuma_aseg)
+                .input('msuma_motin', sql.Numeric(18, 2), updatePremiums.msuma_aseg)
+                .input('mtotal_amplia', sql.Numeric(18, 2), updatePremiums.quotes[i].mtotal_amplia)
+                .input('mtotal_perdida', sql.Numeric(18, 2), updatePremiums.quotes[i].mtotal_perdida)
+                .query('UPDATE TMEMISION_COTIZACION SET msuma_amplia = @msuma_amplia, msuma_total = @msuma_total, msuma_catastrofico = @msuma_catastrofico, msuma_motin = @msuma_motin, mtotal_amplia = @mtotal_amplia, mtotal_perdida = @mtotal_perdida WHERE ccotizacion = @ccotizacion');
+        }
+
+        return { success: true, message: 'Cotizaciones actualizadas correctamente' };
+    } catch (error) {
+        console.log(error);
+        return { success: false, message: 'Error al actualizar las Cotizaciones', error };
+    }
+};
+
 
 export default {
     createQuotes,
@@ -216,5 +239,6 @@ export default {
     searchCoverages,
     detailQuotes,
     detailQuotesAutomobile,
-    searchQuotes
+    searchQuotes,
+    updatePremiums
 }

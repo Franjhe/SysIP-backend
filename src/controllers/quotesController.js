@@ -486,6 +486,34 @@ const generatePdf = (pdfDefinition) => {
     }
   };
 
+  const updatePremiums = async (req, res) => {
+    const update = await quotesService.updatePremiums(req.body);
+    if (update.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: update.permissionError
+            });
+    }
+    if (update.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: update.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+            data: {
+                message: "Se ha actualizado la Cotización exitosamente"
+            }
+        });
+}
+
 
 export default {
     createQuotes,
@@ -494,5 +522,6 @@ export default {
     detailQuotes,
     detailQuotesAutomobile,
     searchQuotes,
-    sendEmail
+    sendEmail,
+    updatePremiums
 }

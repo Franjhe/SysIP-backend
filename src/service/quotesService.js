@@ -60,11 +60,22 @@ const searchQuotes = async (searchQuotes) => {
     return result;
 } 
 
+const updatePremiums = async (updatePremiums) => {
+    const update = await Quotes.updatePremiums(updatePremiums);
+    if (update.error) {
+        return {
+            error: update.error
+        }
+    }
+    return update;
+} 
+
 export default {
     createQuotes,
     updateQuotes,
     searchCoverages,
     detailQuotes,
     detailQuotesAutomobile,
-    searchQuotes
+    searchQuotes,
+    updatePremiums
 }

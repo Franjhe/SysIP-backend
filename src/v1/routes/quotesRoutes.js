@@ -15,5 +15,6 @@ router
     .post("/automobile/detail-automobile",  quotesController.detailQuotesAutomobile)
     .post("/automobile/search-quotes",  quotesController.searchQuotes)
     .post("/automobile/send-email", jsonParser,  quotesController.sendEmail)
+    .post("/automobile/update-premiums",  quotesController.updatePremiums)
 
 export default router;
