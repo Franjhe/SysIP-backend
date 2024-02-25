@@ -366,6 +366,23 @@ const createEmmisionHealthGeneric = async (req, res) => {
         .send({status : true, messaje: "Se ha generado la Emisión de Salud con éxito"});
 }
 
+const searchRates = async (req, res) => {
+    const result = await emissionsService.searchRates(req.body);
+    if (result.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: result.error
+            });
+    }
+    return res
+        .status(200)
+        .send({
+            status: true,
+        });
+}
+
 export default {
     searchHullPrice,
     executePremiumAmount,
@@ -377,5 +394,6 @@ export default {
     searchRiotRate,
     createGroupContract,
     searchQuotes,
-    createEmmisionHealthGeneric
+    createEmmisionHealthGeneric,
+    searchRates
 }

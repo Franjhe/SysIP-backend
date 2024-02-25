@@ -521,6 +521,26 @@ const createEmmisionGHB = async(create) => {
   }
 }
 
+const searchRates = async (searchRates) => {
+
+  try {
+    const clasificacion = await Price.findAll({
+      where: { qano: searchRates.cano, 
+               xclase: searchRates.xclase,
+               xmarca: searchRates.xmarca,
+               xmodelo: searchRates.xmodelo,
+               xversion: searchRates.xversion, },
+      attributes: ['pcobertura_amplia', 'pperdida_total'],
+    });
+    const result = clasificacion.map((item) => item.get({ plain: true }));
+    console.log(result)
+    return result;
+  } catch (error) {
+    console.log(error.message)
+    return { error: error.message };
+  }
+};
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -536,5 +556,6 @@ export default {
     createGroupContract,
     searchQuotes,
     createEmmisionGH,
-    createEmmisionGHB
+    createEmmisionGHB,
+    searchRates
   };

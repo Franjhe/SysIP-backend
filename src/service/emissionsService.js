@@ -159,6 +159,16 @@ const createEmmisionHealth = async (create) => {
     return createEmmision;
 }
 
+const searchRates = async (searchRates) => {
+    const result = await Emissions.searchRates(searchRates);
+    if (result.error) {
+        return {
+            error: result.error
+        }
+    }
+    return result;
+} 
+
 export default {
     searchHullPrice,
     searchOtherPrice,
@@ -173,5 +183,6 @@ export default {
     searchRiotRate,
     createGroupContract,
     searchQuotes,
-    createEmmisionHealth
+    createEmmisionHealth,
+    searchRates
 }

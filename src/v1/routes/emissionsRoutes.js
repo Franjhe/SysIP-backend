@@ -15,6 +15,7 @@ router
     .post("/automobile/riot-rate",  emissionsController.searchRiotRate)
     .post("/automobile/group",  emissionsController.createGroupContract)
     .post("/automobile/search-quote",  emissionsController.searchQuotes)
+    .post("/automobile/search-rates",  emissionsController.searchRates)
 
     //emissions generic
     .post("/health",  emissionsController.createEmmisionHealthGeneric)
