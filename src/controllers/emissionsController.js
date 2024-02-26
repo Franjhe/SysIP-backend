@@ -18,7 +18,14 @@ const searchHullPrice = async (req, res) => {
                 message: result.error
             });
     }
-    return res
+    if(!result[0]){
+        return res
+        .status(200)
+        .send({
+            status: true,
+        });
+    }else{
+        return res
         .status(200)
         .send({
             status: true,
@@ -27,6 +34,7 @@ const searchHullPrice = async (req, res) => {
                 pperdida_total: result[0].pperdida_total, 
             }
         });
+    }
 }
 
 const executePremiumAmount = async (req, res) => {
@@ -367,6 +375,8 @@ const createEmmisionHealthGeneric = async (req, res) => {
 }
 
 const searchRates = async (req, res) => {
+    let message;
+    let casco = false
     const result = await emissionsService.searchRates(req.body);
     if (result.error) {
         return res
@@ -376,11 +386,25 @@ const searchRates = async (req, res) => {
                 message: result.error
             });
     }
-    return res
+    if(!result[0]){
+        message = 'No es posible cotizar/emitir cobertura de casco por la antigüedad del vehículo';
+        casco = false
+        return res
         .status(200)
         .send({
             status: true,
+            message: message,
+            casco: casco
         });
+    }else{
+        casco = true;
+        return res
+        .status(200)
+        .send({
+            status: true,
+            casco: casco
+        });
+    }
 }
 
 export default {
