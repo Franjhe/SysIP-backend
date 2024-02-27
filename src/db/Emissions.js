@@ -339,60 +339,149 @@ const searchRiotRate = async (searchRiotRate) => {
   }
 };
 
+// const createGroupContract = async (createGroupContract) => {
+//   try {
+//     let rowsAffected = 0;
+//     let pool = await sql.connect(sqlConfig);
+
+//     await pool.request().query("TRUNCATE TABLE TMEMISION_FLOTA");
+
+//     for(let i = 0; i < createGroupContract.group.length; i++){
+
+//       if(createGroupContract.group[i].xmarca){
+//         let search = await pool.request();
+//         .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)
+//         .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
+//         .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
+//         .input('cano', sql.Int, createGroupContract.group[i].cano)
+//         .query(`SELECT id_inma FROM mainma where xmarca = @xmarca and xmodelo = @xmodelo and xversion = @xversion and qano = @cano`)
+//       }
+
+//       let nro = i + 1;
+//       let insert = await pool.request()
+//       .input('nro', sql.Int, nro)
+//       .input('irif', sql.Char, createGroupContract.group[i].irif)
+//       .input('id_inma', sql.Int, createGroupContract.group[i].id_inma)
+//       .input('xcliente', sql.NVarChar, createGroupContract.group[i].xcliente)
+//       .input('xrif_cliente', sql.NVarChar, createGroupContract.group[i].xrif_cliente)
+//       .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre)
+//       .input('xapellido', sql.NVarChar, createGroupContract.group[i].xapellido)
+//       .input('icedula', sql.Char, createGroupContract.group[i].icedula)
+//       .input('xcedula', sql.NVarChar, createGroupContract.group[i].xcedula)
+//       .input('fnac', sql.DateTime, parseDateFromString(createGroupContract.group[i].fnac))
+//       .input('cmetodologiapago', sql.Int, createGroupContract.group[i].cmetodologiapago)
+//       .input('cplan_rc', sql.Int, createGroupContract.group[i].cplan_rc)
+//       .input('ctarifa_exceso', sql.Int, createGroupContract.group[i].ctarifa_exceso)
+//       .input('xserialcarroceria', sql.NVarChar, createGroupContract.group[i].xserialcarroceria)
+//       .input('xserialmotor', sql.NVarChar, createGroupContract.group[i].xserialmotor)
+//       .input('xplaca', sql.NVarChar, createGroupContract.group[i].xplaca)
+//       .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)
+//       .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
+//       .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
+//       .input('cano', sql.Int, createGroupContract.group[i].cano)
+//       .input('xcolor', sql.NVarChar, createGroupContract.group[i].xcolor)
+//       .input('xcobertura', sql.NVarChar, createGroupContract.group[i].xcobertura)
+//       .input('msuma_aseg', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+//       .input('mcatastrofico', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+//       .input('mmotin', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+//       .input('msuma_blindaje', sql.Numeric(17, 2), createGroupContract.group[i].msuma_blindaje ? createGroupContract.group[i].msuma_blindaje: undefined)
+//       .input('xdireccionfiscal', sql.NVarChar, createGroupContract.group[i].xdireccionfiscal ? createGroupContract.group[i].xdireccionfiscal: undefined)
+//       .input('xtelefono_emp', sql.NVarChar, createGroupContract.group[i].xtelefono_emp ? createGroupContract.group[i].xtelefono_emp: undefined)
+//       .input('email', sql.NVarChar, createGroupContract.group[i].email ? createGroupContract.group[i].email: undefined)
+//       .input('femision', sql.DateTime, new Date())
+//       .input('fdesde_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fdesde_pol))
+//       .input('fhasta_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fhasta_pol))
+//       .input('ncapacidad_p', sql.Int, createGroupContract.group[i].ncapacidad_p)
+//       .input('xuso', sql.NVarChar, createGroupContract.group[i].xuso)
+//       .input('ccorredor', sql.Int, createGroupContract.group[i].ccorredor)
+//       .input('cpais', sql.Int, createGroupContract.group[i].cpais)
+//       .input('cestado', sql.Int, createGroupContract.group[i].cestado)
+//       .input('cciudad', sql.Int, createGroupContract.group[i].cciudad)
+//       .input('cestatusgeneral', sql.Int, 7)
+//       .input('cclasificacion', sql.Char, createGroupContract.group[i].cclasificacion)
+//       .input('xzona_postal', sql.NVarChar, createGroupContract.group[i].xzona_postal)
+//       .query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, fnac, cmetodologiapago, cplan_rc, ctarifa_exceso, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, mcatastrofico, mmotin, msuma_blindaje, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ncapacidad_p, xuso, ccorredor, cpais, cestado, cciudad, cestatusgeneral, cclasificacion, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @fnac, @cmetodologiapago, @cplan_rc, @ctarifa_exceso, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @mcatastrofico, @mmotin, @msuma_blindaje, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ncapacidad_p, @xuso, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @cclasificacion, @xzona_postal)`);
+//     }
+    
+//     await pool.close();
+
+//     return { result: { rowsAffected: rowsAffected, status: true } };
+//   } catch (err) {
+//     console.log(err.message)
+//     return { error: err.message };
+//   }
+// }
+
 const createGroupContract = async (createGroupContract) => {
   try {
     let rowsAffected = 0;
     let pool = await sql.connect(sqlConfig);
+    let id_inma;
 
     await pool.request().query("TRUNCATE TABLE TMEMISION_FLOTA");
 
-    for(let i = 0; i < createGroupContract.group.length; i++){
-      let nro = i + 1;
-      let insert = await pool.request()
-      .input('nro', sql.Int, nro)
-      .input('irif', sql.Char, createGroupContract.group[i].irif)
-      .input('id_inma', sql.Int, createGroupContract.group[i].id_inma)
-      .input('xcliente', sql.NVarChar, createGroupContract.group[i].xcliente)
-      .input('xrif_cliente', sql.NVarChar, createGroupContract.group[i].xrif_cliente)
-      .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre)
-      .input('xapellido', sql.NVarChar, createGroupContract.group[i].xapellido)
-      .input('icedula', sql.Char, createGroupContract.group[i].icedula)
-      .input('xcedula', sql.NVarChar, createGroupContract.group[i].xcedula)
-      .input('fnac', sql.DateTime, parseDateFromString(createGroupContract.group[i].fnac))
-      .input('cmetodologiapago', sql.Int, createGroupContract.group[i].cmetodologiapago)
-      .input('cplan_rc', sql.Int, createGroupContract.group[i].cplan_rc)
-      .input('ctarifa_exceso', sql.Int, createGroupContract.group[i].ctarifa_exceso)
-      .input('xserialcarroceria', sql.NVarChar, createGroupContract.group[i].xserialcarroceria)
-      .input('xserialmotor', sql.NVarChar, createGroupContract.group[i].xserialmotor)
-      .input('xplaca', sql.NVarChar, createGroupContract.group[i].xplaca)
-      .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)
-      .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
-      .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
-      .input('cano', sql.Int, createGroupContract.group[i].cano)
-      .input('xcolor', sql.NVarChar, createGroupContract.group[i].xcolor)
-      .input('xcobertura', sql.NVarChar, createGroupContract.group[i].xcobertura)
-      .input('msuma_aseg', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
-      .input('mcatastrofico', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
-      .input('mmotin', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
-      .input('msuma_blindaje', sql.Numeric(17, 2), createGroupContract.group[i].msuma_blindaje ? createGroupContract.group[i].msuma_blindaje: undefined)
-      .input('xdireccionfiscal', sql.NVarChar, createGroupContract.group[i].xdireccionfiscal ? createGroupContract.group[i].xdireccionfiscal: undefined)
-      .input('xtelefono_emp', sql.NVarChar, createGroupContract.group[i].xtelefono_emp ? createGroupContract.group[i].xtelefono_emp: undefined)
-      .input('email', sql.NVarChar, createGroupContract.group[i].email ? createGroupContract.group[i].email: undefined)
-      .input('femision', sql.DateTime, new Date())
-      .input('fdesde_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fdesde_pol))
-      .input('fhasta_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fhasta_pol))
-      .input('ncapacidad_p', sql.Int, createGroupContract.group[i].ncapacidad_p)
-      .input('xuso', sql.NVarChar, createGroupContract.group[i].xuso)
-      .input('ccorredor', sql.Int, createGroupContract.group[i].ccorredor)
-      .input('cpais', sql.Int, createGroupContract.group[i].cpais)
-      .input('cestado', sql.Int, createGroupContract.group[i].cestado)
-      .input('cciudad', sql.Int, createGroupContract.group[i].cciudad)
-      .input('cestatusgeneral', sql.Int, 7)
-      .input('cclasificacion', sql.Char, createGroupContract.group[i].cclasificacion)
-      .input('xzona_postal', sql.NVarChar, createGroupContract.group[i].xzona_postal)
-      .query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, fnac, cmetodologiapago, cplan_rc, ctarifa_exceso, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, mcatastrofico, mmotin, msuma_blindaje, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ncapacidad_p, xuso, ccorredor, cpais, cestado, cciudad, cestatusgeneral, cclasificacion, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @fnac, @cmetodologiapago, @cplan_rc, @ctarifa_exceso, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @mcatastrofico, @mmotin, @msuma_blindaje, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ncapacidad_p, @xuso, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @cclasificacion, @xzona_postal)`);
+    for (let i = 0; i < createGroupContract.group.length; i++) {
+
+      if (createGroupContract.group[i].xmarca) {
+        let result = await pool.request()
+          .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)
+          .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
+          .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
+          .input('cano', sql.Int, createGroupContract.group[i].cano)
+          .query(`SELECT id FROM mainma where xmarca = @xmarca and xmodelo = @xmodelo and xversion = @xversion and qano = @cano`);
+        
+        if (result.recordset.length > 0) {
+          
+           id_inma = result.recordset.map(record => record.id);
+          
+           let nro = i + 1;
+           let insert = await pool.request()
+             .input('nro', sql.Int, nro)
+             .input('irif', sql.Char, createGroupContract.group[i].irif)
+             .input('id_inma', sql.Int, id_inma) 
+             .input('xcliente', sql.NVarChar, createGroupContract.group[i].xcliente)
+             .input('xrif_cliente', sql.NVarChar, createGroupContract.group[i].xrif_cliente)
+             .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre)
+             .input('xapellido', sql.NVarChar, createGroupContract.group[i].xapellido)
+             .input('icedula', sql.Char, createGroupContract.group[i].icedula)
+             .input('xcedula', sql.NVarChar, createGroupContract.group[i].xcedula)
+             .input('fnac', sql.DateTime, parseDateFromString(createGroupContract.group[i].fnac))
+             .input('cmetodologiapago', sql.Int, createGroupContract.group[i].cmetodologiapago)
+             .input('cplan_rc', sql.Int, createGroupContract.group[i].cplan_rc)
+             .input('xserialcarroceria', sql.NVarChar, createGroupContract.group[i].xserialcarroceria)
+             .input('xserialmotor', sql.NVarChar, createGroupContract.group[i].xserialmotor)
+             .input('xplaca', sql.NVarChar, createGroupContract.group[i].xplaca)
+             .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)
+             .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
+             .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
+             .input('cano', sql.Int, createGroupContract.group[i].cano)
+             .input('xcolor', sql.NVarChar, createGroupContract.group[i].xcolor)
+             .input('xcobertura', sql.NVarChar, createGroupContract.group[i].xcobertura)
+             .input('msuma_aseg', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+             .input('mcatastrofico', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+             .input('mmotin', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+             .input('xdireccionfiscal', sql.NVarChar, createGroupContract.group[i].xdireccionfiscal ? createGroupContract.group[i].xdireccionfiscal: undefined)
+             .input('xtelefono_emp', sql.NVarChar, createGroupContract.group[i].xtelefono_emp ? createGroupContract.group[i].xtelefono_emp: undefined)
+             .input('email', sql.NVarChar, createGroupContract.group[i].email ? createGroupContract.group[i].email: undefined)
+             .input('femision', sql.DateTime, new Date())
+             .input('fdesde_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fdesde_pol))
+             .input('fhasta_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fhasta_pol))
+             .input('ccorredor', sql.Int, createGroupContract.group[i].ccorredor)
+             .input('cpais', sql.Int, 58)
+             .input('cestado', sql.Int, createGroupContract.group[i].cestado)
+             .input('cciudad', sql.Int, createGroupContract.group[i].cciudad)
+             .input('cestatusgeneral', sql.Int, 7)
+             .input('xzona_postal', sql.NVarChar, createGroupContract.group[i].xzona_postal)
+     
+           // Ejecutar la consulta de inserción
+           let resultInsert = await insert.query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, fnac, cmetodologiapago, cplan_rc, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, mcatastrofico, mmotin, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ccorredor, cpais, cestado, cciudad, cestatusgeneral, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @fnac, @cmetodologiapago, @cplan_rc, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @mcatastrofico, @mmotin, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @xzona_postal)`);
+     
+           // Actualizar el contador de filas afectadas
+           rowsAffected += resultInsert.rowsAffected[0];
+        }
+      }
     }
-    
+
     await pool.close();
 
     return { result: { rowsAffected: rowsAffected, status: true } };
