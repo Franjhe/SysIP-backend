@@ -129,32 +129,33 @@ const createPaymentReportTransW = async(createPaymentReport) => {
 }
 
 const createPaymentReportSoportW = async(createPaymentReport) => {
+
     try{
         let pool = await sql.connect(sqlConfig);
         let data ;
         for(let i = 0; i < createPaymentReport.report.length; i++){
             let insertReport = await pool.request()
-            .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport[i].ctransaccion)   
+            .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.ctransaccion)   
             .input('npago'   , sql.Numeric(18, 0), i + 1)   
-            .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport[i].casegurado)   
-            .input('cmoneda'      , sql.Char(4, 0), createPaymentReport[i].cmoneda )  
-            .input('cbanco'        , sql.Numeric(18, 2), createPaymentReport[i].cbanco ) 
-            .input('cbanco_destino'        , sql.Numeric(18, 2), createPaymentReport[i].cbanco_destino ) 
-            .input('mpago'        , sql.Numeric(18, 2), createPaymentReport[i].mpago ) 
-            .input('mpagoext'     , sql.Numeric(18, 2), createPaymentReport[i].mpagoext) 
-            .input('mpagoigtf'     , sql.Numeric(18, 2), createPaymentReport[i].mpagoigtf)  
-            .input('mpagoigtfext'     , sql.Numeric(18, 2), createPaymentReport[i].mpagoigtfext)      
-            .input('mtotal'     , sql.Numeric(18, 2), createPaymentReport[i].mtotal)  
-            .input('mtotalext'     , sql.Numeric(18, 2), createPaymentReport[i].mtotalext)     
-            .input('ptasamon'     , sql.Numeric(18, 2), createPaymentReport[i].ptasamon )        
-            .input('ptasaref'     , sql.Numeric(18, 2), createPaymentReport[i].ptasaref )        
-            .input('xreferencia'  , sql.VarChar(100, 0), createPaymentReport[i].xreferencia )  
-            .input('xruta'        , sql.VarChar(100, 0), createPaymentReport[i].ximagen )  
-            .input('cprog'        , sql.Char(20, 0), createPaymentReport[i].cprog )
-            .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport[i].cusuario)  
+            .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport.casegurado)   
+            .input('cmoneda'      , sql.Char(4, 0), createPaymentReport.report[i].cmoneda )  
+            .input('cbanco'        , sql.Numeric(18, 2), createPaymentReport.report[i].cbanco ) 
+            .input('cbanco_destino'        , sql.Numeric(18, 2), createPaymentReport.report[i].cbanco_destino ) 
+            .input('mpago'        , sql.Numeric(18, 2), createPaymentReport.report[i].mpago ) 
+            .input('mpagoext'     , sql.Numeric(18, 2), createPaymentReport.report[i].mpagoext) 
+            .input('mpagoigtf'     , sql.Numeric(18, 2), createPaymentReport.report[i].mpagoigtf)  
+            .input('mpagoigtfext'     , sql.Numeric(18, 2), createPaymentReport.report[i].mpagoigtfext)      
+            .input('mtotal'     , sql.Numeric(18, 2), createPaymentReport.report[i].mtotal)  
+            .input('mtotalext'     , sql.Numeric(18, 2), createPaymentReport.report[i].mtotalext)     
+            .input('ptasamon'     , sql.Numeric(18, 2), createPaymentReport.report[i].ptasamon )        
+            .input('ptasaref'     , sql.Numeric(18, 2), createPaymentReport.report[i].ptasaref )        
+            .input('xreferencia'  , sql.VarChar(100, 0), createPaymentReport.report[i].xreferencia )  
+            .input('xruta'        , sql.VarChar(100, 0), createPaymentReport.report[i].ximagen )  
+            // .input('cprog'        , sql.Char(20, 0), createPaymentReport.report[i].cprog )
+            // .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.report[i].cusuario)  
             .query('INSERT INTO cbreporte_pago '
-            +'(ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext, mtotal , mtotalext ,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario ) VALUES'
-            +'(@ctransaccion, @npago, @casegurado, @cmoneda, @cbanco, @cbanco_destino, @mpago, @mpagoext, @mpagoigtf, @mpagoigtfext , @mtotal ,@mtotalext , @ptasamon, @ptasaref,  @xreferencia, @xruta, @cprog, @cusuario )')
+            +'(ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext, mtotal , mtotalext ,ptasamon, ptasaref,  xreferencia, xruta ) VALUES'
+            +'(@ctransaccion, @npago, @casegurado, @cmoneda, @cbanco, @cbanco_destino, @mpago, @mpagoext, @mpagoigtf, @mpagoigtfext , @mtotal ,@mtotalext , @ptasamon, @ptasaref,  @xreferencia, @xruta )')
             data = insertReport
         }
         
@@ -198,7 +199,7 @@ const searchDataPaymentReport = async() => {
                 let pool2 = await sql.connect(sqlConfig);
                 let searchDiference = await pool2.request()
                 .input('ctransaccion'   , sql.Numeric(19, 0), searchDataTransaction.recordset[i].ctransaccion )   
-                .input('iestado'   , sql.Bit, 1)   
+                .input('iestado'   , sql.Bit, 0)   
                 .query('select mdiferencia, ctransaccion ,xobservacion from cbreporte_tran_dif where iestado = @iestado and ctransaccion = @ctransaccion')
 
                 dataTransaction.push({
@@ -216,7 +217,6 @@ const searchDataPaymentReport = async() => {
                     diference : searchDiference.recordset
                 })
 
-                //console.log(searchDataTransaction,searchDetailTransacion,searchSoport)
             }
         }
 
@@ -380,7 +380,7 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                     let pool = await sql.connect(sqlConfig);
                     let updateReport= await pool.request()
                     .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
-                    .input('itransaccion', sql.Char(2, 0) , updatePayment.itransaccion ) 
+                    .input('itransaccion', sql.Char(2, 0) , updatePayment.iestadorec ) 
                     .query('update cbreporte_pago set itransaccion = @itransaccion where ctransaccion = @ctransaccion' );
 
                     if(updateReport.rowsAffected > 0 ){
@@ -391,7 +391,7 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                             .input('crecibo'      , sql.Numeric(19, 0), updatePayment.detalle[i].crecibo )  
                             .input('iestadorec'     , sql.Char(1, 0),  updatePayment.iestadorec) 
                             .input('fcobro', sql.DateTime, new Date())
-                            .query('update adrecibos set iestadorec = @iestadorec , fcobro = @fcobro where  cpoliza = @cpoliza and crecibo = @crecibo' );
+                            .query('update adrecibos set iestadorec = @iestadorec,fcobro = @fcobro where crecibo = @crecibo' );
 
                         }
                     }           
@@ -425,6 +425,51 @@ const updateReceiptNotifiqued = async(updatePayment) => {
     }
 }
 
+
+const updateReceiptNotifiquedSys = async(updatePayment) =>{
+    try {
+
+        let pool = await sql.connect(sqlConfig);
+        let receiptUpdate = await pool.request()
+        .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
+        .input('iestado'     , sql.Bit, 1)  
+        .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
+        await pool.close();
+
+
+        return receiptUpdate;
+    }
+    catch(err){
+        return { error: err.message, message: 'No se actualizaron los datos ' };
+    }
+
+}
+
+const receiptDifferenceSys = async(receipt) =>{
+    try {
+
+        let pool = await sql.connect(sqlConfig);
+        let receiptUpdate = await pool.request()
+        .input('ctransaccion', sql.Numeric(19, 0), receipt.transacccion)
+        .input('mdiferencia', sql.Numeric(19, 0), receipt.mdiferencia)
+        .input('xobservacion', sql.VarChar(500, 0), receipt.xobservacion)
+        .input('casegurado', sql.Numeric(19, 0), receipt.casegurado)
+        .input('fingreso', sql.DateTime, new Date())
+        .input('iestado', sql.Bit, 0)
+        .query('INSERT INTO cbreporte_tran_dif' +
+            '(ctransaccion, mdiferencia, xobservacion,  fingreso, iestado, casegurado)' +
+            'VALUES (@ctransaccion, @mdiferencia, @xobservacion, @fingreso,  @iestado, @casegurado)');
+        await pool.close();
+
+
+        return receiptUpdate;
+    }
+    catch(err){
+        return { error: err.message, message: 'No se actualizaron los datos ' };
+    }
+
+}
+
 const receiptDifference = async(receipt) => {
     try {
         let results = [];
@@ -435,6 +480,8 @@ const receiptDifference = async(receipt) => {
                     .input('iestado_tran', sql.Char(2, 0), 'ER')
                     .query('update cbreporte_tran set iestado_tran = @iestado_tran where ctransaccion = @ctransaccion');
                 await pool.close();
+
+                        
                 if (receiptUpdate.rowsAffected) {
                     let pool = await sql.connect(sqlConfig);
                     let receiptUpdateSys = await pool.request()
@@ -450,14 +497,23 @@ const receiptDifference = async(receipt) => {
  
                 }
 
-                // Usar el servicio para enviar un correo
-                emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', 'Cuerpo del correo').then((enviado) => {
-                    if (enviado) {
+
+                const template = await fs.readFile('src/templates/diference.ejs', 'utf-8');
+                const datosPlantilla = {
+                  nombre: 'Juan',
+                };
+                
+                const html = ejs.render(template, datosPlantilla);
+                try {
+                  const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+                  if (enviado) {
                     console.log('Correo enviado con éxito');
-                    } else {
+                  } else {
                     console.log('Error al enviar el correo');
-                    }
-                });
+                  }
+                } catch (error) {
+                  console.error('Error al procesar el correo:', error);
+                }
 
             
         
@@ -485,30 +541,24 @@ const differenceOfNotification = async(receipt) => {
 
 const updateReceiptDifference = async(notification) => {
     try{
-        // let cedula = any
-        // let recibo = []
-        // let cliente = string
+
         for(let i = 0; i < notification.length; i++){
-
-            // cedula = notification[i].casegurado 
-            //recibo.push(notification[i].recibo[j].crecibo)
-
             let pool = await sql.connect(sqlConfig);
             let updateReceipt= await pool.request()
-            .input('iestado'     , sql.Bit,  0) 
-            .input('ctransaccion'      , sql.Numeric(19, 0), notification[i].transacccion )  
+            .input('iestado' , sql.Bit,  1) 
+            .input('ctransaccion' , sql.Numeric(19, 0), notification[i].transaccion )  
             .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
             if(updateReceipt.rowsAffected){
                 let pool = await sql.connect(sqlConfig);
                 let receipt = await pool.request()
-                .input('ctransaccion', sql.Numeric(18, 0), notification[i].transacccion)
+                .input('ctransaccion', sql.Numeric(18, 0), notification[i].transaccion)
                 .input('iestado_tran', sql.Char(2, 0), 'TR')
-                .input('iestado'     , sql.Bit,  0) 
-                .query('update cbreporte_tran set iestado_tran = @iestado_tran, iestado = @iestado where ctransaccion = @ctransaccion' );
+                .input('iestado'     , sql.Bit,  1) 
+                .query('update cbreporte_tran set iestado = @iestado where ctransaccion = @ctransaccion' );
                 //actualizamos el estado del recibo
 
                 if(receipt.rowsAffected){
-                    for(let j = 0; j < notification[i].recibo.length; i++){
+                    for(let j = 0; j < notification[i].recibo.length; j++){
                         let pool = await sql.connect(sqlConfig);
                         let updateReceipt= await pool.request()
                         .input('crecibo'   , sql.Numeric(18, 0), notification[i].recibo[j].crecibo)   
@@ -516,34 +566,38 @@ const updateReceiptDifference = async(notification) => {
                         .input('mpendiente'     , sql.Numeric(15, 0),  0) 
                         .query('update adrecibos set iestadorec = @iestadorec ,mpendiente = @mpendiente where crecibo = @crecibo ' );
                         await pool.close();
-                        return { differenceOfNotification : updateReceipt.rowsAffected}
+
                     }
                 }
             }
 
-            if(updateReceipt.rowsAffected){
-                let pool = await sql.connect(sqlConfig);
-                let infoMail= await pool.request()
-                .input('cedula'     , sql.Bit,  cedula) 
-                .query('select * from VWBUSCARECIBOYCLIENTE where cedula = @cedula' )
 
-                cliente = infoMail.recordset[0].XCLIENTE
-
-            }
         }
 
        
-          // Usar el servicio para enviar un correo
-          emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', 'Cuerpo del correo').then((enviado) => {
-            if (enviado) {
-              console.log('Correo enviado con éxito');
-            } else {
-              console.log('Error al enviar el correo');
-            }
-          });
+        const template = await fs.readFile('src/templates/welcome.ejs', 'utf-8');
+        const datosPlantilla = {
+          nombre: 'Juan',
+        };
         
+        const html = ejs.render(template, datosPlantilla);
+        try {
+          const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+          if (enviado) {
+            console.log('Correo enviado con éxito');
+          } else {
+            console.log('Error al enviar el correo');
+          }
+        } catch (error) {
+          console.error('Error al procesar el correo:', error);
+        }
+        
+
+        await pool.close();
+        return { status : true};
+    
           
-                   }
+    }
     catch(err){
         return { error: err.message, message: 'No se actualizaron los datos ' };
     }
@@ -564,5 +618,7 @@ export default {
     receiptDifference,
     differenceOfNotification,
     updateReceiptDifference,
-    searchPaymentCollected
+    searchPaymentCollected,
+    receiptDifferenceSys,
+    updateReceiptNotifiquedSys
 }

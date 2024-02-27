@@ -1,6 +1,34 @@
 import express from 'express';
 import collectionController from '../../controllers/collectionController.js'
 
+import fileExtension from 'file-extension';
+import multer from 'multer';
+
+
+const DOCUMENTS_PATH = './public/documents'; 
+
+const document_storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, DOCUMENTS_PATH);
+    },
+  
+    filename: (req, file, cb) => {
+        console.log(file, req)
+      cb(null, file.fieldname + '-' + Date.now() + '.' + fileExtension(file.originalname));
+    }
+});
+  
+let document_upload = multer({
+    storage: document_storage,
+    limits: {
+    fileSize: 5000000
+    },
+    fileFilter(req, file, cb) {
+    cb(null, true);
+    }
+    
+});
+
 const router = express.Router();
 
 router
@@ -12,8 +40,7 @@ router
     
     //api de carga de transacciones 
     
-
-    .post("/create-notification-movement",  collectionController.createNotificationMovement) //creacion del movimiento de transaccion del reporte de pago
+    .post("/create-notification-movement", document_upload.single('file'), collectionController.createNotificationMovement   ) //creacion del movimiento de transaccion del reporte de pago
 
 
     
