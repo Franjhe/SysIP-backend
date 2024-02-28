@@ -527,6 +527,7 @@ const createEmmisionGH = async(create) => {
       let rowsAffected = 0;
       let pool = await sql.connect(sqlConfig);
       let createEmmi = await pool.request()
+      .input('cnpoliza_rel', sql.NVarChar(30), create.cnpoliza_rel)
       .input('cramo', sql.Int, create.cramo)
       .input('xcanal_venta', sql.Int, create.xcanal_venta)
       .input('icedula_tomador', sql.Char(1), create.icedula_tomador.toUpperCase())
@@ -548,15 +549,24 @@ const createEmmisionGH = async(create) => {
       .input('nbeneficiarios', sql.Int, create.nbeneficiarios)
       .input('msumaasegext', sql.Numeric(17,2), create.msumaasegext)
       .input('cmetodologiapago', sql.Int, create.cmetodologiapago)
+      .input('cpoliza', sql.Numeric(19,0), create.cramo)
+      .input('fanopol', sql.SmallInt, create.cramo)
+      .input('fmespol', sql.TinyInt, create.cramo)
+      .input('cnpoliza', sql.NVarChar(30), create.cramo)
+      .input('cbanco', sql.Int, create.cramo)
+      .input('xreferencia', sql.NVarChar(20), create.cramo)
+      .input('fcobro', sql.DateTime, create.cramo)
+      .input('femision', sql.DateTime, create.cramo)
+
       .query('INSERT INTO eePoliza_Salud ' +
-      '( cramo, xcanal_venta,'+
+      '(cnpoliza_rel, cramo, xcanal_venta,'+
       'icedula_tomador, xrif_tomador, xnombre_tomador, xapellido_tomador, xdireccion_tomador, xcorreo_tomador,'+ 
       'icedula_asegurado, xrif_asegurado, xnombre_asegurado, xapellido_asegurado, isexo_asegurado, iestado_civil, fnac_asegurado, xdireccion_asegurado, xcorreo_asegurado, xtelefono_asegurado,'+
-      'nbeneficiarios, msumaasegext,cmetodologiapago) '
-      +'VALUES ( @cramo, @xcanal_venta,'+
+      'nbeneficiarios, msumaasegext,cmetodologiapago,cpoliza,fanopol,fmespol,cnpoliza,cbanco,xreferencia,fcobro,femision) '
+      +'VALUES (@cnpoliza_rel, @cramo, @xcanal_venta,'+
       '@icedula_tomador, @xrif_tomador, @xnombre_tomador, @xapellido_tomador, @xdireccion_tomador, @xcorreo_tomador,'+ 
       '@icedula_asegurado, @xrif_asegurado, @xnombre_asegurado, @xapellido_asegurado, @isexo_asegurado, @iestado_civil, @fnac_asegurado, @xdireccion_asegurado, @xcorreo_asegurado, @xtelefono_asegurado,'+
-      '@nbeneficiarios, @msumaasegext,@cmetodologiapago)');
+      '@nbeneficiarios, @msumaasegext,@cmetodologiapago,@cpoliza,@fanopol,@fmespol,@cnpoliza,@cbanco,@xreferencia,@fcobro,@femision)');
   
       //sql.close();
       return { rowsAffected  };
