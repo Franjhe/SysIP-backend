@@ -417,6 +417,7 @@ const createGroupContract = async (createGroupContract) => {
     let rowsAffected = 0;
     let pool = await sql.connect(sqlConfig);
     let id_inma;
+    let errors = [];
 
     await pool.request().query("TRUNCATE TABLE TMEMISION_FLOTA");
 
@@ -429,8 +430,8 @@ const createGroupContract = async (createGroupContract) => {
           .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
           .input('cano', sql.Int, createGroupContract.group[i].cano)
           .query(`SELECT id FROM mainma where xmarca = @xmarca and xmodelo = @xmodelo and xversion = @xversion and qano = @cano`);
-        
         if (result.recordset.length > 0) {
+          
           
            id_inma = result.recordset.map(record => record.id);
           
@@ -442,10 +443,10 @@ const createGroupContract = async (createGroupContract) => {
              .input('xcliente', sql.NVarChar, createGroupContract.group[i].xcliente)
              .input('xrif_cliente', sql.NVarChar, createGroupContract.group[i].xrif_cliente)
              .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre)
-             .input('xapellido', sql.NVarChar, createGroupContract.group[i].xapellido)
+             .input('xapellido', sql.NVarChar, createGroupContract.group[i].xapellido ? createGroupContract.group[i].xapellido: undefined)
              .input('icedula', sql.Char, createGroupContract.group[i].icedula)
              .input('xcedula', sql.NVarChar, createGroupContract.group[i].xcedula)
-             .input('fnac', sql.DateTime, parseDateFromString(createGroupContract.group[i].fnac))
+             .input('fnac', sql.DateTime, parseDateFromString(createGroupContract.group[i].fnac) || null)
              .input('cmetodologiapago', sql.Int, createGroupContract.group[i].cmetodologiapago)
              .input('cplan_rc', sql.Int, createGroupContract.group[i].cplan_rc)
              .input('xserialcarroceria', sql.NVarChar, createGroupContract.group[i].xserialcarroceria)
@@ -481,13 +482,15 @@ const createGroupContract = async (createGroupContract) => {
      
            // Actualizar el contador de filas afectadas
            rowsAffected += resultInsert.rowsAffected[0];
+        }else {
+          errors.push(`Vehículos no encontrados: ${createGroupContract.group[i].xmarca} - ${createGroupContract.group[i].xmodelo} - ${createGroupContract.group[i].xversion} - ${createGroupContract.group[i].cano}`);
         }
       }
     }
 
     await pool.close();
 
-    return { result: { rowsAffected: rowsAffected, status: true } };
+    return { result: { rowsAffected: rowsAffected, status: true, error: errors } };
   } catch (err) {
     console.log(err.message)
     return { error: err.message };
@@ -499,6 +502,9 @@ function areObjectsEqual(obj1, obj2) {
 }
 
 function parseDateFromString(dateString) {
+  if (!dateString) {
+    return new Date(); // Devuelve null si la cadena es undefined o vacía
+  }
   const parts = dateString.split('/');
   const day = parseInt(parts[0], 10);
   const month = parseInt(parts[1], 10) - 1; // Restar 1 porque los meses en JavaScript son base 0
