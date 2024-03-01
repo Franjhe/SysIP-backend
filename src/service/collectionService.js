@@ -200,12 +200,6 @@ const receiptUnderReviewData = async (receiptUnderReview) => {
         }
     }
 
-    const updateReceiptDifferenceSys = await Collection.receiptDifferenceSys(receiptUnderReview);
-    if (updateReceiptDifferenceSys.error) {
-        return {
-            error: updateReceiptDifferenceSys.error
-        }
-    }
     return updateReceiptDifference;
 }
 
