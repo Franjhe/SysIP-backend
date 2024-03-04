@@ -32,6 +32,14 @@ app.use(cors({
   //allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Puedes ajustar el '*' según tus necesidades.
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
+
 app.use(express.json({ limit: '10mb' }));
 
 app.use(bodyParser.json({ limit: '50mb' }));
