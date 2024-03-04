@@ -32,7 +32,7 @@ const searchDataReceipt = async(searchDataReceipt) => {
             .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
             .input('iestadorec', sql.Char(1, 0), 'P')
             .query('select fpago,mpendiente, mpendientext,  xobserva, cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
-            ' cramo , cmoneda , fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+            ' cramo , cmoneda ,cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
             ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
 
             let diferenceList = []

@@ -1,5 +1,7 @@
 import Emissions from '../db/Emissions.js';
 
+import httpService  from './apiclient.js';
+
 const searchHullPrice = async (searchHullPrice) => {
     const result = await Emissions.searchHullPrice(searchHullPrice);
     if (result.error) {
@@ -142,23 +144,62 @@ const searchQuotes = async (searchQuotes) => {
 
 
 const createEmmisionHealth = async (create) => {
-    const createEmmision = await Emissions.createEmmisionGH(create);
-    if (createEmmision.error) {
-        return {
-            error: createEmmision.error
-        }
-    }
-    const createEmmisionBen = await Emissions.createEmmisionGHB(create);
 
-    if (createEmmisionBen.error) {
-        return {
-            error: createEmmisionBen.error
+
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+
+    try {
+        const response = await httpService(url);
+        let bcv = response.monitors.usd.price
+
+        const createEmmision = await Emissions.createEmmisionGH(create,bcv);
+        if (createEmmision.error) {
+            return {
+                error: createEmmision.error
+            }
         }
-    }
+        const createEmmisionBen = await Emissions.createEmmisionGHB(create);
     
-    return createEmmision;
+        if (createEmmisionBen.error) {
+            return {
+                error: createEmmisionBen.error
+            }
+        }
+
+        return createEmmision;
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
+    }
+
+
 }
 
+
+const createEmmisionAutomovil = async (create) => {
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+
+    try {
+        const response = await httpService(url);
+        let bcv = response.monitors.usd.price
+        const createEmmision = Emissions.createEmmisionAutomovile(create, bcv);
+        if (createEmmision.error) {
+            return {
+                error: createEmmision.error
+            };
+        }
+
+        return createEmmision;
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
+    }
+};
+    
 const searchRates = async (searchRates) => {
     const result = await Emissions.searchRates(searchRates);
     if (result.error) {
@@ -184,5 +225,6 @@ export default {
     createGroupContract,
     searchQuotes,
     createEmmisionHealth,
-    searchRates
+    searchRates,
+    createEmmisionAutomovil
 }

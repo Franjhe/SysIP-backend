@@ -19,6 +19,8 @@ router
 
     //emissions generic
     .post("/health",  emissionsController.createEmmisionHealthGeneric)
+    .post("/automovile",  emissionsController.createEmmisionAutomovileGeneric)
+
 
 
 export default router;
