@@ -32,11 +32,12 @@ app.use(cors({
   //allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Puedes ajustar el '*' según tus necesidades.
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
+
+app.options("/", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://qaapisys2000.lamundialdeseguros.com");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.sendStatus(204);
 });
 
 
