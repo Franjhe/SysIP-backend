@@ -632,7 +632,6 @@ const createEmmisionGHB = async(create) => {
 
 const createEmmisionAutomovile = async(create,bcv) => {
   try{
-    let rowsAffected = 0;
     let pool = await sql.connect(sqlConfig);
     let createEmmi = await pool.request()
     .input('fregistro', sql.DateTime, create.fregistro)
@@ -646,22 +645,22 @@ const createEmmisionAutomovile = async(create,bcv) => {
     .input('apellido', sql.NVarChar(250), create.apellido)
     .input('estado', sql.NVarChar(250), create.estado)
     .input('ciudad', sql.NVarChar(17,0), create.ciudad)
-    .input('direccion', sql.NVarChar(17,2), create.direccion)
-    .input('fnacimiento', sql.NVarChar(17,2), create.fnacimiento)
+    .input('direccion', sql.NVarChar(250), create.direccion)
+    .input('fnacimiento', sql.DateTime, create.fnacimiento)
     .input('sexo', sql.Char(1), create.sexo)
     .input('telefono', sql.NVarChar(250), create.telefono)
     .input('correo', sql.NVarChar(250), create.correo)
-    .input('tipo_pago', sql.NVarChar(250), create.tipo_pago)
+    .input('tipo_pago', sql.NVarChar(50), create.tipo_pago)
     .input('fcobro', sql.DateTime, create.fcobro)
     .input('femision', sql.DateTime, create.femision)
     .input('banco', sql.SmallInt, create.banco)
     .input('banco_destino', sql.SmallInt, create.banco_destino)
-    .input('sumaaseg', sql.Numeric(19,2), create.sumaaseg)
-    .input('sumaasegext', sql.Numeric(19,2), create.sumaasegext)
-    .input('prima', sql.Numeric(19,2), create.prima)
-    .input('primaext', sql.Numeric(19,2), create.primaext)
-    .input('ptasamon', sql.Numeric(19,2), bcv)
-    .input('xreferencia', sql.NVarChar(250), create.xreferencia)
+    .input('sumaaseg', sql.Numeric(18,2), create.sumaaseg)
+    .input('sumaasegext', sql.Numeric(18,2), create.sumaasegext)
+    .input('prima', sql.Numeric(18,2), create.prima)
+    .input('primaext', sql.Numeric(18,2), create.primaext)
+    .input('ptasamon', sql.Numeric(18,2), bcv)
+    .input('xreferencia', sql.NVarChar(20), create.xreferencia)
     .input('xmarca', sql.NVarChar(250), create.xmarca)
     .input('xmodelo', sql.NVarChar(250), create.xmodelo)
     .input('xversion', sql.NVarChar(250), create.xversion)
@@ -670,16 +669,16 @@ const createEmmisionAutomovile = async(create,bcv) => {
     .input('serial_carroceria', sql.NVarChar(50), create.serial_carroceria)
     .input('serial_motor', sql.NVarChar(50), create.serial_motor)
     .input('color', sql.NVarChar(50), create.color)
-    .input('cplan_rc', sql.Numeric(19,0), create.cplan_rc)
+    .input('cplan_rc', sql.Int, create.cplan_rc)
     .query('INSERT INTO eePoliza_auto ' +
       '(fregistro,cproductor,xcanal_venta,poliza , cobertura, tipo_doc , doc_identidad , nombre,apellido,estado,ciudad,'+
       'direccion,fnacimiento,sexo,telefono,correo,tipo_pago,fcobro,femision,banco,banco_destino,sumaaseg,'+
-      'sumaasegext,prima,primaext,ptasamon, xreferencia, xmarca, xmodelo , xversion , cano , xplaca' +
+      'sumaasegext,prima,primaext,ptasamon, xreferencia, xmarca, xmodelo , xversion , cano , xplaca,' +
       'serial_carroceria, serial_motor , color , cplan_rc)'
-    +'VALUES (@fregistro,@cproductor,@xcanal_venta,@poliza , @cobertura, @tipo_doc , @doc_identidad , @nombre,apellido,@estado,ciudad,'+
+    +'VALUES (@fregistro,@cproductor,@xcanal_venta,@poliza , @cobertura, @tipo_doc , @doc_identidad , @nombre,@apellido,@estado,@ciudad,'+
     '@direccion,@fnacimiento,@sexo,@telefono,@correo,@tipo_pago,@fcobro,@femision,@banco,@banco_destino,@sumaaseg,'+
     '@sumaasegext,@prima,@primaext,@ptasamon, @xreferencia, @xmarca, @xmodelo , @xversion , @cano , @xplaca,' +
-    '@serial_carroceria, @serial_motor,@color,@cplan_rc)' )
+    '@serial_carroceria, @serial_motor , @color , @cplan_rc)' )
 
     //sql.close();
       return { status : true  };
