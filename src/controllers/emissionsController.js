@@ -389,7 +389,7 @@ const createEmmisionAutomovileGeneric = async (req, res) => {
 
     return res
         .status(200)
-        .send({status : true, messaje: "Se ha generado la Emisión de Salud con éxito"});
+        .send({status : true, messaje: "Se ha generado la Emisión de Automovil con éxito"});
 }
 
 

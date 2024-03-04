@@ -630,7 +630,7 @@ const createEmmisionGHB = async(create) => {
 }
 
 
-const createEmmisionAutomovile = async(create) => {
+const createEmmisionAutomovile = async(create,bcv) => {
   try{
     let rowsAffected = 0;
     let pool = await sql.connect(sqlConfig);

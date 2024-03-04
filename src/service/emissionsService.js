@@ -1,5 +1,6 @@
 import Emissions from '../db/Emissions.js';
 
+import httpService  from './apiclient.js';
 
 const searchHullPrice = async (searchHullPrice) => {
     const result = await Emissions.searchHullPrice(searchHullPrice);
@@ -162,26 +163,29 @@ const createEmmisionHealth = async (create) => {
 
 
 const createEmmisionAutomovil = async (create) => {
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
 
-    fetch('https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv')
-    .then((response) => response.json())
-    .then(data => {
-    const bcv = data.monitors.usd.price
+    try {
+        const response = await httpService(url);
+        console.log('Completado!', response);
+        let bcv = response.monitors.usd.price
+        const createEmmision = Emissions.createEmmisionAutomovile(create, bcv);
 
-
-    const createEmmision =  Emissions.createEmmisionAutomovile(create, bcv);
-    if (createEmmision.error) {
-        return {
-            error: createEmmision.error
+        if (createEmmision.error) {
+            return {
+                error: createEmmision.error
+            };
         }
+
+        return createEmmision;
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
     }
+};
     
-    return createEmmision;
-})
-
-
-}
-
 const searchRates = async (searchRates) => {
     const result = await Emissions.searchRates(searchRates);
     if (result.error) {
