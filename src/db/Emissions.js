@@ -644,7 +644,7 @@ const createEmmisionAutomovile = async(create,bcv) => {
     .input('doc_identidad', sql.Numeric(22,0), create.doc_identidad)
     .input('nombre', sql.NVarChar(250), create.nombre)
     .input('apellido', sql.NVarChar(250), create.apellido)
-    .input('estado', sql.NVarChar(1), create.estado)
+    .input('estado', sql.NVarChar(250), create.estado)
     .input('ciudad', sql.NVarChar(17,0), create.ciudad)
     .input('direccion', sql.NVarChar(17,2), create.direccion)
     .input('fnacimiento', sql.NVarChar(17,2), create.fnacimiento)
