@@ -1,5 +1,6 @@
 import Emissions from '../db/Emissions.js';
 
+
 const searchHullPrice = async (searchHullPrice) => {
     const result = await Emissions.searchHullPrice(searchHullPrice);
     if (result.error) {
@@ -159,6 +160,28 @@ const createEmmisionHealth = async (create) => {
     return createEmmision;
 }
 
+
+const createEmmisionAutomovil = async (create) => {
+
+    fetch('https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv')
+    .then((response) => response.json())
+    .then(data => {
+    const bcv = data.monitors.usd.price
+
+
+    const createEmmision =  Emissions.createEmmisionAutomovile(create, bcv);
+    if (createEmmision.error) {
+        return {
+            error: createEmmision.error
+        }
+    }
+    
+    return createEmmision;
+})
+
+
+}
+
 const searchRates = async (searchRates) => {
     const result = await Emissions.searchRates(searchRates);
     if (result.error) {
@@ -184,5 +207,6 @@ export default {
     createGroupContract,
     searchQuotes,
     createEmmisionHealth,
-    searchRates
+    searchRates,
+    createEmmisionAutomovil
 }
