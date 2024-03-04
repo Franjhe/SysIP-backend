@@ -150,7 +150,6 @@ const createEmmisionHealth = async (create) => {
 
     try {
         const response = await httpService(url);
-        console.log('Completado!', response);
         let bcv = response.monitors.usd.price
 
         const createEmmision = await Emissions.createEmmisionGH(create,bcv);
@@ -184,10 +183,8 @@ const createEmmisionAutomovil = async (create) => {
 
     try {
         const response = await httpService(url);
-        console.log('Completado!', response);
         let bcv = response.monitors.usd.price
         const createEmmision = Emissions.createEmmisionAutomovile(create, bcv);
-
         if (createEmmision.error) {
             return {
                 error: createEmmision.error
