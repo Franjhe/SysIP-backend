@@ -26,19 +26,11 @@ const app = express();
 dotenv;
 
 app.use(cors({
-  origin: '*',  // o especifica el dominio permitido
+  origin: 'https://qaapisys2000.lamundialdeseguros.com',  // o especifica el dominio permitido
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   optionsSuccessStatus: 204,
   //allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
-
-app.options("/", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://qaapisys2000.lamundialdeseguros.com");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.sendStatus(204);
-});
 
 
 app.use(express.json({ limit: '10mb' }));
