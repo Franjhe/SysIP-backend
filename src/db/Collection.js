@@ -31,23 +31,14 @@ const searchDataReceipt = async(searchDataReceipt) => {
             let receipt = await pool.request()
             .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
             .input('iestadorec', sql.Char(1, 0), 'P')
-            .query('select fpago,mpendiente, mpendientext,  xobserva, cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
-            ' cramo , cmoneda ,cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-            ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
+            .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
+            ' cramo , cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext , mdiferenciaext, cmoneda, mdiferencia,  ctransaccion , xobservacion ,ptasamon' + 
+            ' from rpbcliente_recibo where iestadorec = @iestadorec and casegurado = @casegurado ')
 
-            let diferenceList = []
-            if(receipt.rowsAffected){
-                let diference = await pool.request()
-                .input('casegurado'   , sql.Numeric(19, 0), searchDataReceipt)   
-                .input('iestado'   , sql.Bit, 1)   
-                .query('select mdiferencia, ctransaccion ,xobservacion , cmoneda from cbreporte_tran_dif where casegurado = @casegurado')
-                diferenceList = diference.recordset
 
-            }
             return { 
                 receipt: receipt.recordset ,
                 client : search.recordset,
-                diferenceList
             };
 
         }
@@ -109,7 +100,7 @@ const createPaymentReportTransW = async(createPaymentReport) => {
                                 .input('mprimabrutaext'        , sql.Numeric(18, 2), createPaymentReport.receipt[i].mprimabrutaext ) 
                                 .input('ptasamon'        , sql.Numeric(18, 2), createPaymentReport.receipt[i].ptasamon ) 
                                 .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.cusuario) 
-                                .input('ccorredor'     , sql.Int , createPaymentReport.receipt[i].ccorredor )
+                                .input('ccorredor'     , sql.Int , createPaymentReport.receipt[i].cproductor )
                                 .query('INSERT INTO cbreporte_pago_d  '
                                 +'(ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fdesde_rec,fhasta_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario,ccorredor)'
                                 +'VALUES (@ctransaccion, @crecibo, @casegurado, @cnpoliza, @cnrecibo, @cpoliza, @fanopol, @fmespol, @cramo, @cmoneda, @fdesde_pol, @fhasta_pol, @fdesde_rec, @fhasta_rec ,@mprimabruta , @mprimabrutaext, @ptasamon, @cusuario,@ccorredor )')
@@ -170,6 +161,51 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
         return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
+
+
+const createCommision = async(createCommision) => {
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let data ;
+
+        for(let i = 0; i < createCommision.detalle.length; i++){
+            let pool = await sql.connect(sqlConfig);
+            let updateReceipt= await pool.request()
+            .input('crecibo'      , sql.Numeric(19, 0), createCommision.detalle[i].crecibo )  
+            .input('fcobro', sql.DateTime, new Date())
+            .query('select mmovcom,mmovcomext,imovcom,cproductor adrecibos set iestadorec = @iestadorec,fcobro = @fcobro where crecibo = @crecibo' );
+            for(let i = 0; i < updateReceipt.recordset.length; i++){
+                let insertReport = await pool.request()
+                .input('cproductor'   , sql.Numeric(18, 0), updateReceipt.recordset[i].cproductor )   
+                .input('ccodigo'   , sql.Numeric(18, 0), createCommision.detalle[i].crecibo )   
+                .input('imovcom'   , sql.Numeric(18, 0), createCommision.imovcom)   
+                .input('canexo'      , sql.Char(4, 0), createCommision.canexo )  
+                .input('crelpago'        , sql.Numeric(18, 2), createCommision.crelpago ) 
+                .input('cprodmult'        , sql.Numeric(18, 2), createCommision.cprodmult ) 
+                .input('cmoneda'        , sql.Numeric(18, 2), createCommision.detalle[i].cmoneda ) 
+                .input('ptasamon'     , sql.Numeric(18, 2), bcv) 
+                .input('fmovcom'     , sql.Numeric(18, 2), new Date())  
+                .input('mmovcom'     , sql.Numeric(18, 2), updateReceipt.recordset[i].mmovcom)      
+                .input('mmovcomext'     , sql.Numeric(18, 2), updateReceipt.recordset[i].mmovcomext)  
+                .input('istatcon'     , sql.Numeric(18, 2), 'P')     
+                .input('cusuario'     , sql.Numeric(18, 2), createCommision.cusuario )        
+                .query('INSERT INTO admovcom '
+                +'(cproductor, ccodigo,  imovcom, canexo, crelpago, cprodmult, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ) VALUES'
+                +'(@cproductor, @ccodigo,  @imovcom, @canexo, @crelpago, @cprodmult, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon )')
+            }
+        }
+
+        
+        await pool.close();
+        return { result: data };
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registraron los datos ' };
+    }
+}
+
+
 
 const searchDataPaymentReport = async() => {
     try{
@@ -384,7 +420,6 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                     .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
                     .input('itransaccion', sql.Char(2, 0) , updatePayment.iestadorec ) 
                     .query('update cbreporte_pago set itransaccion = @itransaccion where ctransaccion = @ctransaccion' );
-
                     if(updateReport.rowsAffected > 0 ){
                         for(let i = 0; i < updatePayment.detalle.length; i++){
                             let pool = await sql.connect(sqlConfig);
@@ -449,7 +484,6 @@ const updateReceiptNotifiquedSys = async(updatePayment) =>{
 
 const receiptDifferenceSys = async(receipt) =>{
     try {
-
         let pool = await sql.connect(sqlConfig);
         let receiptUpdate = await pool.request()
         .input('ctransaccion', sql.Numeric(19, 0), receipt.transacccion)
@@ -458,8 +492,12 @@ const receiptDifferenceSys = async(receipt) =>{
         .input('casegurado', sql.Numeric(19, 0), receipt.casegurado)
         .input('fingreso', sql.DateTime, new Date())
         .input('freporte', sql.DateTime, new Date())
-        .input('crecibo'   , sql.Numeric(18, 0), notification.crecibo)   
+        .input('crecibo'   , sql.Numeric(18, 0), parseFloat(receipt.recibo))   
         .input('iestado', sql.Bit, 0)
+        .input('cmoneda', sql.VarChar(3), receipt.casegurado)
+        .input('idiferencia', sql.Char(2), receipt.casegurado)
+        .input('mdiferencia', sql.Numeric(18, 0), receipt.casegurado)
+        .input('mdiferenciaext', sql.Numeric(18, 0), receipt.casegurado)
         .query('INSERT INTO cbreporte_tran_dif' +
             '(ctransaccion, mdiferencia, xobservacion,  fingreso, iestado, casegurado,freporte,crecibo)' +
             'VALUES (@ctransaccion, @mdiferencia, @xobservacion, @fingreso,  @iestado, @casegurado,@freporte,@crecibo)');
@@ -483,23 +521,24 @@ const receiptDifference = async(receipt) => {
                     .input('ctransaccion', sql.Numeric(18, 0), receipt.transacccion)
                     .input('iestado_tran', sql.Char(2, 0), 'ER')
                     .query('update cbreporte_tran set iestado_tran = @iestado_tran where ctransaccion = @ctransaccion');
-                await pool.close();
-
                         
                 if (receiptUpdate.rowsAffected) {
                     let pool = await sql.connect(sqlConfig);
                     let receiptUpdate = await pool.request()
-                    .input('ctransaccion', sql.Numeric(19, 0), receipt.transacccion)
+                    .input('ctransaccion', sql.Numeric(18, 0), receipt.transacccion)
                     .input('mdiferencia', sql.Numeric(19, 0), receipt.mdiferencia)
                     .input('xobservacion', sql.VarChar(500, 0), receipt.xobservacion)
                     .input('casegurado', sql.Numeric(19, 0), receipt.casegurado)
                     .input('fingreso', sql.DateTime, new Date())
                     .input('iestado', sql.Bit, 0)
+                    .input('crecibo'   , sql.Numeric(18, 0), parseFloat(receipt.recibo))   
+                    .input('freporte', sql.DateTime, new Date())
+                    .input('idiferencia', sql.Char(1), receipt.idiferencia)
+                    .input('cmoneda', sql.NVarChar(5), receipt.cmoneda)
                     .query('INSERT INTO cbreporte_tran_dif' +
-                        '(ctransaccion, mdiferencia, xobservacion,  fingreso, iestado, casegurado)' +
-                        'VALUES (@ctransaccion, @mdiferencia, @xobservacion, @fingreso,  @iestado, @casegurado)');
-                    await pool.close();
- 
+                        '(ctransaccion,mdiferencia, xobservacion,  fingreso, iestado, casegurado,crecibo,freporte,idiferencia,cmoneda)' +
+                        'VALUES (@ctransaccion,@mdiferencia, @xobservacion, @fingreso,  @iestado, @casegurado,@crecibo,@freporte,@idiferencia,@cmoneda)');
+                    console.log(receiptUpdate)
                 }
 
 
@@ -625,5 +664,6 @@ export default {
     updateReceiptDifference,
     searchPaymentCollected,
     receiptDifferenceSys,
-    updateReceiptNotifiquedSys
+    updateReceiptNotifiquedSys,
+    createCommision
 }
