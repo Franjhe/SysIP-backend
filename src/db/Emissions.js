@@ -431,10 +431,8 @@ const createGroupContract = async (createGroupContract) => {
           .input('cano', sql.Int, createGroupContract.group[i].cano)
           .query(`SELECT id FROM mainma where xmarca = @xmarca and xmodelo = @xmodelo and xversion = @xversion and qano = @cano`);
         if (result.recordset.length > 0) {
-          
-          
+
            id_inma = result.recordset.map(record => record.id);
-          
            let nro = i + 1;
            let insert = await pool.request()
              .input('nro', sql.Int, nro)
@@ -442,11 +440,10 @@ const createGroupContract = async (createGroupContract) => {
              .input('id_inma', sql.Int, id_inma) 
              .input('xcliente', sql.NVarChar, createGroupContract.group[i].xcliente)
              .input('xrif_cliente', sql.NVarChar, createGroupContract.group[i].xrif_cliente)
-             .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre)
+             .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre.trim())
              .input('xapellido', sql.NVarChar, createGroupContract.group[i].xapellido ? createGroupContract.group[i].xapellido: undefined)
              .input('icedula', sql.Char, createGroupContract.group[i].icedula)
              .input('xcedula', sql.NVarChar, createGroupContract.group[i].xcedula)
-             .input('fnac', sql.DateTime, parseDateFromString(createGroupContract.group[i].fnac) || null)
              .input('cmetodologiapago', sql.Int, createGroupContract.group[i].cmetodologiapago)
              .input('cplan_rc', sql.Int, createGroupContract.group[i].cplan_rc)
              .input('xserialcarroceria', sql.NVarChar, createGroupContract.group[i].xserialcarroceria)
@@ -478,7 +475,7 @@ const createGroupContract = async (createGroupContract) => {
              .input('xzona_postal', sql.NVarChar, createGroupContract.group[i].xzona_postal)
      
            // Ejecutar la consulta de inserción
-           let resultInsert = await insert.query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, fnac, cmetodologiapago, cplan_rc, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, pcasco, mprima_bruta, mprima_casco, mcatastrofico, mmotin, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ccorredor, cpais, cestado, cciudad, cestatusgeneral, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @fnac, @cmetodologiapago, @cplan_rc, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @pcasco, @mprima_bruta, @mprima_casco, @mcatastrofico, @mmotin, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @xzona_postal)`);
+           let resultInsert = await insert.query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, cmetodologiapago, cplan_rc, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, pcasco, mprima_bruta, mprima_casco, mcatastrofico, mmotin, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ccorredor, cpais, cestado, cciudad, cestatusgeneral, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @cmetodologiapago, @cplan_rc, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @pcasco, @mprima_bruta, @mprima_casco, @mcatastrofico, @mmotin, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @xzona_postal)`);
      
            // Actualizar el contador de filas afectadas
            rowsAffected += resultInsert.rowsAffected[0];
