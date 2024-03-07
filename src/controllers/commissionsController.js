@@ -30,6 +30,35 @@ const searchCualquierData = async (req, res) => {
         });
 }
 
+const searchComisionPorProductor = async (req, res) => {
+    const cualquierData = await commissionsService.searchComisionPorProductor();
+    if (cualquierData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: cualquierData.permissionError
+            });
+    }
+    if (cualquierData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: cualquierData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            cualquierData,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+
 const searchCommissionsbyClient = async (req, res) => {
     const searchReceipt = await commissionsService.searchDataReceipt(req.body.cedula);
     if (searchReceipt.permissionError) {
@@ -484,6 +513,7 @@ const updateDifferenceOfNotification = async (req, res) => {
 
 export default {
     searchCualquierData,
+    searchComisionPorProductor,
     searchCommissionsbyClient,
     createPaymentReporTrans,
     createPaymentReportSoport,

@@ -11,6 +11,17 @@ const searchCualquierData = async () => {
     return CualquierData;
 }
 
+const searchComisionPorProductor = async () => {
+    const CualquierData = await Commissions.searchComisionPorProductor();
+    if (CualquierData.error) {
+        return {
+            error: CualquierData.error
+        }
+    }
+
+    return CualquierData;
+}
+
 const searchDataReceipt = async (searchDataReceipt) => {
     const searchReceipt = await Commissions.searchDataReceipt(searchDataReceipt);
     if (searchReceipt.error) {
@@ -238,6 +249,7 @@ const updateDifferenceOfNotificationData = async (notification) => {
 
 export default {
     searchCualquierData,
+    searchComisionPorProductor,
     searchDataReceipt,
     createNotificationMovement,
     createPaymentReportTrans,

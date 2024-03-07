@@ -23,7 +23,34 @@ const searchCualquierData = async() => {
 
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
-        .query(`SELECT * FROM rpBComisiones`);
+        // .query(`SELECT * FROM rpBComisiones`);
+        .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mprimabrutaext, A.mmovcom FROM admovcom A
+        LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
+        WHERE A.cproductor = 0`);
+
+        if(search.rowsAffected){
+            return { 
+                search : search.recordset
+            };
+
+        }
+
+        await pool.close();
+        return { result: search.recordset};
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se pudo encontrar comisión, por favor revise los datos e intente nuevamente ' };
+    }
+}
+
+const searchComisionPorProductor = async() => {
+    try{
+
+        let pool = await sql.connect(sqlConfig);
+        let search = await pool.request()
+        .query(`select A.cproductor, B.xnombre, sum(A.mmovcom) as mcomtot, sum(A.mmovcomext) as mcomexttot from admovcom A
+        left join maclient B On A.cproductor=b.cci_rif AND B.ccategoria=24 GROUP BY A.cproductor, B.xnombre, A.cmoneda`);
 
         if(search.rowsAffected){
             return { 
@@ -633,6 +660,7 @@ const updateReceiptDifference = async(notification) => {
 
 export default {
     searchCualquierData,
+    searchComisionPorProductor,
     searchDataReceipt,
     createPaymentReportTransW,
     createPaymentReportSoportW,

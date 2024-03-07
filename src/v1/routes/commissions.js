@@ -34,9 +34,10 @@ const router = express.Router();
 router
 
     .post("/",  commissionsController.searchCualquierData)
-    .post("/search",  commissionsController.searchCommissionsbyClient)
-    .post("/create-trans",  commissionsController.createPaymentReporTrans) //creacion del movimiento de transaccion del reporte de pago
-    .post("/create-report",  commissionsController.createPaymentReportSoport) //abjuncion de las imagenes para el transaccion del reporte de pago
+    .post("/search",  commissionsController.searchComisionPorProductor)
+    // .post("/search",  commissionsController.searchCommissionsbyClient)
+    // .post("/create-trans",  commissionsController.createPaymentReporTrans) //creacion del movimiento de transaccion del reporte de pago
+    // .post("/create-report",  commissionsController.createPaymentReportSoport) //abjuncion de las imagenes para el transaccion del reporte de pago
     
     
     //api de carga de transacciones 
