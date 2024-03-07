@@ -165,7 +165,29 @@ const updateDataReceipt = async (updatePaymentReport) => {
             error: updateReceiptDifferenceSys.error
         }
     }
-    return updatePaymentsCollected;
+
+
+
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+
+    try {
+        const response = await httpService(url);
+        let bcv = response.monitors.usd.price
+
+        const createCommision = await Collection.createCommision(updatePaymentReport,bcv);
+        if (createCommision.error) {
+            return {
+                error: createCommision.error
+            }
+        }
+        return updatePaymentsCollected;
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
+    }
+
 }
 
 
