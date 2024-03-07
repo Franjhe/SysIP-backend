@@ -23,10 +23,7 @@ const searchCualquierData = async() => {
 
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
-        .query(`SELECT admovcom.cproductor, maclient.xnombre, admovcom.mmovcom
-        FROM [dbo].[admovcom] 
-        INNER JOIN maproduc ON maproduc.cproductor = admovcom.cproductor
-        INNER JOIN maclient ON maclient.cci_rif = maproduc.cproductor`);
+        .query(`SELECT * FROM rpBComisiones`);
 
         if(search.rowsAffected){
             return { 

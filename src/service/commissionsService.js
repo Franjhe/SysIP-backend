@@ -1,4 +1,4 @@
-import Commissions from '../db/Commissions.js';
+import Commissions from '../db/CommissionsModel.js';
 
 const searchCualquierData = async () => {
     const CualquierData = await Commissions.searchCualquierData();
