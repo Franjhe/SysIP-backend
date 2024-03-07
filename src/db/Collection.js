@@ -31,7 +31,7 @@ const searchDataReceipt = async(searchDataReceipt) => {
             let receipt = await pool.request()
             .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
             .input('iestadorec', sql.Char(1, 0), 'P')
-            .query('select cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
+            .query('select cnpoliza,mmontorec,mmontorecext,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,idiferencia,'+
             ' cramo , cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext , mdiferenciaext, cmoneda, mdiferencia,  ctransaccion , xobservacion ,ptasamon' + 
             ' from rpbcliente_recibo where iestadorec = @iestadorec and casegurado = @casegurado ')
 
@@ -178,8 +178,9 @@ const createCommision = async(createCommision) => {
                 let insertReport = await pool.request()
                 .input('cproductor'   , sql.Numeric(18, 0), updateReceipt.recordset[i].cproductor )   
                 .input('ccodigo'   , sql.Numeric(18, 0), createCommision.detalle[i].crecibo )   
+                .input('cnrecibo'   , sql.Numeric(18, 0), updateReceipt.recordset[i].cnrecibo )   
                 .input('imovcom'   , sql.Numeric(18, 0), createCommision.imovcom)   
-                .input('canexo'      , sql.Char(4, 0), createCommision.canexo )  
+                .input('canexo'      , sql.Char(4, 0), i + 1 )  
                 .input('crelpago'        , sql.Numeric(18, 2), createCommision.crelpago ) 
                 .input('cprodmult'        , sql.Numeric(18, 2), createCommision.cprodmult ) 
                 .input('cmoneda'        , sql.Numeric(18, 2), createCommision.detalle[i].cmoneda ) 
@@ -190,8 +191,8 @@ const createCommision = async(createCommision) => {
                 .input('istatcon'     , sql.Numeric(18, 2), 'P')     
                 .input('cusuario'     , sql.Numeric(18, 2), createCommision.cusuario )        
                 .query('INSERT INTO admovcom '
-                +'(cproductor, ccodigo,  imovcom, canexo, crelpago, cprodmult, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ) VALUES'
-                +'(@cproductor, @ccodigo,  @imovcom, @canexo, @crelpago, @cprodmult, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon )')
+                +'(cproductor, ccodigo, cnrecibo, imovcom, canexo, crelpago, cprodmult, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ) VALUES'
+                +'(@cproductor, @ccodigo, @cnrecibo, @imovcom, @canexo, @crelpago, @cprodmult, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon )')
             }
         }
 
@@ -331,8 +332,9 @@ const searchPaymentCollected= async() => {
     try{
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
-        .input('iestadorec', sql.Char(1, 0), 'C')
-        .query('select * from vwbuscarcobranza where iestadorec = @iestadorec')
+        .input('estado', sql.Char(1, 0), 'C')
+        .execute('rpbrecibos');
+
         await pool.close();
 
         return { recibo : searchReport.recordset};

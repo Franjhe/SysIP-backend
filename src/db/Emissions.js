@@ -555,6 +555,10 @@ const createEmmisionGH = async(create,bcv) => {
       .input('xtelefono_asegurado', sql.NVarChar(17,2), create.xtelefono_asegurado)
       .input('nbeneficiarios', sql.Int, create.nbeneficiarios)
       .input('msumaasegext', sql.Numeric(17,2), create.msumaasegext)
+      .input('mprimaext', sql.Numeric(17,2), create.msumaasegext)
+      .input('cproductor', sql.Int, create.msumaasegext)
+      .input('pcomision', sql.Numeric(17,2), create.msumaasegext)
+      .input('mcomisionext', sql.Numeric(17,2), create.msumaasegext)
       .input('cmetodologiapago', sql.Int, create.cmetodologiapago)
       .input('cpoliza', sql.Numeric(19,0), create.cramo)
       .input('fanopol', sql.SmallInt, create.cramo)
@@ -570,11 +574,11 @@ const createEmmisionGH = async(create,bcv) => {
       '(cnpoliza_rel, cnrecibo_rel,cramo, xcanal_venta,'+
       'icedula_tomador, xrif_tomador, xnombre_tomador, xapellido_tomador, xdireccion_tomador, xcorreo_tomador,'+ 
       'icedula_asegurado, xrif_asegurado, xnombre_asegurado, xapellido_asegurado, isexo_asegurado, iestado_civil, fnac_asegurado, xdireccion_asegurado, xcorreo_asegurado, xtelefono_asegurado,'+
-      'nbeneficiarios, msumaasegext,cmetodologiapago,cpoliza,fanopol,fmespol,cnpoliza,cbanco,xreferencia,fcobro,femision,ptasamon) '
+      'nbeneficiarios, msumaasegext,mprimaext,cproductor,pcomision,mcomisionext,cmetodologiapago,cpoliza,fanopol,fmespol,cnpoliza,cbanco,xreferencia,fcobro,femision,ptasamon) '
       +'VALUES (@cnpoliza_rel, @cnrecibo_rel, @cramo, @xcanal_venta,'+
       '@icedula_tomador, @xrif_tomador, @xnombre_tomador, @xapellido_tomador, @xdireccion_tomador, @xcorreo_tomador,'+ 
       '@icedula_asegurado, @xrif_asegurado, @xnombre_asegurado, @xapellido_asegurado, @isexo_asegurado, @iestado_civil, @fnac_asegurado, @xdireccion_asegurado, @xcorreo_asegurado, @xtelefono_asegurado,'+
-      '@nbeneficiarios, @msumaasegext,@cmetodologiapago,@cpoliza,@fanopol,@fmespol,@cnpoliza,@cbanco,@xreferencia,@fcobro,@femision,@ptasamon)');
+      '@nbeneficiarios, @msumaasegext,@mprimaext,@cproductor,@pcomision,@mcomisionext,@cmetodologiapago,@cpoliza,@fanopol,@fmespol,@cnpoliza,@cbanco,@xreferencia,@fcobro,@femision,@ptasamon)');
   
       //sql.close();
       return { rowsAffected  };
