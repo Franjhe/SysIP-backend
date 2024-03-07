@@ -412,11 +412,13 @@ const searchRiotRate = async (searchRiotRate) => {
 //   }
 // }
 
-const createGroupContract = async (createGroupContract) => {
+const createGroupContract = async (createGroupContract, bcv) => {
   try {
     let rowsAffected = 0;
     let pool = await sql.connect(sqlConfig);
     let id_inma;
+    let ctarifa_exceso;
+    let npasajero;
     let errors = [];
 
     await pool.request().query("TRUNCATE TABLE TMEMISION_FLOTA");
@@ -429,15 +431,20 @@ const createGroupContract = async (createGroupContract) => {
           .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
           .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
           .input('cano', sql.Int, createGroupContract.group[i].cano)
-          .query(`SELECT id FROM mainma where xmarca = @xmarca and xmodelo = @xmodelo and xversion = @xversion and qano = @cano`);
+          .query(`SELECT id, ctarifa_exceso, npasajero FROM mainma where xmarca = @xmarca and xmodelo = @xmodelo and xversion = @xversion and qano = @cano`);
         if (result.recordset.length > 0) {
 
            id_inma = result.recordset.map(record => record.id);
+           ctarifa_exceso = result.recordset.map(record => record.ctarifa_exceso);
+           npasajero = result.recordset.map(record => record.npasajero);
+
            let nro = i + 1;
            let insert = await pool.request()
              .input('nro', sql.Int, nro)
              .input('irif', sql.Char, createGroupContract.group[i].irif)
              .input('id_inma', sql.Int, id_inma) 
+             .input('ctarifa_exceso', sql.Int, ctarifa_exceso) 
+             .input('ncapacidad_p', sql.Int, npasajero) 
              .input('xcliente', sql.NVarChar, createGroupContract.group[i].xcliente)
              .input('xrif_cliente', sql.NVarChar, createGroupContract.group[i].xrif_cliente)
              .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre.trim())
@@ -473,9 +480,10 @@ const createGroupContract = async (createGroupContract) => {
              .input('cciudad', sql.Int, createGroupContract.group[i].cciudad)
              .input('cestatusgeneral', sql.Int, 7)
              .input('xzona_postal', sql.NVarChar, createGroupContract.group[i].xzona_postal)
+             .input('mtasa_cambio', sql.Numeric(17, 2), bcv)
      
            // Ejecutar la consulta de inserción
-           let resultInsert = await insert.query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, cmetodologiapago, cplan_rc, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, pcasco, mprima_bruta, mprima_casco, mcatastrofico, mmotin, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ccorredor, cpais, cestado, cciudad, cestatusgeneral, xzona_postal) VALUES (@nro, @id_inma, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @cmetodologiapago, @cplan_rc, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @pcasco, @mprima_bruta, @mprima_casco, @mcatastrofico, @mmotin, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @xzona_postal)`);
+           let resultInsert = await insert.query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, ctarifa_exceso, ncapacidad_p, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, cmetodologiapago, cplan_rc, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, pcasco, mprima_bruta, mprima_casco, mcatastrofico, mmotin, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ccorredor, cpais, cestado, cciudad, cestatusgeneral, xzona_postal, mtasa_cambio) VALUES (@nro, @id_inma, @ctarifa_exceso, @ncapacidad_p, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @cmetodologiapago, @cplan_rc, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @pcasco, @mprima_bruta, @mprima_casco, @mcatastrofico, @mmotin, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @xzona_postal, @mtasa_cambio)`);
      
            // Actualizar el contador de filas afectadas
            rowsAffected += resultInsert.rowsAffected[0];

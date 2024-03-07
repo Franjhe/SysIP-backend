@@ -123,7 +123,10 @@ const searchRiotRate = async (searchRiotRate) => {
 }
 
 const createGroupContract = async (createGroupContract) => {
-    const result = await Emissions.createGroupContract(createGroupContract);
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    const response = await httpService(url);
+    let bcv = response.monitors.usd.price
+    const result = await Emissions.createGroupContract(createGroupContract, bcv);
     if (result.error) {
         return {
             error: result.error
