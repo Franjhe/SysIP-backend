@@ -65,13 +65,18 @@ const createNotificationMovement = async (createPaymentReport) => {
 }
 
 
-
-
 const createPaymentReportTrans = async (createPaymentReport) => {
     const createPaymentReportData = await Collection.createPaymentReportTransW(createPaymentReport);
     if (createPaymentReportData.error) {
         return {
             error: createPaymentReportData.error
+        }
+    }
+
+    const updateTransaccionReceipt = await Collection.transaccionReceipt(createPaymentReport,createPaymentReportData);
+    if (updateTransaccionReceipt.error) {
+        return {
+            error: updateTransaccionReceipt.error
         }
     }
     return createPaymentReportData;
@@ -166,27 +171,69 @@ const updateDataReceipt = async (updatePaymentReport) => {
         }
     }
 
+    const searchDataClient = await Collection.searchDataClient(updatePaymentReport.casegurado);
+    if (searchDataClient.error) {
+        return {
+            error: searchDataClient.error
+        }
+    }
+
+    let cuotas = [] //llenamos un alosta con los recibos y cuotas recibidos
+    for(let i = 0; i < updatePaymentReport.detalle.length; i++){
+        cuotas.push({
+            cuota:updatePaymentReport.detalle[i].qcuota,
+            cnpoliza:updatePaymentReport.detalle[i].cnpoliza,
+        })
+    }
+    let cuotasLength = cuotas.length //asgignamos una variable a la longitud
+
+//la Logica representa la busqueda del valor de la cuota para especifcar si se enviar el cuadro poliza,el cuadro recibo o ambos al mismo tiempo 
+
+    if(cuotasLength > 1){   //si tiene mas de un recibo,se valida si posee la cuota inial,sino,solo se enviara una lista de recibos pagados
+
+        const resultado = cuotas.find((numero) => numero.cuota === 1);
+
+        const encontrado = resultado ? true : false;
+
+        if(encontrado){
+            Collection.sendMailPolizandReceipt(cuotas,searchDataClient)
+        }else{
+            Collection.sendMailReceipt(cuotas,searchDataClient)
+        }
+    }
+    else if(cuotasLength == 1){  //si tiene un recibo,se valida si es la cuota inial,sino,solo se enviara el recibo pagado
+        const resultado = cuotas.find((numero) => numero.cuota == 1);
+        const encontrado = resultado ? true : false;
+
+        if(encontrado){
+            Collection.sendMailPoliza(cuotas,searchDataClient)
+        }else{
+            Collection.sendMailReceipt(cuotas,searchDataClient)
+        }
+    }
 
 
-    // const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    console.log(cuotas,searchDataClient)
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
 
-    // try {
-    //     const response = await httpService(url);
-    //     let bcv = response.monitors.usd.price
+    try {
+        const response = await httpService(url);
+        let bcv = response.monitors.usd.price
 
-    //     const createCommision = await Collection.createCommision(updatePaymentReport,bcv);
-    //     if (createCommision.error) {
-    //         return {
-    //             error: createCommision.error
-    //         }
-    //     }
-    //     return updatePaymentsCollected;
-    // } catch (error) {
-    //     console.error('Ooops. Ha ocurrido un error:', error.message);
-    //     return {
-    //         error: error.message
-    //     };
-    // }
+        const createCommision = await Collection.createCommision(updatePaymentReport,bcv);
+        if (createCommision.error) {
+            return {
+                error: createCommision.error
+            }
+        }
+        return updatePaymentsCollected;
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
+    }
+
 
 }
 
