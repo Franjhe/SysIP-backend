@@ -489,6 +489,70 @@ const createGroupContract = async (createGroupContract, bcv) => {
            // Actualizar el contador de filas afectadas
            rowsAffected += resultInsert.rowsAffected[0];
         }else {
+          let result = await pool.request()
+          .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)
+          .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
+          .input('cano', sql.Int, createGroupContract.group[i].cano)
+          .query(`SELECT top 1 id, ctarifa_exceso, npasajero FROM mainma where xmarca = @xmarca and xmodelo = @xmodelo and qano = @cano`);
+
+          if (result.recordset.length > 0) {
+
+            id_inma = result.recordset.map(record => record.id);
+            ctarifa_exceso = result.recordset.map(record => record.ctarifa_exceso);
+            npasajero = result.recordset.map(record => record.npasajero);
+
+            console.log(id_inma)
+ 
+            let nro = i + 1;
+            let insert = await pool.request()
+              .input('nro', sql.Int, nro)
+              .input('irif', sql.Char, createGroupContract.group[i].irif)
+              .input('id_inma', sql.Int, id_inma) 
+              .input('ctarifa_exceso', sql.Int, ctarifa_exceso) 
+              .input('ncapacidad_p', sql.Int, npasajero) 
+              .input('xcliente', sql.NVarChar, createGroupContract.group[i].xcliente)
+              .input('xrif_cliente', sql.NVarChar, createGroupContract.group[i].xrif_cliente)
+              .input('xnombre', sql.NVarChar, createGroupContract.group[i].xnombre.trim())
+              .input('xapellido', sql.NVarChar, createGroupContract.group[i].xapellido ? createGroupContract.group[i].xapellido: undefined)
+              .input('icedula', sql.Char, createGroupContract.group[i].icedula)
+              .input('xcedula', sql.Int, createGroupContract.group[i].xcedula)
+              .input('cmetodologiapago', sql.Int, createGroupContract.group[i].cmetodologiapago)
+              .input('cplan_rc', sql.Int, createGroupContract.group[i].cplan_rc)
+              .input('xserialcarroceria', sql.NVarChar, createGroupContract.group[i].xserialcarroceria)
+              .input('xserialmotor', sql.NVarChar, createGroupContract.group[i].xserialmotor)
+              .input('xplaca', sql.NVarChar, createGroupContract.group[i].xplaca)
+              .input('xmarca', sql.NVarChar, createGroupContract.group[i].xmarca)
+              .input('xmodelo', sql.NVarChar, createGroupContract.group[i].xmodelo)
+              .input('xversion', sql.NVarChar, createGroupContract.group[i].xversion)
+              .input('cano', sql.Int, createGroupContract.group[i].cano)
+              .input('xcolor', sql.NVarChar, createGroupContract.group[i].xcolor)
+              .input('xcobertura', sql.NVarChar, createGroupContract.group[i].xcobertura)
+              .input('msuma_aseg', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+              .input('pcasco', sql.Numeric(17, 2), createGroupContract.group[i].pcasco ? createGroupContract.group[i].pcasco: undefined)
+              .input('mprima_bruta', sql.Numeric(17, 2), createGroupContract.group[i].mprima_bruta ? createGroupContract.group[i].mprima_bruta: undefined)
+              .input('mprima_casco', sql.Numeric(17, 2), createGroupContract.group[i].mprima_casco ? createGroupContract.group[i].mprima_casco: undefined)
+              .input('mcatastrofico', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+              .input('mmotin', sql.Numeric(17, 2), createGroupContract.group[i].msuma_aseg ? createGroupContract.group[i].msuma_aseg: undefined)
+              .input('xdireccionfiscal', sql.NVarChar, createGroupContract.group[i].xdireccionfiscal ? createGroupContract.group[i].xdireccionfiscal: undefined)
+              .input('xtelefono_emp', sql.NVarChar, createGroupContract.group[i].xtelefono_emp ? createGroupContract.group[i].xtelefono_emp: undefined)
+              .input('email', sql.NVarChar, createGroupContract.group[i].email ? createGroupContract.group[i].email: undefined)
+              .input('femision', sql.DateTime, new Date())
+              .input('fdesde_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fdesde_pol))
+              .input('fhasta_pol', sql.DateTime, parseDateFromString(createGroupContract.group[i].fhasta_pol))
+              .input('ccorredor', sql.Int, createGroupContract.group[i].ccorredor)
+              .input('cpais', sql.Int, 58)
+              .input('cestado', sql.Int, createGroupContract.group[i].cestado)
+              .input('cciudad', sql.Int, createGroupContract.group[i].cciudad)
+              .input('cestatusgeneral', sql.Int, 7)
+              .input('xzona_postal', sql.NVarChar, createGroupContract.group[i].xzona_postal)
+              .input('mtasa_cambio', sql.Numeric(17, 2), bcv)
+      
+            // Ejecutar la consulta de inserción
+            let resultInsert = await insert.query(`INSERT INTO TMEMISION_FLOTA (nro, id_inma, ctarifa_exceso, ncapacidad_p, irif, xcliente, xrif_cliente, xnombre, xapellido, icedula, xcedula, cmetodologiapago, cplan_rc, xserialcarroceria, xserialmotor, xplaca, xmarca, xmodelo, xversion, cano, xcolor, xcobertura, msuma_aseg, pcasco, mprima_bruta, mprima_casco, mcatastrofico, mmotin, xdireccionfiscal, xtelefono_emp, email, femision, fdesde_pol, fhasta_pol, ccorredor, cpais, cestado, cciudad, cestatusgeneral, xzona_postal, mtasa_cambio) VALUES (@nro, @id_inma, @ctarifa_exceso, @ncapacidad_p, @irif, @xcliente, @xrif_cliente, @xnombre, @xapellido, @icedula, @xcedula, @cmetodologiapago, @cplan_rc, @xserialcarroceria, @xserialmotor, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @xcolor, @xcobertura, @msuma_aseg, @pcasco, @mprima_bruta, @mprima_casco, @mcatastrofico, @mmotin, @xdireccionfiscal, @xtelefono_emp, @email, @femision, @fdesde_pol, @fhasta_pol, @ccorredor, @cpais, @cestado, @cciudad, @cestatusgeneral, @xzona_postal, @mtasa_cambio)`);
+      
+            // Actualizar el contador de filas afectadas
+            rowsAffected += resultInsert.rowsAffected[0];
+          }
           errors.push(`Vehículos no encontrados: ${createGroupContract.group[i].xmarca} - ${createGroupContract.group[i].xmodelo} - ${createGroupContract.group[i].xversion} - ${createGroupContract.group[i].cano}`);
         }
       }
