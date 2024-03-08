@@ -30,8 +30,37 @@ const searchCualquierData = async (req, res) => {
         });
 }
 
-const searchComisionPorProductor = async (req, res) => {
-    const cualquierData = await commissionsService.searchComisionPorProductor();
+const searchComisionesProductores = async (req, res) => {
+    const cualquierData = await commissionsService.searchComisionesProductores();
+    if (cualquierData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: cualquierData.permissionError
+            });
+    }
+    if (cualquierData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: cualquierData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            cualquierData,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+const searchComisionesProductor = async (req, res) => {
+    
+    const cualquierData = await commissionsService.searchComisionesProductor(req.params.id);
     if (cualquierData.permissionError) {
         return res
             .status(403)
@@ -513,7 +542,8 @@ const updateDifferenceOfNotification = async (req, res) => {
 
 export default {
     searchCualquierData,
-    searchComisionPorProductor,
+    searchComisionesProductores,
+    searchComisionesProductor,
     searchCommissionsbyClient,
     createPaymentReporTrans,
     createPaymentReportSoport,

@@ -11,8 +11,18 @@ const searchCualquierData = async () => {
     return CualquierData;
 }
 
-const searchComisionPorProductor = async () => {
-    const CualquierData = await Commissions.searchComisionPorProductor();
+const searchComisionesProductores = async () => {
+    const CualquierData = await Commissions.searchComisionesProductores();
+    if (CualquierData.error) {
+        return {
+            error: CualquierData.error
+        }
+    }
+
+    return CualquierData;
+}
+const searchComisionesProductor = async (searchDataReceipt) => {
+    const CualquierData = await Commissions.searchComisionesProductor(searchDataReceipt);
     if (CualquierData.error) {
         return {
             error: CualquierData.error
@@ -249,7 +259,8 @@ const updateDifferenceOfNotificationData = async (notification) => {
 
 export default {
     searchCualquierData,
-    searchComisionPorProductor,
+    searchComisionesProductores,
+    searchComisionesProductor,
     searchDataReceipt,
     createNotificationMovement,
     createPaymentReportTrans,

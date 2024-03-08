@@ -44,7 +44,7 @@ const searchCualquierData = async() => {
     }
 }
 
-const searchComisionPorProductor = async() => {
+const searchComisionesProductores = async() => {
     try{
 
         let pool = await sql.connect(sqlConfig);
@@ -67,6 +67,34 @@ const searchComisionPorProductor = async() => {
         return { error: err.message, message: 'No se pudo encontrar comisión, por favor revise los datos e intente nuevamente ' };
     }
 }
+const searchComisionesProductor = async(searchDataReceipt) => {
+    try{
+
+        console.log(searchDataReceipt);
+        let pool = await sql.connect(sqlConfig);
+        let search = await pool.request()
+        .input('cproductor', sql.Numeric(11, 0), searchDataReceipt)
+        // .query(`SELECT * FROM rpBComisiones`);
+        .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mprimabrutaext, A.mmovcom FROM admovcom A
+        LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
+        WHERE A.cproductor = @cproductor`);
+
+        if(search.rowsAffected){
+            return { 
+                search : search.recordset
+            };
+
+        }
+
+        await pool.close();
+        return { result: search.recordset};
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se pudo encontrar comisión, por favor revise los datos e intente nuevamente ' };
+    }
+}
+
 
 const searchDataReceipt = async(searchDataReceipt) => {
     try{
@@ -660,7 +688,8 @@ const updateReceiptDifference = async(notification) => {
 
 export default {
     searchCualquierData,
-    searchComisionPorProductor,
+    searchComisionesProductores,
+    searchComisionesProductor,
     searchDataReceipt,
     createPaymentReportTransW,
     createPaymentReportSoportW,
