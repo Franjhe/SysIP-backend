@@ -500,7 +500,7 @@ const createGroupContract = async (createGroupContract, bcv) => {
             ctarifa_exceso = result.recordset.map(record => record.ctarifa_exceso);
             npasajero = result.recordset.map(record => record.npasajero);
 
-            console.log(id_inma)
+            console.log(createGroupContract.group)
  
             let nro = i + 1;
             let insert = await pool.request()
@@ -552,14 +552,13 @@ const createGroupContract = async (createGroupContract, bcv) => {
             // Actualizar el contador de filas afectadas
             rowsAffected += resultInsert.rowsAffected[0];
           }
-          errors.push(`Vehículos no encontrados: ${createGroupContract.group[i].xmarca} - ${createGroupContract.group[i].xmodelo} - ${createGroupContract.group[i].xversion} - ${createGroupContract.group[i].cano}`);
         }
       }
     }
 
     await pool.close();
 
-    return { result: { rowsAffected: rowsAffected, status: true, error: errors } };
+    return { result: { rowsAffected: rowsAffected, status: true } };
   } catch (err) {
     console.log(err.message)
     return { error: err.message };
