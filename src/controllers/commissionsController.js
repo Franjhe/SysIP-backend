@@ -87,6 +87,64 @@ const searchComisionesProductor = async (req, res) => {
             
         });
 }
+const searchDataProductor = async (req, res) => {
+    
+    const cualquierData = await commissionsService.searchDataProductor(req.params.id);
+    if (cualquierData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: cualquierData.permissionError
+            });
+    }
+    if (cualquierData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: cualquierData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            cualquierData,
+            message: 'Consulta exitosa.'
+            
+        });
+}
+const createPaymentRequests = async (req, res) => {
+    
+    const cualquierData = await commissionsService.createPaymentRequests(req.body);
+    if (cualquierData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: cualquierData.permissionError
+            });
+    }
+    if (cualquierData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: cualquierData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            cualquierData,
+            message: 'Consulta exitosa.'
+            
+        });
+}
 
 const searchCommissionsbyClient = async (req, res) => {
     const searchReceipt = await commissionsService.searchDataReceipt(req.body.cedula);
@@ -544,7 +602,9 @@ export default {
     searchCualquierData,
     searchComisionesProductores,
     searchComisionesProductor,
+    searchDataProductor,
     searchCommissionsbyClient,
+    createPaymentRequests,
     createPaymentReporTrans,
     createPaymentReportSoport,
     searchPaymentReportNotification,

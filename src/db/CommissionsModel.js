@@ -67,13 +67,13 @@ const searchComisionesProductores = async() => {
         return { error: err.message, message: 'No se pudo encontrar comisión, por favor revise los datos e intente nuevamente ' };
     }
 }
-const searchComisionesProductor = async(searchDataReceipt) => {
+const searchComisionesProductor = async(data) => {
     try{
 
-        console.log(searchDataReceipt);
+        console.log(data);
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
-        .input('cproductor', sql.Numeric(11, 0), searchDataReceipt)
+        .input('cproductor', sql.Numeric(11, 0), data)
         // .query(`SELECT * FROM rpBComisiones`);
         .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mprimabrutaext, A.mmovcom FROM admovcom A
         LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
@@ -94,7 +94,92 @@ const searchComisionesProductor = async(searchDataReceipt) => {
         return { error: err.message, message: 'No se pudo encontrar comisión, por favor revise los datos e intente nuevamente ' };
     }
 }
+const searchDataProductor = async(data) => {
+    try{
 
+        console.log(data);
+        let pool = await sql.connect(sqlConfig);
+        let search = await pool.request()
+        .input('cproductor', sql.Numeric(11, 0), data)
+        .query(`SELECT B.cid, B.cci_rif, B.xnombre FROM maproduc A
+        LEFT JOIN maclient B ON B.cci_rif = A.cproductor
+        WHERE A.cproductor = @cproductor`);
+
+        if(search.rowsAffected){
+            return { 
+                search : search.recordset
+            };
+
+        }
+
+        await pool.close();
+        return { result: search.recordset};
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se pudo encontrar comisión, por favor revise los datos e intente nuevamente ' };
+    }
+}
+
+
+const createPaymentRequests = async(data) => {
+    try{
+
+        let pool = await sql.connect(sqlConfig);
+        let search = await pool.request()
+        // console.log(data);
+        .input('xtransaccion',      sql.Numeric(1, 0), data.xtransaccion)
+        .input('csucursal',         sql.Numeric(18, 0), data.csucursal)
+        .input('xsucursal',         sql.Numeric(18, 0), data.xsucursal)
+        .input('ffacturacion',      sql.Numeric(18, 0), data.ffacturacion)
+        .input('cstatus',           sql.Numeric(18, 0), data.cstatus)
+        .input('xstatus',           sql.Numeric(18, 0), data.xstatus)
+        .input('cid',               sql.Numeric(18, 0), data.cid)
+        .input('xbeneficiario',     sql.Numeric(18, 0), data.xbeneficiario)
+        .input('cconcepto',         sql.Numeric(18, 0), data.cconcepto)
+        .input('xconcepto',         sql.Numeric(18, 0), data.xconcepto)
+        .input('ccorredor',         sql.Numeric(18, 0), data.ccorredor)
+        .input('xcorredor',         sql.Numeric(18, 0), data.xcorredor)
+        .input('mmontototal',       sql.Numeric(18, 0), data.mmontototal)
+        .input('xobservaciones',    sql.Numeric(18, 0), data.xobservaciones)
+        .query(`INSERT INTO adsolpg (csolpag, fsolicit)
+        VALUES (0, @ffacturacion )`)
+
+        if(search.rowsAffected){
+            // let pool = await sql.connect(sqlConfig);
+            // let receipt = await pool.request()
+            // .input('casegurado', sql.Numeric(18, 0), data)
+            // .input('iestadorec', sql.Char(1, 0), 'P')
+            // .query('select fpago,mpendiente, mpendientext,  xobserva, cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
+            // ' cramo , cmoneda ,cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+            // ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
+
+            // let diferenceList = []
+            // if(receipt.rowsAffected){
+            //     let diference = await pool.request()
+            //     .input('casegurado'   , sql.Numeric(19, 0), data)   
+            //     .input('iestado'   , sql.Bit, 1)   
+            //     .query('select mdiferencia, ctransaccion ,xobservacion , cmoneda from cbreporte_tran_dif where casegurado = @casegurado')
+            //     diferenceList = diference.recordset
+
+            // }
+            // return { 
+            //     receipt: receipt.recordset ,
+            //     client : search.recordset,
+            //     diferenceList
+            // };
+            return { result: data };
+
+        }
+
+        await pool.close();
+        return { result: data};
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se pudo encontrar el cliente, por favor revise los datos e intente nuevamente ' };
+    }
+}
 
 const searchDataReceipt = async(searchDataReceipt) => {
     try{
@@ -690,7 +775,9 @@ export default {
     searchCualquierData,
     searchComisionesProductores,
     searchComisionesProductor,
+    searchDataProductor,
     searchDataReceipt,
+    createPaymentRequests,
     createPaymentReportTransW,
     createPaymentReportSoportW,
     searchDataPaymentReport,

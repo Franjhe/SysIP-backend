@@ -31,6 +31,26 @@ const searchComisionesProductor = async (searchDataReceipt) => {
 
     return CualquierData;
 }
+const searchDataProductor = async (data) => {
+    const CualquierData = await Commissions.searchDataProductor(data);
+    if (CualquierData.error) {
+        return {
+            error: CualquierData.error
+        }
+    }
+
+    return CualquierData;
+}
+const createPaymentRequests = async (data) => {
+    const CualquierData = await Commissions.createPaymentRequests(data);
+    if (CualquierData.error) {
+        return {
+            error: CualquierData.error
+        }
+    }
+
+    return CualquierData;
+}
 
 const searchDataReceipt = async (searchDataReceipt) => {
     const searchReceipt = await Commissions.searchDataReceipt(searchDataReceipt);
@@ -261,7 +281,9 @@ export default {
     searchCualquierData,
     searchComisionesProductores,
     searchComisionesProductor,
+    searchDataProductor,
     searchDataReceipt,
+    createPaymentRequests,
     createNotificationMovement,
     createPaymentReportTrans,
     createPaymentReportSoport,
