@@ -499,8 +499,6 @@ const createGroupContract = async (createGroupContract, bcv) => {
             id_inma = result.recordset.map(record => record.id);
             ctarifa_exceso = result.recordset.map(record => record.ctarifa_exceso);
             npasajero = result.recordset.map(record => record.npasajero);
-
-            console.log(createGroupContract.group)
  
             let nro = i + 1;
             let insert = await pool.request()

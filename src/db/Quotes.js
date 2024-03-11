@@ -61,7 +61,6 @@ const Search = sequelize.define('VWBUSCARCOTIZACION', {}, { tableName: 'VWBUSCAR
 // }
 
 const createQuotes = async (createQuotes) => {
-    console.log(createQuotes);
     try {
         let pool = await sql.connect(sqlConfig);
         let request = pool.request()

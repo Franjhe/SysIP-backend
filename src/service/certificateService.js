@@ -161,6 +161,7 @@ const detailCertificateCertificate = async (searchDetail) => {
         return {
             status: true,
             ccarga: getFleetContractData.result.recordset[0].ccarga,
+            ccerti: getFleetContractData.result.recordset[0].CCERTI,
             ccontratoflota: getFleetContractData.result.recordset[0].CCONTRATOFLOTA,
             xrecibo: getFleetContractData.result.recordset[0].XRECIBO,
             xpoliza: getFleetContractData.result.recordset[0].xpoliza,
