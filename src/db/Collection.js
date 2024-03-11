@@ -1,10 +1,7 @@
 import sql from "mssql";
-
 import EmailService from "./../config/email.service.js";
-
 import ejs from "ejs";
 import * as fs from 'node:fs/promises';
-
 const emailService = new EmailService();
 
 const sqlConfig = {
@@ -18,9 +15,22 @@ const sqlConfig = {
     }
 }
 
+
+const searchTransaccion = async(searchDataReceipt) => {
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let searchTransaccion = await pool.request()
+        .query('SELECT MAX(ctransaccion) AS ctransaccion from cbreporte_tran')
+        await pool.close();
+        return searchTransaccion;
+    }
+    catch(err){
+        return { error: err.message, message: 'No se ha conseguido un numero de transaccion' };
+    }
+}
+
 const searchDataReceipt = async(searchDataReceipt) => {
     try{
-
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
         .input('cci_rif', sql.Numeric(18, 0), searchDataReceipt)
@@ -31,13 +41,12 @@ const searchDataReceipt = async(searchDataReceipt) => {
             .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
             .input('iestadorec', sql.Char(1, 0), 'P')
             .query('select cnpoliza,mmontorec,mmontorecext,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,idiferencia,'+
-            ' cramo , cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext , mdiferenciaext, cmoneda, mdiferencia,  ctransaccion , xobservacion ,ptasamon' + 
+            ' cramo , cproductor, fhasta_pol ,cdoccob, fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext , mdiferenciaext, cmoneda, mdiferencia,  ctransaccion , xobservacion ,ptasamon' + 
             ' from rpbcliente_recibo where iestadorec = @iestadorec and casegurado = @casegurado ')
             return { 
                 receipt: receipt.recordset ,
                 client : search.recordset,
             };
-
         }
 
         await pool.close();
@@ -65,7 +74,7 @@ const createPaymentReportTransW = async(createPaymentReport) => {
             .input('cusuario'     , sql.Numeric(18, 0), createPaymentReport.cusuario) 
             .input('iestado_tran'     , sql.Char(18, 0), 'TN')  
             .input('fingreso'     , sql.DateTime , new Date() )
-            .query('INSERT INTO cbreporte_tran  '
+            .query('INSERT INTO cbreporte_tran'
             +'(freporte, casegurado, mpago,  mpagoext, ptasamon, cprog, ifuente, iestado ,cusuario , iestado_tran ,fingreso )'
             +'VALUES (@freporte, @casegurado, @mpago, @mpagoext,  @ptasamon, @cprog, @ifuente, @iestado, @cusuario , @iestado_tran , @fingreso)')
             //busca el valor dr la transaccion para asignarlo 
@@ -114,12 +123,11 @@ const createPaymentReportTransW = async(createPaymentReport) => {
 
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
 const createPaymentReportSoportW = async(createPaymentReport) => {
-
     try{
         let pool = await sql.connect(sqlConfig);
         let data ;
@@ -159,8 +167,7 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
     }
 }
 
-const transaccionReceipt = async(transaccion,recibo) => {
-    console.log(transaccion,recibo)
+const transaccionReceipt = async(recibo,transaccion) => {
     try{
         let pool = await sql.connect(sqlConfig);
         let data ;
@@ -174,7 +181,7 @@ const transaccionReceipt = async(transaccion,recibo) => {
             data = insertReportDet.rowsAffected
         }
         await pool.close();
-        return { result: data };
+        return data ;
 
     }
     catch(err){
@@ -186,36 +193,42 @@ const createCommision = async(createCommision,bcv) => {
     try{
         let pool = await sql.connect(sqlConfig);
         let data ;
-
         for(let i = 0; i < createCommision.detalle.length; i++){
-            let pool = await sql.connect(sqlConfig);
             let updateReceipt= await pool.request()
             .input('crecibo'      , sql.Numeric(19, 0), createCommision.detalle[i].crecibo )  
             .input('fcobro', sql.DateTime, new Date())
-            .query('select mmovcom,mmovcomext,imovcom,cproductor adrecibos set iestadorec = @iestadorec,fcobro = @fcobro where crecibo = @crecibo' );
-            for(let i = 0; i < updateReceipt.recordset.length; i++){
-                let insertReport = await pool.request()
-                .input('cproductor'   , sql.Numeric(18, 0), updateReceipt.recordset[i].cproductor )   
-                .input('ccodigo'   , sql.Numeric(18, 0), createCommision.detalle[i].crecibo )   
-                .input('cnrecibo'   , sql.Numeric(18, 0), updateReceipt.recordset[i].cnrecibo )   
-                .input('imovcom'   , sql.Numeric(18, 0), 'PR')   
-                .input('canexo'      , sql.Char(4, 0), i + 1 )  
-                .input('cmoneda'        , sql.Numeric(18, 2), createCommision.recordset[i].cmoneda ) 
-                .input('ptasamon'     , sql.Numeric(18, 2), bcv) 
-                .input('fmovcom'     , sql.Numeric(18, 2), new Date())  
-                .input('mmovcom'     , sql.Numeric(18, 2), updateReceipt.recordset[i].mmovcom)      
-                .input('mmovcomext'     , sql.Numeric(18, 2), updateReceipt.recordset[i].mmovcomext)  
-                .input('istatcon'     , sql.Numeric(18, 2), 'P')     
-                .input('cusuario'     , sql.Numeric(18, 2), createCommision.cusuario )        
-                .query('INSERT INTO admovcom '
-                +'(cproductor, ccodigo, cnrecibo, imovcom, canexo, crelpago, cprodmult, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ) VALUES'
-                +'(@cproductor, @ccodigo, @cnrecibo, @imovcom, @canexo, @crelpago, @cprodmult, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon )')
+            .query('update adrecibos set fcobro = @fcobro where crecibo = @crecibo' );
+           if(updateReceipt.rowsAffected > 0) {
+                let searchDataReceipt= await pool.request()
+                .input('crecibo'      , sql.Numeric(19, 0), createCommision.detalle[i].crecibo )  
+                .input('fcobro', sql.DateTime, new Date())
+                .query('select * from adrecibos where crecibo = @crecibo' );
+                if(searchDataReceipt.recordset.length > 0){
+                    for(let j = 0; j < searchDataReceipt.recordset.length; j++){
+                        let insertReport = await pool.request()
+                        .input('cproductor'   , sql.Numeric(18, 0), searchDataReceipt.recordset[j].cproductor )   
+                        .input('ccodigo'   , sql.Numeric(18, 0), createCommision.detalle[i].crecibo )   
+                        .input('cnrecibo'   , sql.Numeric(18, 0), searchDataReceipt.recordset[j].cnrecibo )   
+                        .input('imovcom'   , sql.Char(2), 'PR')   
+                        .input('canexo'      , sql.SmallInt, j + 1 )  
+                        .input('cmoneda'        , sql.Char(4), searchDataReceipt.recordset[j].cmoneda ) 
+                        .input('ptasamon'     , sql.Numeric(18, 2), bcv) 
+                        .input('fmovcom'     , sql.DateTime, new Date())  
+                        .input('mmovcom'     , sql.Numeric(18, 2), searchDataReceipt.recordset[j].mcomision)      
+                        .input('mmovcomext'     , sql.Numeric(18, 2), searchDataReceipt.recordset[j].mcomisionext)  
+                        .input('istatcon'     , sql.Char(1), 'P')     
+                        // .input('cusuario'     , sql.Numeric(18, 2), createCommision.cusuario )        
+                        .query('INSERT INTO admovcom '
+                        +'(cproductor, ccodigo, cnrecibo, imovcom, canexo, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ) VALUES'
+                        +'(@cproductor, @ccodigo, @cnrecibo, @imovcom, @canexo, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon )')
+                        data = insertReport.rowsAffected                    }
+                }
             }
+
         }
 
-        
         await pool.close();
-        return { result: data };
+        return  data 
 
     }
     catch(err){
@@ -225,83 +238,14 @@ const createCommision = async(createCommision,bcv) => {
 
 const searchDataPaymentReport = async() => {
     try{
-        const dataTransaction = []
         let pool = await sql.connect(sqlConfig);
         let searchDataTransaction = await pool.request()
         .input('iestado'     , sql.Bit, 0)  
-        .query('select ctransaccion ,casegurado, freporte ,mpago, mpagoext,'+
-        ' ptasamon, cprog, ifuente,iestado_tran , qagrupado ,cusuario , ivalida from cbreporte_tran where iestado = @iestado')
-
-        if(searchDataTransaction.rowsAffected){
-            let pool = await sql.connect(sqlConfig);
-            await pool.request()
-
-            for(let i = 0; i < searchDataTransaction.recordset.length; i++){
-                let pool = await sql.connect(sqlConfig);
-                let searchDetailTransacion  = await pool.request()
-
-                .input('ctransaccion'   , sql.Numeric(18, 0), searchDataTransaction.recordset[i].ctransaccion)   
-                .query('select ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fhasta_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario'+
-                ' from cbreporte_pago_d where ctransaccion = @ctransaccion')
-
-                let pool1 = await sql.connect(sqlConfig);
-                let searchSoport  = await pool1.request()
-                .input('ctransaccion'   , sql.Numeric(18, 0), searchDataTransaction.recordset[i].ctransaccion)   
-                .query(' select ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario'+
-                ' from cbreporte_pago where ctransaccion = @ctransaccion')
-
-                let pool2 = await sql.connect(sqlConfig);
-                let searchDiference = await pool2.request()
-                .input('ctransaccion'   , sql.Numeric(19, 0), searchDataTransaction.recordset[i].ctransaccion )   
-                .input('iestado'   , sql.Bit, 0)   
-                .query('select mdiferencia, ctransaccion ,xobservacion from cbreporte_tran_dif where iestado = @iestado and ctransaccion = @ctransaccion')
-
-                dataTransaction.push({
-                    transaccion: {
-                        id : searchDataTransaction.recordset[i].ctransaccion,
-                        casegurado : searchDataTransaction.recordset[i].casegurado,
-                        freporte: searchDataTransaction.recordset[i].freporte,
-                        iestado_tran: searchDataTransaction.recordset[i].iestado_tran,
-                        mpagoext: searchDataTransaction.recordset[i].mpagoext,
-                        mpago: searchDataTransaction.recordset[i].mpago,
-                        ptasamon: searchDataTransaction.recordset[i].ptasamon,
-                    },
-                    detalle : searchDetailTransacion.recordset,
-                    soporte : searchSoport.recordset,
-                    diference : searchDiference.recordset
-                })
-
-            }
-        }
-
-        return { dataTransaction };
-
+        .query('select * from vwbuscartransaccion where iestado = @iestado')
+        return  searchDataTransaction.recordsets[0] ;
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
-    }
-}
-
-const searchDataPaymentTransaction = async(searchDataReceipt) => {
-    try{
-        let pool = await sql.connect(sqlConfig);
-        let searchReport = await pool.request()
-        .input('ctransaccion'   , sql.Numeric(18, 0), searchDataReceipt)   
-        .query('select ctransaccion, crecibo, casegurado, cnpoliza, cnrecibo, cpoliza, fanopol, fmespol, cramo, cmoneda, fdesde_pol, fhasta_pol, fdesde_rec, mprimabruta , mprimabrutaext, ptasamon, cusuario'+
-        ' from cbreporte_pago_d where ctransaccion = @ctransaccion')
-        if(searchReport.rowsAffected) { 
-            let pool = await sql.connect(sqlConfig);
-            let searchSoport  = await pool.request()
-            .input('ctransaccion'   , sql.Numeric(18, 0), searchDataReceipt)   
-            .query(' select ctransaccion, npago,  casegurado, cmoneda, cbanco, cbanco_destino, mpago, mpagoext, mpagoigtf, mpagoigtfext,ptasamon, ptasaref,  xreferencia, xruta, cprog, cusuario'+
-            ' from cbreporte_pago where ctransaccion = @ctransaccion')
-
-            return { recibo : searchReport.recordset , soporte : searchSoport.recordset};
-        }
-        await pool.close();
-    }
-    catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
@@ -320,7 +264,7 @@ const searchDataPaymentPending= async(searchDataReceipt) => {
 
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
@@ -339,7 +283,7 @@ const searchDataPaymentVencida= async() => {
 
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
@@ -357,7 +301,7 @@ const searchPaymentCollected= async() => {
 
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
@@ -378,7 +322,7 @@ const searchDataPaymentsCollected = async(searchDataReceipt) => {
 
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
@@ -397,7 +341,7 @@ const searchDataPaymentsCollectedClient = async(searchDataReceipt) => {
 
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
@@ -415,7 +359,7 @@ const searchDataClient = async(searchDataReceipt) => {
 
     }
     catch(err){
-        return { error: err.message, message: 'No se registrarons los datos ' };
+        return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
@@ -433,6 +377,7 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                 .input('itransaccion', sql.Char(2, 0) , updatePayment.iestadorec ) 
                 .query('update cbreporte_pago set itransaccion = @itransaccion where ctransaccion = @ctransaccion' );
                 if(updateReport.rowsAffected > 0 ){
+                    let data ;
                     for(let i = 0; i < updatePayment.detalle.length; i++){
                         let pool = await sql.connect(sqlConfig);
                         let updateReceipt= await pool.request()
@@ -441,7 +386,10 @@ const updateReceiptNotifiqued = async(updatePayment) => {
                         .input('iestadorec'     , sql.Char(1, 0),  updatePayment.iestadorec) 
                         .input('fcobro', sql.DateTime, new Date())
                         .query('update adrecibos set iestadorec = @iestadorec,fcobro = @fcobro where crecibo = @crecibo' );
+                        data = updateReceipt.rowsAffected
                     }
+
+                    return data;
                 }           
         }
 
@@ -720,7 +668,6 @@ export default {
     searchDataPaymentReport,
     searchDataPaymentPending,
     searchDataPaymentsCollected,
-    searchDataPaymentTransaction,
     updateReceiptNotifiqued,
     searchDataPaymentsCollectedClient,
     searchDataClient,
@@ -735,5 +682,6 @@ export default {
     transaccionReceipt,
     sendMailReceipt,
     sendMailPoliza,
-    sendMailPolizandReceipt
+    sendMailPolizandReceipt,
+    searchTransaccion
 }

@@ -1,5 +1,8 @@
 import Collection from '../db/Collection.js';
 
+import httpService  from './apiclient.js';
+
+
 const searchDataReceipt = async (searchDataReceipt) => {
     const searchReceipt = await Collection.searchDataReceipt(searchDataReceipt);
     if (searchReceipt.error) {
@@ -7,63 +10,15 @@ const searchDataReceipt = async (searchDataReceipt) => {
             error: searchReceipt.error
         }
     }
+    const searchIdTran = await Collection.searchTransaccion();
+    if (searchIdTran.error) {
+        return {
+            error: searchIdTran.error
+        }
+    }
 
-    return searchReceipt;
+    return {dataClient :searchReceipt};
 }
-
-
-const createNotificationMovement = async (createPaymentReport) => {
-
-    // const createTransMovement = await Collection.createPaymentReportTransW(createPaymentReport);
-    // if (createTransMovement.error) {
-    //     return {
-    //         error: createTransMovement.error
-    //     }
-    // }
-    // // return createPaymentReportData;
-
-    // let soportMovement = []
-    // for(let i = 0; i < createPaymentReport.soport.length; i++){
-
-    //     const files = createPaymentReport.soport[i].ximagen;
-    //     if (!files || files.length === 0) {
-    //         const error = new Error('Please upload at least one file');
-    //         error.httpStatusCode = 400;
-    //         return res.status(400).json({  status: false, code: 400, message: error.message  });
-    //     }
-      
-    //     soportMovement.push({
-    //             ctransaccion : createTransMovement,
-    //             cmoneda: createPaymentReport.soport[i].cmoneda,
-    //             cbanco: createPaymentReport.soport[i].cbanco,
-    //             cbanco_destino: createPaymentReport.soport[i].cbanco_destino,
-    //             mpago: createPaymentReport.soport[i].mpago,
-    //             mpagoext: createPaymentReport.soport[i].mpagoext,
-    //             mpagoigtf: createPaymentReport.soport[i].mpagoigtf,
-    //             mpagoigtfext: createPaymentReport.soport[i].mpagoigtfext,
-    //             mtotal: createPaymentReport.soport[i].mtotal,
-    //             mtotalext: createPaymentReport.soport[i].mtotalext,
-    //             ptasamon: createPaymentReport.soport[i].ptasamon,
-    //             ptasaref:createPaymentReport.soport[i].ptasaref, 
-    //             xreferencia: createPaymentReport.soport[i].xreferencia,
-    //             ximagen: files.filename ,
-    //             cprog: createPaymentReport.cprog ,
-    //             cusuario: createPaymentReport.cusuario,
-    //             casegurado: createPaymentReport.casegurado,
-
-    //     })
-    // }
-
-    // console.log(soportMovement)
-
-    // const createsoportMovement = await Collection.createPaymentReportSoportW(soportMovement);
-    // if (createsoportMovement.error) {
-    //     return {
-    //         error: createsoportMovement.error
-    //     }
-    // }
-}
-
 
 const createPaymentReportTrans = async (createPaymentReport) => {
     const createPaymentReportData = await Collection.createPaymentReportTransW(createPaymentReport);
@@ -73,10 +28,10 @@ const createPaymentReportTrans = async (createPaymentReport) => {
         }
     }
 
-    const updateTransaccionReceipt = await Collection.transaccionReceipt(createPaymentReport,createPaymentReportData);
-    if (updateTransaccionReceipt.error) {
+    const updateReceipt = await Collection.transaccionReceipt(createPaymentReport,createPaymentReportData);
+    if (updateReceipt.error) {
         return {
-            error: updateTransaccionReceipt.error
+            error: updateReceipt.error
         }
     }
     return createPaymentReportData;
@@ -92,17 +47,15 @@ const createPaymentReportSoport = async (createPaymentReport) => {
     return createPaymentReportData;
 }
 
-const searchPaymentReportData = async (searchPaymentReport) => {
-    const searchDataNotifiqued = await Collection.searchDataPaymentReport(searchPaymentReport);
+const searchPaymentReportData = async () => {
+    const searchDataNotifiqued = await Collection.searchDataPaymentReport();
     if (searchDataNotifiqued.error) {
         return {
             error: searchDataNotifiqued.error
         }
     }
 
-    return {
-        searchDataNotifiqued
-    };
+    return searchDataNotifiqued
 
 }
 
@@ -118,16 +71,6 @@ const searchPaymentPendingData = async () => {
 
 const getAllPaymentsCollected= async () => {
     const searchPaymentsCollected = await Collection.searchDataPaymentsCollected();
-    if (searchPaymentsCollected.error) {
-        return {
-            error: searchPaymentsCollected.error
-        }
-    }
-    return searchPaymentsCollected;
-}
-
-const searchPaymentTransaction = async (searchPaymentReport) => {
-    const searchPaymentsCollected = await Collection.searchDataPaymentTransaction(searchPaymentReport);
     if (searchPaymentsCollected.error) {
         return {
             error: searchPaymentsCollected.error
@@ -171,49 +114,49 @@ const updateDataReceipt = async (updatePaymentReport) => {
         }
     }
 
-    const searchDataClient = await Collection.searchDataClient(updatePaymentReport.casegurado);
-    if (searchDataClient.error) {
-        return {
-            error: searchDataClient.error
-        }
-    }
+//     const searchDataClient = await Collection.searchDataClient(updatePaymentReport.casegurado);
+//     if (searchDataClient.error) {
+//         return {
+//             error: searchDataClient.error
+//         }
+//     }
 
-    let cuotas = [] //llenamos un alosta con los recibos y cuotas recibidos
-    for(let i = 0; i < updatePaymentReport.detalle.length; i++){
-        cuotas.push({
-            cuota:updatePaymentReport.detalle[i].qcuota,
-            cnpoliza:updatePaymentReport.detalle[i].cnpoliza,
-        })
-    }
-    let cuotasLength = cuotas.length //asgignamos una variable a la longitud
+//     let cuotas = [] //llenamos un alosta con los recibos y cuotas recibidos
+//     for(let i = 0; i < updatePaymentReport.detalle.length; i++){
+//         cuotas.push({
+//             cuota:updatePaymentReport.detalle[i].qcuota,
+//             cnpoliza:updatePaymentReport.detalle[i].cnpoliza,
+//         })
+//     }
+//     let cuotasLength = cuotas.length //asgignamos una variable a la longitud
 
-//la Logica representa la busqueda del valor de la cuota para especifcar si se enviar el cuadro poliza,el cuadro recibo o ambos al mismo tiempo 
+// //la Logica representa la busqueda del valor de la cuota para especifcar si se enviar el cuadro poliza,el cuadro recibo o ambos al mismo tiempo 
 
-    if(cuotasLength > 1){   //si tiene mas de un recibo,se valida si posee la cuota inial,sino,solo se enviara una lista de recibos pagados
+//     if(cuotasLength > 1){   //si tiene mas de un recibo,se valida si posee la cuota inial,sino,solo se enviara una lista de recibos pagados
 
-        const resultado = cuotas.find((numero) => numero.cuota === 1);
+//         const resultado = cuotas.find((numero) => numero.cuota === 1);
 
-        const encontrado = resultado ? true : false;
+//         const encontrado = resultado ? true : false;
 
-        if(encontrado){
-            Collection.sendMailPolizandReceipt(cuotas,searchDataClient)
-        }else{
-            Collection.sendMailReceipt(cuotas,searchDataClient)
-        }
-    }
-    else if(cuotasLength == 1){  //si tiene un recibo,se valida si es la cuota inial,sino,solo se enviara el recibo pagado
-        const resultado = cuotas.find((numero) => numero.cuota == 1);
-        const encontrado = resultado ? true : false;
+//         if(encontrado){
+//             Collection.sendMailPolizandReceipt(cuotas,searchDataClient)
+//         }else{
+//             Collection.sendMailReceipt(cuotas,searchDataClient)
+//         }
+//     }
+//     else if(cuotasLength == 1){  //si tiene un recibo,se valida si es la cuota inial,sino,solo se enviara el recibo pagado
+//         const resultado = cuotas.find((numero) => numero.cuota == 1);
+//         const encontrado = resultado ? true : false;
 
-        if(encontrado){
-            Collection.sendMailPoliza(cuotas,searchDataClient)
-        }else{
-            Collection.sendMailReceipt(cuotas,searchDataClient)
-        }
-    }
+//         if(encontrado){
+//             Collection.sendMailPoliza(cuotas,searchDataClient)
+//         }else{
+//             Collection.sendMailReceipt(cuotas,searchDataClient)
+//         }
+//     }
 
 
-    console.log(cuotas,searchDataClient)
+    // console.log(cuotas,searchDataClient)
     const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
 
     try {
@@ -296,13 +239,11 @@ const updateDifferenceOfNotificationData = async (notification) => {
 
 export default {
     searchDataReceipt,
-    createNotificationMovement,
     createPaymentReportTrans,
     createPaymentReportSoport,
     searchPaymentReportData,
     searchPaymentPendingData,
     getAllPaymentsCollected,
-    searchPaymentTransaction,
     updateDataReceipt,
     searchReceiptCliet,
     searchCliet,
@@ -311,5 +252,4 @@ export default {
     differenceOfNotificationData,
     updateDifferenceOfNotificationData,
     searchPaymentCollected,
-    createNotificationMovement
 }
