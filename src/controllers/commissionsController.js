@@ -31,21 +31,21 @@ const searchCualquierData = async (req, res) => {
 }
 
 const searchComisionesProductores = async (req, res) => {
-    const cualquierData = await commissionsService.searchComisionesProductores();
-    if (cualquierData.permissionError) {
+    const returnData = await commissionsService.searchComisionesProductores();
+    if (returnData.permissionError) {
         return res
             .status(403)
             .send({
                 status: false,
-                message: cualquierData.permissionError
+                message: returnData.permissionError
             });
     }
-    if (cualquierData.error) {
+    if (returnData.error) {
         return res
             .status(500)
             .send({
                 status: false,
-                message: cualquierData.error
+                message: returnData.error
             });
     }
 
@@ -53,28 +53,28 @@ const searchComisionesProductores = async (req, res) => {
         .status(200)
         .send({
             status: true,
-            cualquierData,
+            returnData,
             message: 'Consulta exitosa.'
             
         });
 }
 const searchComisionesProductor = async (req, res) => {
     
-    const cualquierData = await commissionsService.searchComisionesProductor(req.params.id);
-    if (cualquierData.permissionError) {
+    const returnData = await commissionsService.searchComisionesProductor(req.body);
+    if (returnData.permissionError) {
         return res
             .status(403)
             .send({
                 status: false,
-                message: cualquierData.permissionError
+                message: returnData.permissionError
             });
     }
-    if (cualquierData.error) {
+    if (returnData.error) {
         return res
             .status(500)
             .send({
                 status: false,
-                message: cualquierData.error
+                message: returnData.error
             });
     }
 
@@ -82,28 +82,28 @@ const searchComisionesProductor = async (req, res) => {
         .status(200)
         .send({
             status: true,
-            cualquierData,
+            returnData,
             message: 'Consulta exitosa.'
             
         });
 }
 const searchDataProductor = async (req, res) => {
     
-    const cualquierData = await commissionsService.searchDataProductor(req.params.id);
-    if (cualquierData.permissionError) {
+    const returnData = await commissionsService.searchDataProductor(req.params.id);
+    if (returnData.permissionError) {
         return res
             .status(403)
             .send({
                 status: false,
-                message: cualquierData.permissionError
+                message: returnData.permissionError
             });
     }
-    if (cualquierData.error) {
+    if (returnData.error) {
         return res
             .status(500)
             .send({
                 status: false,
-                message: cualquierData.error
+                message: returnData.error
             });
     }
 
@@ -111,28 +111,28 @@ const searchDataProductor = async (req, res) => {
         .status(200)
         .send({
             status: true,
-            cualquierData,
+            returnData,
             message: 'Consulta exitosa.'
             
         });
 }
 const createPaymentRequests = async (req, res) => {
     
-    const cualquierData = await commissionsService.createPaymentRequests(req.body);
-    if (cualquierData.permissionError) {
+    const returnData = await commissionsService.createPaymentRequests(req.body);
+    if (returnData.permissionError) {
         return res
             .status(403)
             .send({
                 status: false,
-                message: cualquierData.permissionError
+                message: returnData.permissionError
             });
     }
-    if (cualquierData.error) {
+    if (returnData.error) {
         return res
             .status(500)
             .send({
                 status: false,
-                message: cualquierData.error
+                message: returnData.error
             });
     }
 
@@ -140,7 +140,7 @@ const createPaymentRequests = async (req, res) => {
         .status(200)
         .send({
             status: true,
-            cualquierData,
+            returnData,
             message: 'Consulta exitosa.'
             
         });

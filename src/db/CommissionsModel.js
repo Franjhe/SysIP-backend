@@ -49,7 +49,7 @@ const searchComisionesProductores = async() => {
 
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
-        .query(`select A.cproductor, B.xnombre, sum(A.mmovcom) as mcomtot, sum(A.mmovcomext) as mcomexttot from admovcom A
+        .query(`select A.cproductor, B.xnombre, sum(A.mmovcom) as mcomtot, sum(A.mmovcomext) as mcomexttot, A.cmoneda from admovcom A
         left join maclient B On A.cproductor=b.cci_rif AND B.ccategoria=24 GROUP BY A.cproductor, B.xnombre, A.cmoneda`);
 
         if(search.rowsAffected){
@@ -70,14 +70,16 @@ const searchComisionesProductores = async() => {
 const searchComisionesProductor = async(data) => {
     try{
 
+        console.log('↓');
         console.log(data);
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
-        .input('cproductor', sql.Numeric(11, 0), data)
+        .input('cproductor', sql.Numeric(11, 0), data.ccorredor)
+        .input('cmoneda', sql.Char(4, 0), data.cmoneda)
         // .query(`SELECT * FROM rpBComisiones`);
-        .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mprimabrutaext, A.mmovcom FROM admovcom A
+        .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mprimanetaext, A.mmovcom, A.cmoneda FROM admovcom A
         LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
-        WHERE A.cproductor = @cproductor`);
+        WHERE A.cproductor = @cproductor and A.cmoneda = @cmoneda`);
 
         if(search.rowsAffected){
             return { 
@@ -124,54 +126,77 @@ const searchDataProductor = async(data) => {
 
 const createPaymentRequests = async(data) => {
     try{
+        
+        console.log("↓");
+        let csolpag;
 
         let pool = await sql.connect(sqlConfig);
-        let search = await pool.request()
-        // console.log(data);
-        .input('xtransaccion',      sql.Numeric(1, 0), data.xtransaccion)
-        .input('csucursal',         sql.Numeric(18, 0), data.csucursal)
-        .input('xsucursal',         sql.Numeric(18, 0), data.xsucursal)
-        .input('ffacturacion',      sql.Numeric(18, 0), data.ffacturacion)
-        .input('cstatus',           sql.Numeric(18, 0), data.cstatus)
-        .input('xstatus',           sql.Numeric(18, 0), data.xstatus)
-        .input('cid',               sql.Numeric(18, 0), data.cid)
-        .input('xbeneficiario',     sql.Numeric(18, 0), data.xbeneficiario)
-        .input('cconcepto',         sql.Numeric(18, 0), data.cconcepto)
-        .input('xconcepto',         sql.Numeric(18, 0), data.xconcepto)
-        .input('ccorredor',         sql.Numeric(18, 0), data.ccorredor)
-        .input('xcorredor',         sql.Numeric(18, 0), data.xcorredor)
-        .input('mmontototal',       sql.Numeric(18, 0), data.mmontototal)
-        .input('xobservaciones',    sql.Numeric(18, 0), data.xobservaciones)
-        .query(`INSERT INTO adsolpg (csolpag, fsolicit)
-        VALUES (0, @ffacturacion )`)
+        
 
-        if(search.rowsAffected){
-            // let pool = await sql.connect(sqlConfig);
-            // let receipt = await pool.request()
-            // .input('casegurado', sql.Numeric(18, 0), data)
-            // .input('iestadorec', sql.Char(1, 0), 'P')
-            // .query('select fpago,mpendiente, mpendientext,  xobserva, cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
-            // ' cramo , cmoneda ,cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
-            // ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
+        // if(searchcsolpag.rowsAffected){
+            
+            
+            for (let i = 0; i < data.list.length; i++) {
+                let searchcsolpag = await pool.request()
+                .query(`SELECT MAX(csolpag) FROM adsolpg`);
+                csolpag = Object.values(searchcsolpag.recordset[0])[0] + 1;
+                if(searchcsolpag.rowsAffected){
+                    
+                    let search = await pool.request()
+                    .input('csolpag',           sql.Numeric(17, 0), csolpag) //
+                    .input('xtransaccion',      sql.Char(30, 0), data.list[i].xtransaccion) //
+                    .input('csucursal',         sql.Numeric(3, 0), data.list[i].csucursal) //
+                    // .input('xsucursal',         sql.Numeric(18, 0), data.list[i].xsucursal)
+                    .input('ffacturacion',      sql.DateTime, new Date()) //
+                    .input('fanopol',           sql.Numeric(4,0), new Date().getFullYear()) //
+                    // .input('cstatus',           sql.Numeric(18, 0), data.list[i].cstatus)
+                    // .input('xstatus',           sql.Numeric(18, 0), data.list[i].xstatus)
+                    .input('cid',               sql.Char(30, 0), data.list[i].cid) //
+                    .input('xbeneficiario',     sql.Char(60, 0), data.list[i].xbeneficiario)
+                    // .input('cconcepto',         sql.Numeric(11, 0), data.list[i].cconcepto)
+                    .input('xconcepto',         sql.Char(30, 0), data.list[i].xconcepto) //
+                    .input('ccorredor',         sql.Numeric(11, 0), data.list[i].ccorredor) //
+                    // .input('xcorredor',         sql.Numeric(18, 0), data.list[i].xcorredor)
+                    .input('mmontototal',       sql.Numeric(11, 0), data.list[i].mmontototal) //
+                    .input('xobservaciones',    sql.VarChar(255, 0), data.list[i].xobservaciones) //
+                    .query(`INSERT INTO adsolpg (csolpag, fsolicit, fmovim, fanopol, istatsol, csucur, cproductor, cben, cid_ben, xbeneficiario, mpagosol, xconcepto_1, xconcepto_2, xobserva, fingreso)
+                    VALUES (@csolpag, @ffacturacion, @ffacturacion, @fanopol, 'P', @csucursal, @ccorredor, @ccorredor, @cid, @xbeneficiario, @mmontototal, @xtransaccion, @xconcepto, @xobservaciones, @ffacturacion)`)
+                }
+                
+            }
 
-            // let diferenceList = []
-            // if(receipt.rowsAffected){
-            //     let diference = await pool.request()
-            //     .input('casegurado'   , sql.Numeric(19, 0), data)   
-            //     .input('iestado'   , sql.Bit, 1)   
-            //     .query('select mdiferencia, ctransaccion ,xobservacion , cmoneda from cbreporte_tran_dif where casegurado = @casegurado')
-            //     diferenceList = diference.recordset
 
-            // }
-            // return { 
-            //     receipt: receipt.recordset ,
-            //     client : search.recordset,
-            //     diferenceList
-            // };
+    
+            if(search.rowsAffected){
+                // let pool = await sql.connect(sqlConfig);
+                // let receipt = await pool.request()
+                // .input('casegurado', sql.Numeric(18, 0), data)
+                // .input('iestadorec', sql.Char(1, 0), 'P')
+                // .query('select fpago,mpendiente, mpendientext,  xobserva, cnpoliza,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,'+
+                // ' cramo , cmoneda ,cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext ' + 
+                // ' from adrecibos where iestadorec = @iestadorec and casegurado = @casegurado ')
+    
+                // let diferenceList = []
+                // if(receipt.rowsAffected){
+                //     let diference = await pool.request()
+                //     .input('casegurado'   , sql.Numeric(19, 0), data)   
+                //     .input('iestado'   , sql.Bit, 1)   
+                //     .query('select mdiferencia, ctransaccion ,xobservacion , cmoneda from cbreporte_tran_dif where casegurado = @casegurado')
+                //     diferenceList = diference.recordset
+    
+                // }
+                // return { 
+                //     receipt: receipt.recordset ,
+                //     client : search.recordset,
+                //     diferenceList
+                // };
+                return { result: data };
+    
+            }
+
             return { result: data };
-
-        }
-
+            
+        // }
         await pool.close();
         return { result: data};
 

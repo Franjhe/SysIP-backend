@@ -12,44 +12,44 @@ const searchCualquierData = async () => {
 }
 
 const searchComisionesProductores = async () => {
-    const CualquierData = await Commissions.searchComisionesProductores();
-    if (CualquierData.error) {
+    const returnData = await Commissions.searchComisionesProductores();
+    if (returnData.error) {
         return {
-            error: CualquierData.error
+            error: returnData.error
         }
     }
 
-    return CualquierData;
+    return returnData;
 }
-const searchComisionesProductor = async (searchDataReceipt) => {
-    const CualquierData = await Commissions.searchComisionesProductor(searchDataReceipt);
-    if (CualquierData.error) {
+const searchComisionesProductor = async (data) => {
+    const returnData = await Commissions.searchComisionesProductor(data);
+    if (returnData.error) {
         return {
-            error: CualquierData.error
+            error: returnData.error
         }
     }
 
-    return CualquierData;
+    return returnData;
 }
 const searchDataProductor = async (data) => {
-    const CualquierData = await Commissions.searchDataProductor(data);
-    if (CualquierData.error) {
+    const returnData = await Commissions.searchDataProductor(data);
+    if (returnData.error) {
         return {
-            error: CualquierData.error
+            error: returnData.error
         }
     }
 
-    return CualquierData;
+    return returnData;
 }
 const createPaymentRequests = async (data) => {
-    const CualquierData = await Commissions.createPaymentRequests(data);
-    if (CualquierData.error) {
+    const returnData = await Commissions.createPaymentRequests(data);
+    if (returnData.error) {
         return {
-            error: CualquierData.error
+            error: returnData.error
         }
     }
 
-    return CualquierData;
+    return returnData;
 }
 
 const searchDataReceipt = async (searchDataReceipt) => {
