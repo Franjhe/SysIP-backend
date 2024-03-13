@@ -10,14 +10,8 @@ const searchDataReceipt = async (searchDataReceipt) => {
             error: searchReceipt.error
         }
     }
-    const searchIdTran = await Collection.searchTransaccion();
-    if (searchIdTran.error) {
-        return {
-            error: searchIdTran.error
-        }
-    }
 
-    return {dataClient :searchReceipt};
+    return searchReceipt;
 }
 
 const createPaymentReportTrans = async (createPaymentReport) => {

@@ -15,42 +15,27 @@ const sqlConfig = {
     }
 }
 
-
-const searchTransaccion = async(searchDataReceipt) => {
-    try{
-        let pool = await sql.connect(sqlConfig);
-        let searchTransaccion = await pool.request()
-        .query('SELECT MAX(ctransaccion) AS ctransaccion from cbreporte_tran')
-        await pool.close();
-        return searchTransaccion;
-    }
-    catch(err){
-        return { error: err.message, message: 'No se ha conseguido un numero de transaccion' };
-    }
-}
-
 const searchDataReceipt = async(searchDataReceipt) => {
     try{
         let pool = await sql.connect(sqlConfig);
-        let search = await pool.request()
-        .input('cci_rif', sql.Numeric(18, 0), searchDataReceipt)
-        .query('select xcliente from maclient where cci_rif = @cci_rif')
-        if(search.rowsAffected){
-            let pool = await sql.connect(sqlConfig);
-            let receipt = await pool.request()
-            .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
-            .input('iestadorec', sql.Char(1, 0), 'P')
-            .query('select cnpoliza,mmontorec,mmontorecext,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,idiferencia,'+
-            ' cramo , cproductor, fhasta_pol ,cdoccob, fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext , mdiferenciaext, cmoneda, mdiferencia,  ctransaccion , xobservacion ,ptasamon' + 
-            ' from rpbcliente_recibo where iestadorec = @iestadorec and casegurado = @casegurado ')
-            return { 
-                receipt: receipt.recordset ,
-                client : search.recordset,
-            };
+        let receipt = await pool.request()
+        .input('casegurado', sql.Numeric(18, 0), searchDataReceipt)
+        .input('iestadorec', sql.Char(1, 0), 'P')
+        .query('select cnpoliza,mmontorec,mmontorecext,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,idiferencia,'+
+        ' cramo , cproductor, xcliente, fhasta_pol ,cdoccob, fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext , mdiferenciaext, cmoneda, mdiferencia,  ctransaccion , xobservacion ,ptasamon' + 
+        ' from rpbcliente_recibo where iestadorec = @iestadorec and casegurado = @casegurado ')
+        if(receipt.rowsAffected){
+                let pool = await sql.connect(sqlConfig);
+                let searchTransaccion = await pool.request()
+                .query('SELECT MAX(ctransaccion) AS ctransaccion from cbreporte_tran')
+                await pool.close();
+                return { 
+                    receipt:receipt.recordset,
+                    transaccion : searchTransaccion.recordset[0].ctransaccion,  
+                };
         }
 
         await pool.close();
-        return { result: search.recordset};
 
     }
     catch(err){
@@ -552,7 +537,6 @@ const receiptDifference = async(receipt) => {
                     .query('INSERT INTO cbreporte_tran_dif' +
                         '(ctransaccion,mdiferencia, xobservacion,  fingreso, iestado, casegurado,crecibo,freporte,idiferencia,cmoneda)' +
                         'VALUES (@ctransaccion,@mdiferencia, @xobservacion, @fingreso,  @iestado, @casegurado,@crecibo,@freporte,@idiferencia,@cmoneda)');
-                    console.log(receiptUpdate)
                 }
 
 
@@ -683,5 +667,5 @@ export default {
     sendMailReceipt,
     sendMailPoliza,
     sendMailPolizandReceipt,
-    searchTransaccion
+    
 }

@@ -162,7 +162,6 @@ const searchQuotes = async (searchQuotes) => {
 
 const createEmmisionHealth = async (create) => {
 
-
     const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
 
     try {
@@ -175,15 +174,23 @@ const createEmmisionHealth = async (create) => {
                 error: createEmmision.error
             }
         }
+
         const createEmmisionBen = await Emissions.createEmmisionGHB(create);
-    
         if (createEmmisionBen.error) {
             return {
                 error: createEmmisionBen.error
             }
         }
 
+        const createEmmisionAseg = await Emissions.createEmmisionGHA(create);
+        if (createEmmisionAseg.error) {
+            return {
+                error: createEmmisionAseg.error
+            }
+        }
+
         return createEmmision;
+
     } catch (error) {
         console.error('Ooops. Ha ocurrido un error:', error.message);
         return {
