@@ -35,36 +35,34 @@ router
 
     .post("/",  commissionsController.searchCualquierData)
     .post("/search",  commissionsController.searchComisionesProductores)
-    .post("/search-insurerCommissions/",  commissionsController.searchComisionesProductor)
-    .post("/search-data/:id",  commissionsController.searchDataProductor)
-    // .post("/search",  commissionsController.searchCommissionsbyClient)
-    // .post("/create-trans",  commissionsController.createPaymentReporTrans) //creacion del movimiento de transaccion del reporte de pago
-    // .post("/create-report",  commissionsController.createPaymentReportSoport) //abjuncion de las imagenes para el transaccion del reporte de pago
+    .post("/search-insurerCommissions/",  commissionsController.searchComisionesProductor)//creacion del movimiento de transaccion del reporte de pago
+    .post("/search-data/:id",  commissionsController.searchDataProductor) //abjuncion de las imagenes para el transaccion del reporte de pago
     
+    .post("/search-paymentRequests",  commissionsController.searchPaymentRequests)
+    .post("/detail-paymentRequests/:id",  commissionsController.searchComisionesProductores)
     .post("/create-paymetRequests",  commissionsController.createPaymentRequests)
-    
     //api de carga de transacciones 
     
     // .post("/create-notification-movement", document_upload.single('file'), commissionsController.createNotificationMovement   ) //creacion del movimiento de transaccion del reporte de pago
 
 
     
-    .get("/search-notification",  commissionsController.searchPaymentReportNotification)
-    .get("/search-pending",  commissionsController.searchPaymentPending)
-    .get("/search-payments-collected",  commissionsController.PaymentsCollected)
-    .get("/search-vencido",  commissionsController.searchPaymentVencin)
-    .get("/search-collected",  commissionsController.searchPaymentCollected)
+    // .get("/search-notification",  commissionsController.searchPaymentReportNotification)
+    // .get("/search-pending",  commissionsController.searchPaymentPending)
+    // .get("/search-payments-collected",  commissionsController.PaymentsCollected)
+    // .get("/search-vencido",  commissionsController.searchPaymentVencin)
+    // .get("/search-collected",  commissionsController.searchPaymentCollected)
 
-    .post("/receipt-under-review",  commissionsController.receiptUnderReview) //abjuncion de las imagenes para el transaccion del reporte de pago
-    .get("/search-difference-of-notification",  commissionsController.differenceOfNotification) //abjuncion de las imagenes para el transaccion del reporte de pago
-    .patch("/update-difference-of-notification",  commissionsController.updateDifferenceOfNotification) 
+    // .post("/receipt-under-review",  commissionsController.receiptUnderReview) //abjuncion de las imagenes para el transaccion del reporte de pago
+    // .get("/search-difference-of-notification",  commissionsController.differenceOfNotification) //abjuncion de las imagenes para el transaccion del reporte de pago
+    // .patch("/update-difference-of-notification",  commissionsController.updateDifferenceOfNotification) 
 
 
-    //busquedas de notificaciones
-    .get("/search-notification-data/:id",  commissionsController.searchPaymentReportNotificationData)
-    .patch("/update-receipt/",  commissionsController.updateReceipt)
-    .get("/search-receipt-data/:id",  commissionsController.searchReceiptClient)
-    .get("/search-client/:id",  commissionsController.searchClient)
+    // //busquedas de notificaciones
+    // .get("/search-notification-data/:id",  commissionsController.searchPaymentReportNotificationData)
+    // .patch("/update-receipt/",  commissionsController.updateReceipt)
+    // .get("/search-receipt-data/:id",  commissionsController.searchReceiptClient)
+    // .get("/search-client/:id",  commissionsController.searchClient)
 
 
 
