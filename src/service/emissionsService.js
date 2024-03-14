@@ -168,13 +168,6 @@ const createEmmisionHealth = async (create) => {
         const response = await httpService(url);
         let bcv = response.monitors.usd.price
 
-        const createEmmision = await Emissions.createEmmisionGH(create,bcv);
-        if (createEmmision.error) {
-            return {
-                error: createEmmision.error
-            }
-        }
-
         const createEmmisionBen = await Emissions.createEmmisionGHB(create);
         if (createEmmisionBen.error) {
             return {
@@ -186,6 +179,13 @@ const createEmmisionHealth = async (create) => {
         if (createEmmisionAseg.error) {
             return {
                 error: createEmmisionAseg.error
+            }
+        }
+
+        const createEmmision = await Emissions.createEmmisionGH(create,bcv);
+        if (createEmmision.error) {
+            return {
+                error: createEmmision.error
             }
         }
 

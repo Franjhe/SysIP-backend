@@ -31,7 +31,7 @@ const searchDataReceipt = async(searchDataReceipt) => {
                 await pool.close();
                 return { 
                     receipt:receipt.recordset,
-                    transaccion : searchTransaccion.recordset[0].ctransaccion,  
+                    transaccion : searchTransaccion.recordset[0].ctransaccion + 1,  
                 };
         }
 
@@ -202,10 +202,11 @@ const createCommision = async(createCommision,bcv) => {
                         .input('mmovcom'     , sql.Numeric(18, 2), searchDataReceipt.recordset[j].mcomision)      
                         .input('mmovcomext'     , sql.Numeric(18, 2), searchDataReceipt.recordset[j].mcomisionext)  
                         .input('istatcon'     , sql.Char(1), 'P')     
+                        .input('istatcom'     , sql.Char(1), 'P')     
                         // .input('cusuario'     , sql.Numeric(18, 2), createCommision.cusuario )        
                         .query('INSERT INTO admovcom '
-                        +'(cproductor, ccodigo, cnrecibo, imovcom, canexo, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ) VALUES'
-                        +'(@cproductor, @ccodigo, @cnrecibo, @imovcom, @canexo, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon )')
+                        +'(cproductor, ccodigo, cnrecibo, imovcom, canexo, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ,istatcom) VALUES'
+                        +'(@cproductor, @ccodigo, @cnrecibo, @imovcom, @canexo, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon ,@istatcom)')
                         data = insertReport.rowsAffected                    }
                 }
             }

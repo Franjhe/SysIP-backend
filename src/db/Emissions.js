@@ -665,40 +665,27 @@ const createEmmisionGH = async(create,bcv) => {
 
 const createEmmisionGHB = async(create) => {
   try{
+      let data ;
       let pool = await sql.connect(sqlConfig);
-      let createEmmiBen = await pool.request()
-      .input('xrif_titular', sql.Int, create.xrif_titular)
-      .query('select * from eePoliza_Salud where xrif_titular = @xrif_titular');
+      for(let i = 0; i < create.beneficiarios.length; i++){
+        let insertEmmiBen = await pool.request()
+        .input('icedula_beneficiario', sql.Char(1), create.beneficiarios[i].icedula_beneficiario)
+        .input('xrif_beneficiario', sql.Numeric(17,0), create.beneficiarios[i].xrif_beneficiario)
+        .input('xnombre_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xnombre_beneficiario)
+        .input('xapellido_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xapellido_beneficiario)
+        .input('fnac_beneficiario', sql.DateTime, create.beneficiarios[i].fnac_beneficiario)
+        .input('isexo_beneficiario', sql.Char(1), create.beneficiarios[i].isexo_beneficiario)
+        .input('nparentesco', sql.Int, create.beneficiarios[i].nparentesco_beneficiario)
+        .query('INSERT INTO eePoliza_Salud_Ben ' +
+        '(icedula_beneficiario, xrif_beneficiario, xnombre_beneficiario, xapellido_beneficiario, fnac_beneficiario,'+ 
+        'isexo_beneficiario,nparentesco) '
+        +'VALUES (@icedula_beneficiario, @xrif_beneficiario, @xnombre_beneficiario, @xapellido_beneficiario, @fnac_beneficiario,'+ 
+        '@isexo_beneficiario,@nparentesco)');
 
-      let dataEmmiBen = createEmmiBen.recordset[0]
-      if(createEmmiBen){
-        console.log(dataEmmiBen)
-        for(let i = 0; i < create.beneficiarios.length; i++){
-          let insertEmmiBen = await pool.request()
-          .input('id_salud', sql.Int, dataEmmiBen.id)
-          .input('icedula_beneficiario', sql.Char(1), create.beneficiarios[i].icedula_beneficiario)
-          .input('xrif_beneficiario', sql.Numeric(17,0), create.beneficiarios[i].xrif_beneficiario)
-          .input('xnombre_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xnombre_beneficiario)
-          .input('xapellido_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xapellido_beneficiario)
-          .input('fnac_beneficiario', sql.DateTime, create.beneficiarios[i].fnac_beneficiario)
-          .input('isexo_beneficiario', sql.Char(1), create.beneficiarios[i].isexo_beneficiario)
-          .input('nparentesco', sql.Int, create.beneficiarios[i].nparentesco_beneficiario)
-          .input('cpoliza', sql.Numeric(19, 0), dataEmmiBen.cpoliza)
-          .input('fanopol', sql.SmallInt, dataEmmiBen.fanopol)
-          .input('fmespol', sql.TinyInt, dataEmmiBen.fmespol)
-          .input('cnpoliza', sql.VarChar(50), dataEmmiBen.cnpoliza)
-          .query('INSERT INTO eePoliza_Salud_Ben ' +
-          '(id_salud,'+
-          'icedula_beneficiario, xrif_beneficiario, xnombre_beneficiario, xapellido_beneficiario, fnac_beneficiario,'+ 
-          'cpoliza, fanopol,fmespol , cnpoliza,isexo_beneficiario,nparentesco) '
-          +'VALUES (@id_salud, '+
-          '@icedula_beneficiario, @xrif_beneficiario, @xnombre_beneficiario, @xapellido_beneficiario, @fnac_beneficiario,'+ 
-          '@cpoliza, @fanopol,@fmespol , @cnpoliza,@isexo_beneficiario,@nparentesco)');
-
-        }
+        data = insertEmmiBen.rowsAffected
 
       }
-      return { status : true  };
+      return data;
   
       //sql.close();
   }
@@ -708,19 +695,13 @@ const createEmmisionGHB = async(create) => {
   }
 }
 
-
 const createEmmisionGHA = async(create) => {
   try{
-      let pool = await sql.connect(sqlConfig);
-      let createEmmiBen = await pool.request()
-      .input('xrif_titular', sql.Int, create.xrif_titular)
-      .query('select * from eePoliza_Salud where xrif_TITULAR = @xrif_TITULAR');
-      let dataEmmiBen = createEmmiBen.recordset[0]
-      console.log(dataEmmiBen)
-      if(createEmmiBen){
+        let pool = await sql.connect(sqlConfig);
+        let data ;
+
         for(let i = 0; i < create.asegurados.length; i++){
           let insertEmmiBen = await pool.request()
-          .input('id_salud', sql.Int, dataEmmiBen.id)
           .input('icedula_asegurado', sql.Char(1), create.asegurados[i].icedula_beneficiario)
           .input('xrif_asegurado', sql.Numeric(17,0), create.asegurados[i].xrif_beneficiario)
           .input('xnombre_asegurado', sql.NVarChar(17,2), create.asegurados[i].xnombre_beneficiario)
@@ -729,25 +710,19 @@ const createEmmisionGHA = async(create) => {
           .input('isexo_asegurado', sql.Char(1), create.asegurados[i].isexo_asegurado)
           .input('nparentesco_asegurado', sql.Int, create.asegurados[i].nparentesco_asegurado)
           .input('iestado_civil_asegurado', sql.Char(1), create.asegurados[i].iestado_civil_asegurado)
-          .input('cproces', sql.Numeric(3), dataEmmiBen.cproces)
-          .input('cpoliza', sql.Numeric(19, 0), dataEmmiBen.cpoliza)
-          .input('fanopol', sql.SmallInt, dataEmmiBen.fanopol)
-          .input('fmespol', sql.TinyInt, dataEmmiBen.fmespol)
-          .input('cnpoliza', sql.VarChar(50), dataEmmiBen.cnpoliza)
           .query('INSERT INTO eePoliza_Salud_aseg ' +
-          '(id_salud,'+
-          'icedula_asegurado,xrif_asegurado,xnombre_asegurado,xapellido_asegurado,'+
-          'fnac_asegurado,isexo_asegurado,nparentesco_asegurado,iestado_civil_asegurado,cproces,cpoliza,fanopol,fmespol,cnpoliza)'
-          +'VALUES (@id_salud,'+
-          '@icedula_asegurado,@xrif_asegurado,@xnombre_asegurado,@xapellido_asegurado,'+
-          '@fnac_asegurado,@isexo_asegurado,@nparentesco_asegurado,@iestado_civil_asegurado,@cproces,@cpoliza,@fanopol,@fmespol,@cnpoliza)')
+          '(icedula_asegurado,xrif_asegurado,xnombre_asegurado,xapellido_asegurado,'+
+          'fnac_asegurado,isexo_asegurado,nparentesco_asegurado,iestado_civil_asegurado)'
+          +'VALUES (@icedula_asegurado,@xrif_asegurado,@xnombre_asegurado,@xapellido_asegurado,'+
+          '@fnac_asegurado,@isexo_asegurado,@nparentesco_asegurado,@iestado_civil_asegurado)')
+
+          data = insertEmmiBen.rowsAffected
         }
 
-      }
-      return { status : true  };
+        return data;
+
+    }
   
-      //sql.close();
-  }
   catch(err){
       console.log(err.message);
       return { error: err.message };
