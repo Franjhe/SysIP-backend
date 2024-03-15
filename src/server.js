@@ -26,7 +26,12 @@ const { diskStorage } = multer;
 const app = express(); 
 dotenv;
 
-app.use(cors());
+app.use(cors({
+  origin: '*',  // o especifica el dominio permitido
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json({ limit: '10mb' }));
 
 app.use(bodyParser.json({ limit: '50mb' }));
