@@ -33,13 +33,27 @@ const executePremiumAmount = async (executePremiumAmount) => {
 }
 
 const createIndividualContract = async (createIndividualContract) => {
-    const result = await Emissions.createIndividualContract(createIndividualContract);
-    if (result.error) {
-        return {
-            error: result.error
+
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+
+    try {
+        const response = await httpService(url);
+        let bcv = response.monitors.usd.price
+        const result = await Emissions.createIndividualContract(createIndividualContract,bcv);
+        if (result.error) {
+            return {
+                error: result.error
+            }
         }
+        return result;
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
     }
-    return result;
+
+
 }
 
 const searchContractIndividual = async () => {
@@ -148,12 +162,25 @@ const searchQuotes = async (searchQuotes) => {
 
 const createEmmisionHealth = async (create) => {
 
-
     const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
 
     try {
         const response = await httpService(url);
         let bcv = response.monitors.usd.price
+
+        const createEmmisionBen = await Emissions.createEmmisionGHB(create);
+        if (createEmmisionBen.error) {
+            return {
+                error: createEmmisionBen.error
+            }
+        }
+
+        const createEmmisionAseg = await Emissions.createEmmisionGHA(create);
+        if (createEmmisionAseg.error) {
+            return {
+                error: createEmmisionAseg.error
+            }
+        }
 
         const createEmmision = await Emissions.createEmmisionGH(create,bcv);
         if (createEmmision.error) {
@@ -161,15 +188,9 @@ const createEmmisionHealth = async (create) => {
                 error: createEmmision.error
             }
         }
-        const createEmmisionBen = await Emissions.createEmmisionGHB(create);
-    
-        if (createEmmisionBen.error) {
-            return {
-                error: createEmmisionBen.error
-            }
-        }
 
         return createEmmision;
+
     } catch (error) {
         console.error('Ooops. Ha ocurrido un error:', error.message);
         return {
