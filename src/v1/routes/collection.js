@@ -48,7 +48,7 @@ router
     .get("/search-pending",  collectionController.searchPaymentPending)
     .get("/search-payments-collected",  collectionController.PaymentsCollected)
     .get("/search-vencido",  collectionController.searchPaymentVencin)
-    .get("/search-collected",  collectionController.searchPaymentCollected)
+    .get("/search-collected/:id",  collectionController.searchPaymentCollected)
 
     .post("/receipt-under-review",  collectionController.receiptUnderReview) //abjuncion de las imagenes para el transaccion del reporte de pago
     .get("/search-difference-of-notification",  collectionController.differenceOfNotification) //abjuncion de las imagenes para el transaccion del reporte de pago
