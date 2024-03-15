@@ -13,7 +13,7 @@ router
     .get("/search-pending",  collectionController.searchPaymentPending)
     .get("/search-payments-collected",  collectionController.PaymentsCollected)
     .get("/search-vencido",  collectionController.searchPaymentVencin)
-    .get("/search-collected",  collectionController.searchPaymentCollected)
+    .get("/search-collected/:id",  collectionController.searchPaymentCollected)
 
     .post("/receipt-under-review",  collectionController.receiptUnderReview)
     .get("/search-difference-of-notification",  collectionController.differenceOfNotification) 

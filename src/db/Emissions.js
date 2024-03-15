@@ -551,14 +551,13 @@ const createGroupContract = async (createGroupContract, bcv) => {
             // Actualizar el contador de filas afectadas
             rowsAffected += resultInsert.rowsAffected[0];
           }
-          errors.push(`Vehículos no encontrados: ${createGroupContract.group[i].xmarca} - ${createGroupContract.group[i].xmodelo} - ${createGroupContract.group[i].xversion} - ${createGroupContract.group[i].cano}`);
         }
       }
     }
 
     await pool.close();
 
-    return { result: { rowsAffected: rowsAffected, status: true, error: errors } };
+    return { result: { rowsAffected: rowsAffected, status: true } };
   } catch (err) {
     console.log(err.message)
     return { error: err.message };

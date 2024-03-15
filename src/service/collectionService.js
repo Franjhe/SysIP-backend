@@ -191,8 +191,8 @@ const searchPaymentVencidaData = async () => {
 }
 
 
-const searchPaymentCollected = async () => {
-    const searchPaymentCollected = await Collection.searchPaymentCollected();
+const searchPaymentCollected = async (estado) => {
+    const searchPaymentCollected = await Collection.searchPaymentCollected(estado);
     if (searchPaymentCollected.error) {
         return {
             error: searchPaymentCollected.error

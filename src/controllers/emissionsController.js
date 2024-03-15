@@ -303,7 +303,6 @@ const createGroupContract = async (req, res) => {
         .status(200)
         .send({
             status: true,
-            error: result.result.error,
             data: {
                 message: 'Fino',
             }

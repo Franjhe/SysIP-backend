@@ -294,7 +294,7 @@ const searchPaymentVencin= async (req, res) => {
 }
 
 const searchPaymentCollected= async (req, res) => {
-    const searchPaymentCollected = await collectionService.searchPaymentCollected();
+    const searchPaymentCollected = await collectionService.searchPaymentCollected(req.params.id);
     if (searchPaymentCollected.permissionError) {
         return res
             .status(403)

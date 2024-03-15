@@ -320,13 +320,13 @@ const searchDataPaymentVencida= async() => {
     }
 }
 
-const searchPaymentCollected= async() => {
+const searchPaymentCollected= async(estado) => {
+    console.log(estado)
     try{
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
-        .input('estado', sql.Char(1, 0), 'C')
+        .input('estado', sql.Char(1, 0), estado)
         .execute('rpbrecibos');
-
         await pool.close();
 
         return { recibo : searchReport.recordset};
