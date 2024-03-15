@@ -29,7 +29,7 @@ app.use(cors({
   origin: '*',  // o especifica el dominio permitido
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   optionsSuccessStatus: 204,
-  //allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(cors());
