@@ -120,7 +120,7 @@ app.post('/api/upload/documents', document_upload.array('xdocumentos', 5), (req,
   res.json({ data: { status: true, uploadedFile: files } });
 });
 
-app.post('/api/upload/image', document_upload.single('file'), cors(),(req, res , err) => {
+app.post('/api/upload/image', document_upload.single('file'),(req, res , err) => {
   const files = req.file;
   if (!files || files.length === 0) {
     const error = new Error('Please upload at least one file');
