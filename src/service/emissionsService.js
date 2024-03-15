@@ -33,13 +33,27 @@ const executePremiumAmount = async (executePremiumAmount) => {
 }
 
 const createIndividualContract = async (createIndividualContract) => {
-    const result = await Emissions.createIndividualContract(createIndividualContract);
-    if (result.error) {
-        return {
-            error: result.error
+
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+
+    try {
+        const response = await httpService(url);
+        let bcv = response.monitors.usd.price
+        const result = await Emissions.createIndividualContract(createIndividualContract,bcv);
+        if (result.error) {
+            return {
+                error: result.error
+            }
         }
+        return result;
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
     }
-    return result;
+
+
 }
 
 const searchContractIndividual = async () => {

@@ -23,9 +23,8 @@ const searchDataReceipt = async(searchDataReceipt) => {
 
         let pool = await sql.connect(sqlConfig);
         let search = await pool.request()
-        .input('xcontrato', sql.Numeric(18, 0), searchDataReceipt)
-        .query('select xcliente from clcliente where xcontrato  = @xcontrato')
-
+        .input('cci_rif', sql.Numeric(18, 0), searchDataReceipt)
+        .query('select xcliente from maclient where cci_rif = @cci_rif')
         if(search.rowsAffected){
             let pool = await sql.connect(sqlConfig);
             let receipt = await pool.request()
@@ -34,8 +33,6 @@ const searchDataReceipt = async(searchDataReceipt) => {
             .query('select cnpoliza,mmontorec,mmontorecext,cnrecibo,casegurado , qcuotas, crecibo,cpoliza ,fanopol , fmespol ,idiferencia,'+
             ' cramo , cproductor, fhasta_pol , fdesde , fhasta , fdesde_pol , mprimabruta , mprimabrutaext , mdiferenciaext, cmoneda, mdiferencia,  ctransaccion , xobservacion ,ptasamon' + 
             ' from rpbcliente_recibo where iestadorec = @iestadorec and casegurado = @casegurado ')
-
-
             return { 
                 receipt: receipt.recordset ,
                 client : search.recordset,
@@ -162,8 +159,30 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
     }
 }
 
+const transaccionReceipt = async(transaccion,recibo) => {
+    console.log(transaccion,recibo)
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let data ;
+        for(let i = 0; i < recibo.receipt.length; i++){
+            //insertamos detalle nde los recibos pagados 
+            let pool = await sql.connect(sqlConfig);
+            let insertReportDet = await pool.request()
+            .input('ctransaccion'   , sql.Numeric(18, 0), transaccion)   
+            .input('crecibo'   , sql.Numeric(18, 0), recibo.receipt[i].crecibo)   
+            .query('update adrecibos set cdoccob = @ctransaccion where crecibo = @crecibo')
+            data = insertReportDet.rowsAffected
+        }
+        await pool.close();
+        return { result: data };
 
-const createCommision = async(createCommision) => {
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registraron los datos ' };
+    }
+}
+
+const createCommision = async(createCommision,bcv) => {
     try{
         let pool = await sql.connect(sqlConfig);
         let data ;
@@ -179,11 +198,9 @@ const createCommision = async(createCommision) => {
                 .input('cproductor'   , sql.Numeric(18, 0), updateReceipt.recordset[i].cproductor )   
                 .input('ccodigo'   , sql.Numeric(18, 0), createCommision.detalle[i].crecibo )   
                 .input('cnrecibo'   , sql.Numeric(18, 0), updateReceipt.recordset[i].cnrecibo )   
-                .input('imovcom'   , sql.Numeric(18, 0), createCommision.imovcom)   
+                .input('imovcom'   , sql.Numeric(18, 0), 'PR')   
                 .input('canexo'      , sql.Char(4, 0), i + 1 )  
-                .input('crelpago'        , sql.Numeric(18, 2), createCommision.crelpago ) 
-                .input('cprodmult'        , sql.Numeric(18, 2), createCommision.cprodmult ) 
-                .input('cmoneda'        , sql.Numeric(18, 2), createCommision.detalle[i].cmoneda ) 
+                .input('cmoneda'        , sql.Numeric(18, 2), createCommision.recordset[i].cmoneda ) 
                 .input('ptasamon'     , sql.Numeric(18, 2), bcv) 
                 .input('fmovcom'     , sql.Numeric(18, 2), new Date())  
                 .input('mmovcom'     , sql.Numeric(18, 2), updateReceipt.recordset[i].mmovcom)      
@@ -205,8 +222,6 @@ const createCommision = async(createCommision) => {
         return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
-
-
 
 const searchDataPaymentReport = async() => {
     try{
@@ -391,7 +406,7 @@ const searchDataClient = async(searchDataReceipt) => {
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
         .input('xcontrato'   , sql.VarChar(18, 0), searchDataReceipt)   
-        .query('select xcliente,xtelefono,xemail from clcliente where xcontrato  = @xcontrato ')
+        .query('select * from VWBUSCARECIBOYCLIENTE where xcontrato  = @casegurado ')
 
         await pool.close();
 
@@ -406,57 +421,29 @@ const searchDataClient = async(searchDataReceipt) => {
 
 const updateReceiptNotifiqued = async(updatePayment) => {
     try{
-
-        // let cedula = any
-        // let recibo = []
-        // let cliente = string
-            //actualiza los recibos cobrados
-            let pool = await sql.connect(sqlConfig);
-            let updateTransaccion = await pool.request()
-            .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
-            .input('iestado'     , sql.Bit, 1)  
-            .query('update cbreporte_tran set iestado = @iestado where ctransaccion = @ctransaccion' );
-            if(updateTransaccion.rowsAffected > 0){
-                    let pool = await sql.connect(sqlConfig);
-                    let updateReport= await pool.request()
-                    .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
-                    .input('itransaccion', sql.Char(2, 0) , updatePayment.iestadorec ) 
-                    .query('update cbreporte_pago set itransaccion = @itransaccion where ctransaccion = @ctransaccion' );
-                    if(updateReport.rowsAffected > 0 ){
-                        for(let i = 0; i < updatePayment.detalle.length; i++){
-                            let pool = await sql.connect(sqlConfig);
-                            let updateReceipt= await pool.request()
-                            .input('cpoliza'   , sql.Numeric(19, 0), updatePayment.detalle[i].cpoliza )   
-                            .input('crecibo'      , sql.Numeric(19, 0), updatePayment.detalle[i].crecibo )  
-                            .input('iestadorec'     , sql.Char(1, 0),  updatePayment.iestadorec) 
-                            .input('fcobro', sql.DateTime, new Date())
-                            .query('update adrecibos set iestadorec = @iestadorec,fcobro = @fcobro where crecibo = @crecibo' );
-
-                        }
-                    }           
-            }
-
-
-            const template = await fs.readFile('src/templates/welcome.ejs', 'utf-8');
-            const datosPlantilla = {
-              nombre: 'Juan',
-            };
-            
-            const html = ejs.render(template, datosPlantilla);
-            try {
-              const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
-              if (enviado) {
-                console.log('Correo enviado con éxito');
-              } else {
-                console.log('Error al enviar el correo');
-              }
-            } catch (error) {
-              console.error('Error al procesar el correo:', error);
-            }
-            
-
-            await pool.close();
-            return { updateTransaccion};
+        let pool = await sql.connect(sqlConfig);
+        let updateTransaccion = await pool.request()
+        .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
+        .input('iestado'     , sql.Bit, 1)  
+        .query('update cbreporte_tran set iestado = @iestado where ctransaccion = @ctransaccion' );
+        if(updateTransaccion.rowsAffected > 0){
+                let pool = await sql.connect(sqlConfig);
+                let updateReport= await pool.request()
+                .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
+                .input('itransaccion', sql.Char(2, 0) , updatePayment.iestadorec ) 
+                .query('update cbreporte_pago set itransaccion = @itransaccion where ctransaccion = @ctransaccion' );
+                if(updateReport.rowsAffected > 0 ){
+                    for(let i = 0; i < updatePayment.detalle.length; i++){
+                        let pool = await sql.connect(sqlConfig);
+                        let updateReceipt= await pool.request()
+                        .input('cpoliza'   , sql.Numeric(19, 0), updatePayment.detalle[i].cpoliza )   
+                        .input('crecibo'      , sql.Numeric(19, 0), updatePayment.detalle[i].crecibo )  
+                        .input('iestadorec'     , sql.Char(1, 0),  updatePayment.iestadorec) 
+                        .input('fcobro', sql.DateTime, new Date())
+                        .query('update adrecibos set iestadorec = @iestadorec,fcobro = @fcobro where crecibo = @crecibo' );
+                    }
+                }           
+        }
 
     }
     catch(err){
@@ -464,6 +451,83 @@ const updateReceiptNotifiqued = async(updatePayment) => {
     }
 }
 
+const sendMailReceipt = async(cuota,info) =>{
+
+    const template = await fs.readFile('src/templates/receipt.ejs', 'utf-8');
+    const datosPlantilla = {
+        nombre: 'Juan',
+    };
+    
+    const html = ejs.render(template, datosPlantilla);
+    try {
+        const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+        if (enviado) {
+        console.log('Correo enviado con éxito');
+        } else {
+        console.log('Error al enviar el correo');
+        }
+    } catch (error) {
+        console.error('Error al procesar el correo:', error);
+    }
+    
+    
+    await pool.close();
+    return { updateTransaccion};
+}
+
+const sendMailPoliza = async(cuota,info) =>{
+
+    const template = await fs.readFile('src/templates/welcome.ejs', 'utf-8');
+    const datosPlantilla = {
+        nombre: 'Juan',
+        url : process.env.URLPoliza,
+        poliza : info.cnpoliza
+
+    };
+    
+    const html = ejs.render(template, datosPlantilla);
+    try {
+        const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+        if (enviado) {
+        console.log('Correo enviado con éxito');
+        } else {
+        console.log('Error al enviar el correo');
+        }
+    } catch (error) {
+        console.error('Error al procesar el correo:', error);
+    }
+    
+    
+    await pool.close();
+    return { updateTransaccion};
+}
+
+const sendMailPolizandReceipt = async(cuota,info) =>{
+
+    const template = await fs.readFile('src/templates/welcomeAndReceipt.ejs', 'utf-8');
+    const datosPlantilla = {
+        nombre: 'Juan',
+        url : process.env.URLPoliza,
+        poliza : info.cnpoliza
+
+    };
+    
+    const html = ejs.render(template, datosPlantilla);
+    try {
+        const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+        if (enviado) {
+        console.log('Correo enviado con éxito');
+        } else {
+        console.log('Error al enviar el correo');
+        }
+    } catch (error) {
+        console.error('Error al procesar el correo:', error);
+    }
+    
+    
+    await pool.close();
+    return { updateTransaccion};
+}
 
 const updateReceiptNotifiquedSys = async(updatePayment) =>{
     try {
@@ -621,7 +685,7 @@ const updateReceiptDifference = async(notification) => {
         }
 
        
-        const template = await fs.readFile('src/templates/welcome.ejs', 'utf-8');
+        const template = await fs.readFile('src/templates/receipt.ejs', 'utf-8');
         const datosPlantilla = {
           nombre: 'Juan',
         };
@@ -667,5 +731,9 @@ export default {
     searchPaymentCollected,
     receiptDifferenceSys,
     updateReceiptNotifiquedSys,
-    createCommision
+    createCommision,
+    transaccionReceipt,
+    sendMailReceipt,
+    sendMailPoliza,
+    sendMailPolizandReceipt
 }
