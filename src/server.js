@@ -18,7 +18,6 @@ import v1EmissionsRouter from './v1/routes/emissionsRoutes.js';
 import v1QuotesRouter from './v1/routes/quotesRoutes.js';
 import v1Collection from './v1/routes/collection.js'
 import v1Commissions from './v1/routes/commissionsRoutes.js'
-
 import fileExtension from 'file-extension';
 import multer from 'multer';
 const { diskStorage } = multer;
@@ -32,7 +31,6 @@ const corsOpts = {
   methods: [
     'GET',
     'POST',
-    'PUT',
   ],
 
   allowedHeaders: [
@@ -40,8 +38,7 @@ const corsOpts = {
   ],
 };
 
-
-app.use(cors());
+app.use(cors(corsOpts));
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -83,7 +80,6 @@ app.get('/api/get-document/:filename', (req, res) => {
 app.listen(PORT, () => { 
   console.log(`\n API is listening on port ${PORT}`);
 });
-
 
 const document_storage = multer.diskStorage({
   destination: (req, file, cb) => {
