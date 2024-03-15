@@ -30,37 +30,6 @@ const searchCollectionbyClient = async (req, res) => {
         });
 }
 
-
-const createNotificationMovement =  async (req, res) => {
-    console.log(req.file)
-
-
-    // const searchReceipt = await collectionService.createNotificationMovement(req.body);
-    // if (searchReceipt.permissionError) {
-    //     return res
-    //         .status(403)
-    //         .send({
-    //             status: false,
-    //             message: searchReceipt.permissionError
-    //         });
-    // }
-    // if (searchReceipt.error) {
-    //     return res
-    //         .status(500)
-    //         .send({
-    //             status: false,
-    //             message: searchReceipt.error
-    //         });
-    // }
-
-    // return res
-    //     .status(200)
-    //     .send({
-    //         status: true,
-    //         ctransaccion : searchReceipt,
-    //     });
-}
-
 const createPaymentReporTrans = async (req, res) => {
     const searchReceipt = await collectionService.createPaymentReportTrans(req.body);
 
@@ -119,37 +88,8 @@ const createPaymentReportSoport = async (req, res) => {
 }
 
 const searchPaymentReportNotification= async (req, res) => {
-    const searchPaymentReport = await collectionService.searchPaymentReportData(req.body.cedula);
+    const searchPaymentReport = await collectionService.searchPaymentReportData();
 
-    if (searchPaymentReport.permissionError) {
-        return res
-            .status(403)
-            .send({
-                status: false,
-                message: searchPaymentReport.permissionError
-            });
-    }
-    if (searchPaymentReport.error) {
-        return res
-            .status(500)
-            .send({
-                status: false,
-                message: searchPaymentReport.error
-            });
-    }
-
-    return res
-        .status(200)
-        .send({
-            status: true,
-            searchPaymentReport,
-            message: 'Consulta exitosa.'
-            
-        });
-}
-
-const searchPaymentReportNotificationData = async (req, res) => {
-    const searchPaymentReport = await collectionService.searchPaymentTransaction(req.params.id);
     if (searchPaymentReport.permissionError) {
         return res
             .status(403)
@@ -354,7 +294,7 @@ const searchPaymentVencin= async (req, res) => {
 }
 
 const searchPaymentCollected= async (req, res) => {
-    const searchPaymentCollected = await collectionService.searchPaymentCollected();
+    const searchPaymentCollected = await collectionService.searchPaymentCollected(req.params.id);
     if (searchPaymentCollected.permissionError) {
         return res
             .status(403)
@@ -455,11 +395,9 @@ const updateDifferenceOfNotification = async (req, res) => {
 
 export default {
     searchCollectionbyClient,
-    createNotificationMovement,
     createPaymentReporTrans,
     createPaymentReportSoport,
     searchPaymentReportNotification,
-    searchPaymentReportNotificationData,
     searchPaymentPending,
     PaymentsCollected,
     updateReceipt,
