@@ -21,8 +21,8 @@ const searchComisionesProductores = async () => {
 
     return returnData;
 }
-const searchComisionesProductor = async (data) => {
-    const returnData = await Commissions.searchComisionesProductor(data);
+const searchInsurerCommissions = async (data) => {
+    const returnData = await Commissions.searchInsurerCommissions(data);
     if (returnData.error) {
         return {
             error: returnData.error
@@ -67,7 +67,7 @@ const createPaymentRequests = async (data) => {
 export default {
     searchCualquierData,
     searchComisionesProductores,
-    searchComisionesProductor,
+    searchInsurerCommissions,
     searchDataProductor,
     searchPaymentRequests,
     createPaymentRequests,

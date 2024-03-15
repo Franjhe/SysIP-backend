@@ -58,9 +58,9 @@ const searchComisionesProductores = async (req, res) => {
             
         });
 }
-const searchComisionesProductor = async (req, res) => {
+const searchInsurerCommissions = async (req, res) => {
     
-    const returnData = await commissionsService.searchComisionesProductor(req.body);
+    const returnData = await commissionsService.searchInsurerCommissions(req.body);
     if (returnData.permissionError) {
         return res
             .status(403)
@@ -180,7 +180,7 @@ const createPaymentRequests = async (req, res) => {
 export default {
     searchCualquierData,
     searchComisionesProductores,
-    searchComisionesProductor,
+    searchInsurerCommissions,
     searchDataProductor,
     searchPaymentRequests,
     createPaymentRequests,

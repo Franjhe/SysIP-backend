@@ -35,7 +35,7 @@ router
 
     .post("/",  commissionsController.searchCualquierData)
     .post("/search",  commissionsController.searchComisionesProductores)
-    .post("/search-insurerCommissions/",  commissionsController.searchComisionesProductor)//creacion del movimiento de transaccion del reporte de pago
+    .post("/search-insurerCommissions/",  commissionsController.searchInsurerCommissions)//creacion del movimiento de transaccion del reporte de pago
     .post("/search-data/:id",  commissionsController.searchDataProductor) //abjuncion de las imagenes para el transaccion del reporte de pago
     
     .post("/search-paymentRequests",  commissionsController.searchPaymentRequests)

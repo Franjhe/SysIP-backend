@@ -93,7 +93,7 @@ const searchComisionesProductores = async () => {
         return { error: err.message, message: 'No se pudo encontrar comisión, por favor revise los datos e intente nuevamente ' };
     }
 }
-const searchComisionesProductor = async (data) => {
+const searchInsurerCommissions = async (data) => {
     try {
 
         console.log('↓');
@@ -264,7 +264,7 @@ const createPaymentRequests = async (data) => {
 export default {
     searchCualquierData,
     searchComisionesProductores,
-    searchComisionesProductor,
+    searchInsurerCommissions,
     searchDataProductor,
     searchPaymentRequests,
     createPaymentRequests
