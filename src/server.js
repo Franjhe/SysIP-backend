@@ -26,14 +26,7 @@ const { diskStorage } = multer;
 const app = express(); 
 dotenv;
 
-
-// Define the CORS options
-const corsOptions = {
-  credentials: true,
-  origin: ['https://qasys2000.lamundialdeseguros.com/'] // Whitelist the domains you want to allow
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json({ limit: '10mb' }));
 
