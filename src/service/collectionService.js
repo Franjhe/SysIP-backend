@@ -15,32 +15,22 @@ const searchDataReceipt = async (searchDataReceipt) => {
 }
 
 const createPaymentReportTrans = async (createPaymentReport) => {
-    const createPaymentReportData = await Collection.createPaymentReportTransW(createPaymentReport);
-    if (createPaymentReportData.error) {
+    const createTransAndDetail = await Collection.createPaymentReportTransW(createPaymentReport);
+    if (createTransAndDetail.error) {
         return {
-            error: createPaymentReportData.error
+            error: createTransAndDetail.error
         }
     }
 
-    const updateReceipt = await Collection.transaccionReceipt(createPaymentReport,createPaymentReportData);
+
+    const updateReceipt = await Collection.transaccionReceipt(createPaymentReport);
     if (updateReceipt.error) {
         return {
             error: updateReceipt.error
         }
     }
-    return createPaymentReportData;
-}
 
-const createPaymentReportSoport = async (createPaymentReport) => {
     if(createPaymentReport.diference){
-        const createPaymentReportData = await Collection.createPaymentReportSoportW(createPaymentReport);
-        if (createPaymentReportData.error) {
-            return {
-                error: createPaymentReportData.error
-            }
-        }
-        return createPaymentReportData;
-    }else{
         const createPaymentReportData = await Collection.createPaymentReportSoportDiference(createPaymentReport);
         if (createPaymentReportData.error) {
             return {
@@ -48,8 +38,18 @@ const createPaymentReportSoport = async (createPaymentReport) => {
             }
         }
         return createPaymentReportData;
+    }else{
+        const createPaymentReportData = await Collection.createPaymentReportSoportW(createPaymentReport);
+        if (createPaymentReportData.error) {
+            return {
+                error: createPaymentReportData.error
+            }
+        }
+        return createPaymentReportData;
     }
 }
+
+
 
 const searchPaymentReportData = async () => {
     const searchDataNotifiqued = await Collection.searchDataPaymentReport();
@@ -238,7 +238,6 @@ const updateDifferenceOfNotificationData = async (notification) => {
 export default {
     searchDataReceipt,
     createPaymentReportTrans,
-    createPaymentReportSoport,
     searchPaymentReportData,
     searchPaymentPendingData,
     getAllPaymentsCollected,
