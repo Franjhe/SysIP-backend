@@ -3,7 +3,7 @@ import httpService  from './apiclient.js';
 
 const createUsersFromConsulPagos = async (createUsersFromConsulPagos) => {
 
-    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
 
     try {
         const response = await httpService(url);

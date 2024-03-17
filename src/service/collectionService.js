@@ -155,7 +155,7 @@ const updateDataReceipt = async (updatePaymentReport) => {
 
 
     // console.log(cuotas,searchDataClient)
-    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
 
     try {
         const response = await httpService(url);
