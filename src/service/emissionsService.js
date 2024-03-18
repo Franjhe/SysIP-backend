@@ -168,6 +168,8 @@ const createEmmisionHealth = async (create) => {
         const response = await httpService(url);
         let bcv = response.monitors.usd.price
 
+        const truncateTables = await Emissions.deleteEmmisionGHB(create);
+
         const createEmmisionBen = await Emissions.createEmmisionGHB(create);
         if (createEmmisionBen.error) {
             return {

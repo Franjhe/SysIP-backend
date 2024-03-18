@@ -413,6 +413,17 @@ const searchRiotRate = async (searchRiotRate) => {
 //   }
 // }
 
+
+
+
+const deleteEmmisionGHB = async () => {
+    let pool = await sql.connect(sqlConfig);
+    await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Ben");
+    await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Aseg");
+    await pool.request().query("TRUNCATE TABLE eePoliza_Salud");
+
+}
+
 const createGroupContract = async (createGroupContract, bcv) => {
   try {
     let rowsAffected = 0;
@@ -674,12 +685,12 @@ const createEmmisionGHB = async(create) => {
         .input('xapellido_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xapellido_beneficiario)
         .input('fnac_beneficiario', sql.DateTime, create.beneficiarios[i].fnac_beneficiario)
         .input('isexo_beneficiario', sql.Char(1), create.beneficiarios[i].isexo_beneficiario)
-        .input('nparentesco', sql.Int, create.beneficiarios[i].nparentesco_beneficiario)
+        .input('nparentesco_beneficiario', sql.Int, create.beneficiarios[i].nparentesco_beneficiario)
         .query('INSERT INTO eePoliza_Salud_Ben ' +
         '(icedula_beneficiario, xrif_beneficiario, xnombre_beneficiario, xapellido_beneficiario, fnac_beneficiario,'+ 
-        'isexo_beneficiario,nparentesco) '
+        'isexo_beneficiario,nparentesco_beneficiario) '
         +'VALUES (@icedula_beneficiario, @xrif_beneficiario, @xnombre_beneficiario, @xapellido_beneficiario, @fnac_beneficiario,'+ 
-        '@isexo_beneficiario,@nparentesco)');
+        '@isexo_beneficiario,@nparentesco_beneficiario)');
 
         data = insertEmmiBen.rowsAffected
 
@@ -701,10 +712,10 @@ const createEmmisionGHA = async(create) => {
 
         for(let i = 0; i < create.asegurados.length; i++){
           let insertEmmiBen = await pool.request()
-          .input('icedula_asegurado', sql.Char(1), create.asegurados[i].icedula_beneficiario)
-          .input('xrif_asegurado', sql.Numeric(17,0), create.asegurados[i].xrif_beneficiario)
-          .input('xnombre_asegurado', sql.NVarChar(17,2), create.asegurados[i].xnombre_beneficiario)
-          .input('xapellido_asegurado', sql.NVarChar(17,2), create.asegurados[i].xapellido_beneficiario)
+          .input('icedula_asegurado', sql.Char(1), create.asegurados[i].icedula_asegurado)
+          .input('xrif_asegurado', sql.Numeric(17,0), create.asegurados[i].xrif_asegurado)
+          .input('xnombre_asegurado', sql.NVarChar(17,2), create.asegurados[i].xnombre_asegurado)
+          .input('xapellido_asegurado', sql.NVarChar(17,2), create.asegurados[i].xapellido_asegurado)
           .input('fnac_asegurado', sql.DateTime, create.asegurados[i].fnac_asegurado)
           .input('isexo_asegurado', sql.Char(1), create.asegurados[i].isexo_asegurado)
           .input('nparentesco_asegurado', sql.Int, create.asegurados[i].nparentesco_asegurado)
@@ -822,5 +833,6 @@ export default {
     createEmmisionGHB,
     createEmmisionGHA,
     searchRates,
-    createEmmisionAutomovile
+    createEmmisionAutomovile,
+    deleteEmmisionGHB
   };

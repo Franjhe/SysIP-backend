@@ -31,7 +31,7 @@ const searchDataReceipt = async(searchDataReceipt) => {
                 await pool.close();
                 return { 
                     receipt:receipt.recordset,
-                    transaccion : searchTransaccion.recordset[0].ctransaccion + 1,  
+                    transaccion: searchTransaccion.recordset[0].ctransaccion + 1,  
                 };
         }
 
@@ -69,7 +69,7 @@ const createPaymentReportTransW = async(createPaymentReport) => {
                         //insertamos detalle nde los recibos pagados 
                         let pool = await sql.connect(sqlConfig);
                         let insertReportDet = await pool.request()
-                        .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.idTrans)   
+                        .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.ctransaccion)   
                         .input('crecibo'   , sql.Numeric(18, 0), createPaymentReport.receipt[i].crecibo)   
                         .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport.casegurado)   
                         .input('cnpoliza'   , sql.Char(30, 0), createPaymentReport.receipt[i].cnpoliza)   
@@ -205,7 +205,7 @@ const transaccionReceipt = async(recibo) => {
             //insertamos detalle nde los recibos pagados 
             let pool = await sql.connect(sqlConfig);
             let insertReportDet = await pool.request()
-            .input('ctransaccion'   , sql.Numeric(18, 0), recibo.idTrans)   
+            .input('ctransaccion'   , sql.Numeric(18, 0), recibo.ctransaccion)   
             .input('crecibo'   , sql.Numeric(18, 0), recibo.receipt[i].crecibo)   
             .query('update adrecibos set cdoccob = @ctransaccion where crecibo = @crecibo')
             data = insertReportDet.rowsAffected
@@ -380,8 +380,8 @@ const searchDataClient = async(searchDataReceipt) => {
     try{
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
-        .input('xcontrato'   , sql.VarChar(18, 0), searchDataReceipt)   
-        .query('select * from VWBUSCARECIBOYCLIENTE where xcontrato  = @casegurado ')
+        .input('Cedula'   , sql.Numeric(11), searchDataReceipt)   
+        .query('select * from maVRecibos where Cedula = @Cedula ')
 
         await pool.close();
 
@@ -431,6 +431,7 @@ const updateReceiptNotifiqued = async(updatePayment) => {
 }
 
 const sendMailReceipt = async(cuota,info) =>{
+    console.log(cuota,info , 'recibo')
 
     const template = await fs.readFile('src/templates/receipt.ejs', 'utf-8');
     const datosPlantilla = {
@@ -439,7 +440,7 @@ const sendMailReceipt = async(cuota,info) =>{
     
     const html = ejs.render(template, datosPlantilla);
     try {
-        const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+        const enviado = await emailService.enviarCorreo(info, 'Asunto del correo', html);
         if (enviado) {
         console.log('Correo enviado con éxito');
         } else {
@@ -449,13 +450,11 @@ const sendMailReceipt = async(cuota,info) =>{
         console.error('Error al procesar el correo:', error);
     }
     
-    
-    await pool.close();
-    return { updateTransaccion};
+
 }
 
 const sendMailPoliza = async(cuota,info) =>{
-
+    console.log(cuota,info , 'poliza')
     const template = await fs.readFile('src/templates/welcome.ejs', 'utf-8');
     const datosPlantilla = {
         nombre: 'Juan',
@@ -466,7 +465,7 @@ const sendMailPoliza = async(cuota,info) =>{
     
     const html = ejs.render(template, datosPlantilla);
     try {
-        const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+        const enviado = await emailService.enviarCorreo(info, 'Asunto del correo', html);
         if (enviado) {
         console.log('Correo enviado con éxito');
         } else {
@@ -476,12 +475,12 @@ const sendMailPoliza = async(cuota,info) =>{
         console.error('Error al procesar el correo:', error);
     }
     
-    
-    await pool.close();
-    return { updateTransaccion};
+
 }
 
 const sendMailPolizandReceipt = async(cuota,info) =>{
+
+    console.log(cuota,info, 'ambos')
 
     const template = await fs.readFile('src/templates/welcomeAndReceipt.ejs', 'utf-8');
     const datosPlantilla = {
@@ -493,7 +492,7 @@ const sendMailPolizandReceipt = async(cuota,info) =>{
     
     const html = ejs.render(template, datosPlantilla);
     try {
-        const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+        const enviado = await emailService.enviarCorreo(info, 'Asunto del correo', html);
         if (enviado) {
         console.log('Correo enviado con éxito');
         } else {
@@ -503,9 +502,6 @@ const sendMailPolizandReceipt = async(cuota,info) =>{
         console.error('Error al procesar el correo:', error);
     }
     
-    
-    await pool.close();
-    return { updateTransaccion};
 }
 
 const updateReceiptNotifiquedSys = async(updatePayment) =>{
@@ -513,7 +509,7 @@ const updateReceiptNotifiquedSys = async(updatePayment) =>{
 
         let pool = await sql.connect(sqlConfig);
         let receiptUpdate = await pool.request()
-        .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.transacccion )  
+        .input('ctransaccion', sql.Numeric(20, 0) , updatePayment.ctransaccion )  
         .input('iestado'     , sql.Bit, 1)  
         .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
         await pool.close();
@@ -527,20 +523,19 @@ const updateReceiptNotifiquedSys = async(updatePayment) =>{
 
 }
 
-
 const receiptDifference = async(receipt) => {
     try {
         let results = [];
                 let pool = await sql.connect(sqlConfig);
                 let receiptUpdate = await pool.request()
-                    .input('ctransaccion', sql.Numeric(18, 0), receipt.transacccion)
+                    .input('ctransaccion', sql.Numeric(18, 0), receipt.ctransaccion)
                     .input('iestado_tran', sql.Char(2, 0), 'ER')
                     .query('update cbreporte_tran set iestado_tran = @iestado_tran where ctransaccion = @ctransaccion');
                         
                 if (receiptUpdate.rowsAffected) {
                     let pool = await sql.connect(sqlConfig);
                     let receiptUpdate = await pool.request()
-                    .input('ctransaccion', sql.Numeric(18, 0), receipt.transacccion)
+                    .input('ctransaccion', sql.Numeric(18, 0), receipt.ctransaccion)
                     .input('mdiferencia', sql.Numeric(19, 0), receipt.mdiferencia)
                     .input('mdiferenciaext', sql.Numeric(19, 0), receipt.mdiferenciaext)
                     .input('xobservacion', sql.VarChar(500, 0), receipt.xobservacion)
@@ -606,12 +601,12 @@ const updateReceiptDifference = async(notification) => {
             let pool = await sql.connect(sqlConfig);
             let updateReceipt= await pool.request()
             .input('iestado' , sql.Bit,  1) 
-            .input('ctransaccion' , sql.Numeric(19, 0), notification[i].transaccion )  
+            .input('ctransaccion' , sql.Numeric(19, 0), notification[i].ctransaccion )  
             .query('update cbreporte_tran_dif set iestado = @iestado where ctransaccion = @ctransaccion' );
             if(updateReceipt.rowsAffected){
                 let pool = await sql.connect(sqlConfig);
                 let receipt = await pool.request()
-                .input('ctransaccion', sql.Numeric(18, 0), notification[i].transaccion)
+                .input('ctransaccion', sql.Numeric(18, 0), notification[i].ctransaccion)
                 .input('iestado_tran', sql.Char(2, 0), 'TR')
                 .input('iestado'     , sql.Bit,  1) 
                 .query('update cbreporte_tran set iestado = @iestado where ctransaccion = @ctransaccion' );
