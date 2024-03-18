@@ -91,13 +91,13 @@ const createIndividualContract = async(createIndividualContract,bcv) => {
       if (createIndividualContract.xtomador) {
         
         const matomadorResult = await pool.request()
-          .input('xtomador', sql.NVarChar, createIndividualContract.xtomador.toUpperCase())
-          .input('xrif', sql.NVarChar, createIndividualContract.xrif_tomador.toUpperCase())
-          .input('xcorreo', sql.NVarChar, createIndividualContract.xemail_tomador.toUpperCase())
+          .input('xtomador', sql.NVarChar, createIndividualContract.xtomador)
+          .input('xrif', sql.NVarChar, createIndividualContract.xrif_tomador)
+          .input('xcorreo', sql.NVarChar, createIndividualContract.xemail_tomador)
           .input('cestado', sql.Int, createIndividualContract.cestado_tomador)
           .input('cciudad', sql.Int, createIndividualContract.cciudad_tomador)
-          .input('xdireccion', sql.NVarChar, createIndividualContract.xdireccion_tomador.toUpperCase())
-          .input('xzona_postal', sql.NVarChar, createIndividualContract.xzona_postal_tomador.toUpperCase())
+          .input('xdireccion', sql.NVarChar, createIndividualContract.xdireccion_tomador)
+          .input('xzona_postal', sql.NVarChar, createIndividualContract.xzona_postal_tomador)
           .input('xtelefono', sql.NVarChar, createIndividualContract.xtelefono_tomador)
           .input('cpais', sql.Int, 58)
           .input('cestatusgeneral', sql.Int, 2)
@@ -112,25 +112,25 @@ const createIndividualContract = async(createIndividualContract,bcv) => {
           .input('icedula', sql.Char, createIndividualContract.icedula ? createIndividualContract.icedula: undefined)
           .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
           .input('xcedula', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
-          .input('xnombre', sql.NVarChar, createIndividualContract.xnombre.toUpperCase() ? createIndividualContract.xnombre: undefined)
-          .input('xapellido', sql.NVarChar, createIndividualContract.xapellido.toUpperCase() ? createIndividualContract.xapellido: undefined)
+          .input('xnombre', sql.NVarChar, createIndividualContract.xnombre ? createIndividualContract.xnombre: undefined)
+          .input('xapellido', sql.NVarChar, createIndividualContract.xapellido ? createIndividualContract.xapellido: undefined)
           .input('xtelefono_emp', sql.NVarChar, createIndividualContract.xtelefono_emp ? createIndividualContract.xtelefono_emp: undefined)
-          .input('email', sql.NVarChar, createIndividualContract.email.toUpperCase() ? createIndividualContract.email: undefined)
+          .input('email', sql.NVarChar, createIndividualContract.email ? createIndividualContract.email: undefined)
           .input('cestado', sql.Int, createIndividualContract.cestado ? createIndividualContract.cestado: undefined)
           .input('cciudad', sql.Int, createIndividualContract.cciudad ? createIndividualContract.cciudad: undefined)
           .input('fnac', sql.NVarChar, createIndividualContract.fnacimiento ? createIndividualContract.fnacimiento: undefined)
           .input('iestado_civil', sql.NVarChar, createIndividualContract.iestado_civil ? createIndividualContract.iestado_civil: undefined)
           .input('isexo', sql.NVarChar, createIndividualContract.isexo ? createIndividualContract.isexo: undefined)
-          .input('xdireccionfiscal', sql.NVarChar, createIndividualContract.xdireccion.toUpperCase() ? createIndividualContract.xdireccion: undefined)
-          .input('xplaca', sql.NVarChar, createIndividualContract.xplaca.toUpperCase() ? createIndividualContract.xplaca: undefined)
-          .input('xmarca', sql.NVarChar, createIndividualContract.xmarca.toUpperCase() ? createIndividualContract.xmarca: undefined)
-          .input('xmodelo', sql.NVarChar, createIndividualContract.xmodelo.toUpperCase() ? createIndividualContract.xmodelo: undefined)
-          .input('xversion', sql.NVarChar, createIndividualContract.xversion.toUpperCase() ? createIndividualContract.xversion: undefined)
+          .input('xdireccionfiscal', sql.NVarChar, createIndividualContract.xdireccion ? createIndividualContract.xdireccion: undefined)
+          .input('xplaca', sql.NVarChar, createIndividualContract.xplaca ? createIndividualContract.xplaca: undefined)
+          .input('xmarca', sql.NVarChar, createIndividualContract.xmarca ? createIndividualContract.xmarca: undefined)
+          .input('xmodelo', sql.NVarChar, createIndividualContract.xmodelo ? createIndividualContract.xmodelo: undefined)
+          .input('xversion', sql.NVarChar, createIndividualContract.xversion ? createIndividualContract.xversion: undefined)
           .input('cano', sql.Int, createIndividualContract.fano ? createIndividualContract.fano: undefined)
           .input('ncapacidad_p', sql.Int, createIndividualContract.npasajeros ? createIndividualContract.npasajeros: undefined)
-          .input('xcolor', sql.NVarChar, createIndividualContract.xcolor.toUpperCase() ? createIndividualContract.xcolor: undefined)
-          .input('xserialcarroceria', sql.NVarChar, createIndividualContract.xserialcarroceria.toUpperCase() ? createIndividualContract.xserialcarroceria: undefined)
-          .input('xserialmotor', sql.NVarChar, createIndividualContract.xserialmotor.toUpperCase() ? createIndividualContract.xserialmotor: undefined)
+          .input('xcolor', sql.NVarChar, createIndividualContract.xcolor ? createIndividualContract.xcolor: undefined)
+          .input('xserialcarroceria', sql.NVarChar, createIndividualContract.xserialcarroceria ? createIndividualContract.xserialcarroceria: undefined)
+          .input('xserialmotor', sql.NVarChar, createIndividualContract.xserialmotor ? createIndividualContract.xserialmotor: undefined)
           .input('xcobertura', sql.NVarChar, createIndividualContract.xcobertura ? createIndividualContract.xcobertura: undefined)
           .input('ctarifa_exceso', sql.Int, createIndividualContract.ctarifa_exceso ? createIndividualContract.ctarifa_exceso: undefined)
           .input('cplan_rc', sql.Int, createIndividualContract.cplan_rc ? createIndividualContract.cplan_rc: undefined)
@@ -413,6 +413,17 @@ const searchRiotRate = async (searchRiotRate) => {
 //   }
 // }
 
+
+
+
+const deleteEmmisionGHB = async () => {
+    let pool = await sql.connect(sqlConfig);
+    await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Ben");
+    await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Aseg");
+    await pool.request().query("TRUNCATE TABLE eePoliza_Salud");
+
+}
+
 const createGroupContract = async (createGroupContract, bcv) => {
   try {
     let rowsAffected = 0;
@@ -500,8 +511,6 @@ const createGroupContract = async (createGroupContract, bcv) => {
             id_inma = result.recordset.map(record => record.id);
             ctarifa_exceso = result.recordset.map(record => record.ctarifa_exceso);
             npasajero = result.recordset.map(record => record.npasajero);
-
-            console.log(createGroupContract.group)
  
             let nro = i + 1;
             let insert = await pool.request()
@@ -605,53 +614,56 @@ const createEmmisionGH = async(create,bcv) => {
       let rowsAffected = 0;
       let pool = await sql.connect(sqlConfig);
       let createEmmi = await pool.request()
-      .input('cnpoliza_rel', sql.NVarChar(30), create.cnpoliza_rel)
-      .input('cnrecibo_rel', sql.NVarChar(250), create.cnrecibo_rel)
+      .input('cnpoliza_rel', sql.NVarChar, create.cnpoliza_rel)
+      .input('cnrecibo_rel', sql.NVarChar, create.cnrecibo_rel)
       .input('cramo', sql.Int, create.cramo)
-      .input('xcanal_venta', sql.Int, create.xcanal_venta)
-      .input('icedula_tomador', sql.Char(1), create.icedula_tomador.toUpperCase())
-      .input('xrif_tomador', sql.Numeric(17,0), create.xrif_tomador)
-      .input('xnombre_tomador', sql.NVarChar(17,2), create.xnombre_tomador)
-      .input('xapellido_tomador', sql.NVarChar(17,2), create.xapellido_tomador)
-      .input('xdireccion_tomador', sql.NVarChar(17,2), create.xdireccion_tomador)
-      .input('xcorreo_tomador', sql.NVarChar(17,2), create.xcorreo_tomador)
-      .input('icedula_asegurado', sql.Char(1), create.icedula_asegurado.toUpperCase())
-      .input('xrif_asegurado', sql.Numeric(17,0), create.xrif_asegurado)
-      .input('xnombre_asegurado', sql.NVarChar(17,2), create.xnombre_asegurado)
-      .input('xapellido_asegurado', sql.NVarChar(17,2), create.xapellido_asegurado)
-      .input('isexo_asegurado', sql.Char(1), create.isexo_asegurado.toUpperCase())
-      .input('iestado_civil', sql.Char(1), create.iestado_civil.toUpperCase())
-      .input('fnac_asegurado', sql.DateTime, create.fnac_asegurado)
-      .input('xdireccion_asegurado', sql.NVarChar(17,2), create.xdireccion_asegurado)
-      .input('xcorreo_asegurado', sql.NVarChar(17,2), create.xcorreo_asegurado)
-      .input('xtelefono_asegurado', sql.NVarChar(17,2), create.xtelefono_asegurado)
+      .input('xcanal_venta', sql.NVarChar, create.xcanal_venta)
+      .input('icedula_tomador', sql.Char, create.icedula_tomador)
+      .input('xrif_tomador', sql.Numeric, parseFloat(create.xrif_tomador))
+      .input('xnombre_tomador', sql.NVarChar, create.xnombre_tomador)
+      .input('xapellido_tomador', sql.NVarChar, create.xapellido_tomador)
+      .input('xdireccion_tomador', sql.NVarChar, create.xdireccion_tomador)
+      .input('xcorreo_tomador', sql.NVarChar, create.xcorreo_tomador)
+      .input('icedula_titular', sql.Char, create.icedula_titular)
+      .input('xrif_titular', sql.Numeric(17,0), parseFloat(create.xrif_titular))
+      .input('xnombre_titular', sql.NVarChar, create.xnombre_titular)
+      .input('xapellido_titular', sql.NVarChar, create.xapellido_titular)
+      .input('isexo_titular', sql.Char, create.isexo_titular)
+      .input('iestado_civil_titular', sql.Char, create.iestado_civil_titular)
+      .input('fnac_titular', sql.DateTime, create.fnac_titular)
+      .input('xdireccion_titular', sql.NVarChar, create.xdireccion_titular)
+      .input('xcorreo_titular', sql.NVarChar, create.xcorreo_titular)
+      .input('xtelefono_titular', sql.NVarChar, create.xtelefono_titular)
       .input('nbeneficiarios', sql.Int, create.nbeneficiarios)
-      .input('msumaasegext', sql.Numeric(17,2), create.msumaasegext)
-      .input('mprimaext', sql.Numeric(17,2), create.mprimaext)
-      .input('cproductor', sql.Int, create.cproductor)
-      .input('pcomision', sql.Numeric(17,2), create.pcomision)
-      .input('mcomisionext', sql.Numeric(17,2), create.mcomisionext)
-      .input('cmetodologiapago', sql.Int, create.cmetodologiapago)
-      .input('cpoliza', sql.Numeric(19,0), create.cramo)
-      .input('fanopol', sql.SmallInt, create.cramo)
-      .input('fmespol', sql.TinyInt, create.cramo)
-      .input('cnpoliza', sql.NVarChar(30), create.cramo)
-      .input('cbanco', sql.Int, create.cramo)
-      .input('xreferencia', sql.NVarChar(20), create.cramo)
-      .input('fcobro', sql.DateTime, create.cramo)
-      .input('femision', sql.DateTime, create.cramo)
-      .input('ptasamon', sql.Numeric(18,2), bcv)
+      .input('msumaasegext', sql.Numeric(17,2), parseFloat(create.msumaasegext))
+      .input('mprimaext', sql.Numeric(17,2), parseFloat(create.mprimaext))
+      .input('cproductor', sql.Int, parseInt(create.cproductor))
+      .input('pcomision', sql.Numeric(17,2), parseFloat(create.pcomision))
+      .input('mcomisionext', sql.Numeric(18,2), parseFloat(create.mcomisionext))
+      .input('ptasamon', sql.Numeric(18,6), parseFloat(bcv))
+      .input('cmetodologiapago', sql.Int, parseInt(create.cmetodologiapago))
+      .input('cpoliza', sql.Numeric(19, 0), create.cpoliza ? create.cpoliza: undefined)
+      .input('cproces', sql.Numeric(13, 0), create.cproces ? create.cproces: undefined)
+      .input('fanopol', sql.Int, create.fanopol ? create.fanopol: undefined)
+      .input('fmespol', sql.Int, create.fmespol ? create.fmespol: undefined)
+      .input('cnpoliza', sql.NVarChar, create.cnpoliza ? create.cnpoliza: undefined)
+      .input('cbanco', sql.Int, parseInt(create.cbanco))
+      .input('xreferencia', sql.NVarChar, create.xreferencia)
+      .input('fcobro', sql.DateTime, new Date(create.fcobro))
+      .input('femision', sql.DateTime, new Date() )
 
-      .query('INSERT INTO eePoliza_Salud ' +
-      '(cnpoliza_rel, cnrecibo_rel,cramo, xcanal_venta,'+
-      'icedula_tomador, xrif_tomador, xnombre_tomador, xapellido_tomador, xdireccion_tomador, xcorreo_tomador,'+ 
-      'icedula_asegurado, xrif_asegurado, xnombre_asegurado, xapellido_asegurado, isexo_asegurado, iestado_civil, fnac_asegurado, xdireccion_asegurado, xcorreo_asegurado, xtelefono_asegurado,'+
-      'nbeneficiarios, msumaasegext,mprimaext,cproductor,pcomision,mcomisionext,cmetodologiapago,cpoliza,fanopol,fmespol,cnpoliza,cbanco,xreferencia,fcobro,femision,ptasamon) '
-      +'VALUES (@cnpoliza_rel, @cnrecibo_rel, @cramo, @xcanal_venta,'+
-      '@icedula_tomador, @xrif_tomador, @xnombre_tomador, @xapellido_tomador, @xdireccion_tomador, @xcorreo_tomador,'+ 
-      '@icedula_asegurado, @xrif_asegurado, @xnombre_asegurado, @xapellido_asegurado, @isexo_asegurado, @iestado_civil, @fnac_asegurado, @xdireccion_asegurado, @xcorreo_asegurado, @xtelefono_asegurado,'+
-      '@nbeneficiarios, @msumaasegext,@mprimaext,@cproductor,@pcomision,@mcomisionext,@cmetodologiapago,@cpoliza,@fanopol,@fmespol,@cnpoliza,@cbanco,@xreferencia,@fcobro,@femision,@ptasamon)');
-  
+      .query('INSERT INTO eePoliza_Salud (cnpoliza_rel,cnrecibo_rel,cramo ,xcanal_venta ,icedula_tomador ,xrif_tomador ,xnombre_tomador,xapellido_tomador ,xdireccion_tomador ,xcorreo_tomador  ,icedula_titular ,xrif_titular,xnombre_titular'+
+        ',xapellido_titular,isexo_titular ,iestado_civil_titular ,fnac_titular,xdireccion_titular ,xcorreo_titular'+
+        ',xtelefono_titular,nbeneficiarios ,msumaasegext ,mprimaext ,cproductor ,pcomision ,mcomisionext'+
+        ',ptasamon ,cmetodologiapago ,cpoliza ,cproces ,fanopol ,fmespol  ,cnpoliza'+
+        ',cbanco,xreferencia  ,fcobro ,femision)'+
+      'VALUES (@cnpoliza_rel,@cnrecibo_rel,@cramo ,@xcanal_venta ,@icedula_tomador ,@xrif_tomador ,@xnombre_tomador'+
+      ',@xapellido_tomador ,@xdireccion_tomador ,@xcorreo_tomador  ,@icedula_titular ,@xrif_titular,@xnombre_titular'+
+       ',@xapellido_titular,@isexo_titular ,@iestado_civil_titular ,@fnac_titular,@xdireccion_titular ,@xcorreo_titular'+
+       ',@xtelefono_titular,@nbeneficiarios ,@msumaasegext ,@mprimaext ,@cproductor ,@pcomision ,@mcomisionext'+
+       ',@ptasamon ,@cmetodologiapago ,@cpoliza ,@cproces ,@fanopol ,@fmespol  ,@cnpoliza'+
+       ',@cbanco,@xreferencia  ,@fcobro ,@femision)');
+
       //sql.close();
       return { rowsAffected  };
   }
@@ -663,38 +675,27 @@ const createEmmisionGH = async(create,bcv) => {
 
 const createEmmisionGHB = async(create) => {
   try{
+      let data ;
       let pool = await sql.connect(sqlConfig);
-      let createEmmiBen = await pool.request()
-      .input('xrif_asegurado', sql.Int, create.xrif_asegurado)
-      .query('select * from eePoliza_Salud where xrif_asegurado = @xrif_asegurado');
+      for(let i = 0; i < create.beneficiarios.length; i++){
+        let insertEmmiBen = await pool.request()
+        .input('icedula_beneficiario', sql.Char(1), create.beneficiarios[i].icedula_beneficiario)
+        .input('xrif_beneficiario', sql.Numeric(17,0), create.beneficiarios[i].xrif_beneficiario)
+        .input('xnombre_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xnombre_beneficiario)
+        .input('xapellido_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xapellido_beneficiario)
+        .input('fnac_beneficiario', sql.DateTime, create.beneficiarios[i].fnac_beneficiario)
+        .input('isexo_beneficiario', sql.Char(1), create.beneficiarios[i].isexo_beneficiario)
+        .input('nparentesco_beneficiario', sql.Int, create.beneficiarios[i].nparentesco_beneficiario)
+        .query('INSERT INTO eePoliza_Salud_Ben ' +
+        '(icedula_beneficiario, xrif_beneficiario, xnombre_beneficiario, xapellido_beneficiario, fnac_beneficiario,'+ 
+        'isexo_beneficiario,nparentesco_beneficiario) '
+        +'VALUES (@icedula_beneficiario, @xrif_beneficiario, @xnombre_beneficiario, @xapellido_beneficiario, @fnac_beneficiario,'+ 
+        '@isexo_beneficiario,@nparentesco_beneficiario)');
 
-      let dataEmmiBen = createEmmiBen.recordset[0]
-      if(createEmmiBen){
-        for(let i = 0; i < create.beneficiarios.length; i++){
-          let insertEmmiBen = await pool.request()
-          .input('id_salud', sql.Int, dataEmmiBen.id)
-          .input('icedula_beneficiario', sql.Char(1), create.beneficiarios[i].icedula_beneficiario)
-          .input('xrif_beneficiario', sql.Numeric(17,0), create.beneficiarios[i].xrif_beneficiario)
-          .input('xnombre_beneficiario', sql.NVarChar(17,2), create.beneficiarios[i].xnombre_beneficiario)
-          .input('xapellido_beneficiario', sql.NVarChar(17,2), create.beneficiarios[i].xapellido_beneficiario)
-          .input('xparentesco_beneficiario', sql.NVarChar(20), create.beneficiarios[i].xparentesco_beneficiario)
-          .input('fnac_beneficiario', sql.DateTime, create.beneficiarios[i].fnac_beneficiario)
-          .input('cpoliza', sql.Numeric(19, 0), dataEmmiBen.cpoliza)
-          .input('fanopol', sql.SmallInt, dataEmmiBen.fanopol)
-          .input('fmespol', sql.TinyInt, dataEmmiBen.fmespol)
-          .input('cnpoliza', sql.VarChar(50), dataEmmiBen.cnpoliza)
-          .query('INSERT INTO eePoliza_Salud_Ben ' +
-          '(id_salud,'+
-          'icedula_beneficiario, xrif_beneficiario, xnombre_beneficiario, xapellido_beneficiario, xparentesco_beneficiario, fnac_beneficiario,'+ 
-          'cpoliza, fanopol,fmespol , cnpoliza) '
-          +'VALUES (@id_salud, '+
-          '@icedula_beneficiario, @xrif_beneficiario, @xnombre_beneficiario, @xapellido_beneficiario, @xparentesco_beneficiario, @fnac_beneficiario,'+ 
-          '@cpoliza, @fanopol,@fmespol , @cnpoliza)');
-
-        }
+        data = insertEmmiBen.rowsAffected
 
       }
-      return { status : true  };
+      return data;
   
       //sql.close();
   }
@@ -704,6 +705,39 @@ const createEmmisionGHB = async(create) => {
   }
 }
 
+const createEmmisionGHA = async(create) => {
+  try{
+        let pool = await sql.connect(sqlConfig);
+        let data ;
+
+        for(let i = 0; i < create.asegurados.length; i++){
+          let insertEmmiBen = await pool.request()
+          .input('icedula_asegurado', sql.Char(1), create.asegurados[i].icedula_asegurado)
+          .input('xrif_asegurado', sql.Numeric(17,0), create.asegurados[i].xrif_asegurado)
+          .input('xnombre_asegurado', sql.NVarChar(17,2), create.asegurados[i].xnombre_asegurado)
+          .input('xapellido_asegurado', sql.NVarChar(17,2), create.asegurados[i].xapellido_asegurado)
+          .input('fnac_asegurado', sql.DateTime, create.asegurados[i].fnac_asegurado)
+          .input('isexo_asegurado', sql.Char(1), create.asegurados[i].isexo_asegurado)
+          .input('nparentesco_asegurado', sql.Int, create.asegurados[i].nparentesco_asegurado)
+          .input('iestado_civil_asegurado', sql.Char(1), create.asegurados[i].iestado_civil_asegurado)
+          .query('INSERT INTO eePoliza_Salud_aseg ' +
+          '(icedula_asegurado,xrif_asegurado,xnombre_asegurado,xapellido_asegurado,'+
+          'fnac_asegurado,isexo_asegurado,nparentesco_asegurado,iestado_civil_asegurado)'
+          +'VALUES (@icedula_asegurado,@xrif_asegurado,@xnombre_asegurado,@xapellido_asegurado,'+
+          '@fnac_asegurado,@isexo_asegurado,@nparentesco_asegurado,@iestado_civil_asegurado)')
+
+          data = insertEmmiBen.rowsAffected
+        }
+
+        return data;
+
+    }
+  
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
 
 const createEmmisionAutomovile = async(create,bcv) => {
   try{
@@ -797,6 +831,8 @@ export default {
     searchQuotes,
     createEmmisionGH,
     createEmmisionGHB,
+    createEmmisionGHA,
     searchRates,
-    createEmmisionAutomovile
+    createEmmisionAutomovile,
+    deleteEmmisionGHB
   };

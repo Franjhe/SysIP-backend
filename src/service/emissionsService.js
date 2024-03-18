@@ -34,7 +34,7 @@ const executePremiumAmount = async (executePremiumAmount) => {
 
 const createIndividualContract = async (createIndividualContract) => {
 
-    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
 
     try {
         const response = await httpService(url);
@@ -137,7 +137,7 @@ const searchRiotRate = async (searchRiotRate) => {
 }
 
 const createGroupContract = async (createGroupContract) => {
-    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
     const response = await httpService(url);
     let bcv = response.monitors.usd.price
     const result = await Emissions.createGroupContract(createGroupContract, bcv);
@@ -162,12 +162,27 @@ const searchQuotes = async (searchQuotes) => {
 
 const createEmmisionHealth = async (create) => {
 
-
-    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
 
     try {
         const response = await httpService(url);
         let bcv = response.monitors.usd.price
+
+        const truncateTables = await Emissions.deleteEmmisionGHB(create);
+
+        const createEmmisionBen = await Emissions.createEmmisionGHB(create);
+        if (createEmmisionBen.error) {
+            return {
+                error: createEmmisionBen.error
+            }
+        }
+
+        const createEmmisionAseg = await Emissions.createEmmisionGHA(create);
+        if (createEmmisionAseg.error) {
+            return {
+                error: createEmmisionAseg.error
+            }
+        }
 
         const createEmmision = await Emissions.createEmmisionGH(create,bcv);
         if (createEmmision.error) {
@@ -175,15 +190,9 @@ const createEmmisionHealth = async (create) => {
                 error: createEmmision.error
             }
         }
-        const createEmmisionBen = await Emissions.createEmmisionGHB(create);
-    
-        if (createEmmisionBen.error) {
-            return {
-                error: createEmmisionBen.error
-            }
-        }
 
         return createEmmision;
+
     } catch (error) {
         console.error('Ooops. Ha ocurrido un error:', error.message);
         return {
@@ -196,7 +205,7 @@ const createEmmisionHealth = async (create) => {
 
 
 const createEmmisionAutomovil = async (create) => {
-    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
 
     try {
         const response = await httpService(url);

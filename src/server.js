@@ -17,7 +17,7 @@ import viCertificated from './v1/routes/certificateRoutes.js'
 import v1EmissionsRouter from './v1/routes/emissionsRoutes.js';
 import v1QuotesRouter from './v1/routes/quotesRoutes.js';
 import v1Collection from './v1/routes/collection.js'
-
+import v1Commissions from './v1/routes/commissionsRoutes.js'
 import fileExtension from 'file-extension';
 import multer from 'multer';
 const { diskStorage } = multer;
@@ -25,7 +25,15 @@ const { diskStorage } = multer;
 const app = express(); 
 dotenv;
 
+app.use(cors({
+  origin: '*',  // o especifica el dominio permitido
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use(cors());
+
 app.use(express.json({ limit: '10mb' }));
 
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -43,6 +51,7 @@ app.use("/api/v1/certificate", viCertificated);
 app.use("/api/v1/emissions", v1EmissionsRouter);
 app.use("/api/v1/quotes", v1QuotesRouter);
 app.use("/api/v1/collection", v1Collection);
+app.use("/api/v1/commissions", v1Commissions);
 
 const PORT = process.env.PORT || 3000; 
 
@@ -66,21 +75,20 @@ app.listen(PORT, () => {
   console.log(`\n API is listening on port ${PORT}`);
 });
 
-
 const document_storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, DOCUMENTS_PATH);
   },
 
   filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now() + '.' + fileExtension(file.originalname));
+    cb(null, file.originalname);
   }
 });
 
 let document_upload = multer({
     storage: document_storage,
     limits: {
-      fileSize: 5000000
+      fileSize: 35000000
     },
     fileFilter(req, file, cb) {
       cb(null, true);
@@ -102,7 +110,7 @@ app.post('/api/upload/documents', document_upload.array('xdocumentos', 5), (req,
   res.json({ data: { status: true, uploadedFile: files } });
 });
 
-app.post('/api/upload/image', document_upload.single('file'), (req, res , err) => {
+app.post('/api/upload/image', document_upload.array('image'),(req, res , err) => {
   const files = req.file;
   if (!files || files.length === 0) {
     const error = new Error('Please upload at least one file');
