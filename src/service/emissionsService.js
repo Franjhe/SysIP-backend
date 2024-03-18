@@ -170,17 +170,21 @@ const createEmmisionHealth = async (create) => {
 
         const truncateTables = await Emissions.deleteEmmisionGHB(create);
 
-        const createEmmisionBen = await Emissions.createEmmisionGHB(create);
-        if (createEmmisionBen.error) {
-            return {
-                error: createEmmisionBen.error
+        if(create.beneficiarios.length > 0){
+            const createEmmisionBen = await Emissions.createEmmisionGHB(create);
+            if (createEmmisionBen.error) {
+                return {
+                    error: createEmmisionBen.error
+                }
             }
         }
 
-        const createEmmisionAseg = await Emissions.createEmmisionGHA(create);
-        if (createEmmisionAseg.error) {
-            return {
-                error: createEmmisionAseg.error
+        if(create.asegurados.length > 0){
+            const createEmmisionAseg = await Emissions.createEmmisionGHA(create);
+            if (createEmmisionAseg.error) {
+                return {
+                    error: createEmmisionAseg.error
+                }
             }
         }
 
