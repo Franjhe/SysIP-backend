@@ -165,8 +165,7 @@ const updateDataReceipt = async (updatePaymentReport) => {
         }
     }
 
-
-    console.log(updatePaymentReport.correo)
+                                              
     const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
 
     try {

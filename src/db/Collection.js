@@ -560,7 +560,7 @@ const receiptDifference = async(receipt) => {
                 
                 const html = ejs.render(template, datosPlantilla);
                 try {
-                  const enviado = await emailService.enviarCorreo('franjhely.andre13@gmail.com', 'Asunto del correo', html);
+                  const enviado = await emailService.enviarCorreo(receipt.correo, 'Asunto del correo', html);
                   if (enviado) {
                     console.log('Correo enviado con éxito');
                   } else {
