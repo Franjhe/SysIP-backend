@@ -218,7 +218,7 @@ const createPaymentRequests = async (data) => {
                     .input('cmoneda', sql.Char(4, 0), data.list[i].cmoneda) //
                     .input('xobservaciones', sql.VarChar(255, 0), data.list[i].xobservaciones) //
                     .query(`INSERT INTO adsolpg (csolpag, cmoneda, fsolicit, fmovim, fanopol, fmespol, istatsol, csucur, cproductor, cben, cid_ben, xbeneficiario, mpagosol, xconcepto_1, xconcepto_2, xobserva, fingreso)
-                    VALUES (@csolpag, @cmoneda, @ffacturacion, @ffacturacion, @fanopol, @fmespol, 'C', @csucursal, @ccorredor, @ccorredor, @cid, @xbeneficiario, @mmontototal, @xtransaccion, @xconcepto, @xobservaciones, @ffacturacion)`)
+                    VALUES (@csolpag, @cmoneda, @ffacturacion, @ffacturacion, @fanopol, @fmespol, 'P', @csucursal, @ccorredor, @ccorredor, @cid, @xbeneficiario, @mmontototal, @xtransaccion, @xconcepto, @xobservaciones, @ffacturacion)`)
 
                 // if (search.rowsAffected) {
                     for (let j = 0; j < data.list[i].recibos.length; j++) {
@@ -258,6 +258,30 @@ const createPaymentRequests = async (data) => {
         return { error: err.message, message: 'No se pudo encontrar la orden, por favor revise los datos e intente nuevamente ' };
     }
 }
+const payPaymentRequests = async (data) => {
+    try {
+
+        console.log("↓");
+        let csolpag = data.csolpag;
+        let pool = await sql.connect(sqlConfig);
+
+        let update = await pool.request()
+            .input('csolpag', sql.Numeric(17, 0), csolpag) //
+            .query(`UPDATE [dbo].[adsolpg] SET [istatsol] = 'C' WHERE [csolpag] = @csolpag`);
+            
+            if (update.rowsAffected) {
+
+            return { result: { message: `Solicitud de pago #${csolpag} cancelada correctamente.` } };
+    
+            await pool.close();
+            return { result: data };
+
+        }
+    }
+    catch (err) {
+        return { error: err.message, message: 'No se pudo encontrar la orden, por favor revise los datos e intente nuevamente ' };
+    }
+}
 
 
 
@@ -267,6 +291,6 @@ export default {
     searchInsurerCommissions,
     searchDataProductor,
     searchPaymentRequests,
-    createPaymentRequests
-
+    createPaymentRequests,
+    payPaymentRequests,
 }

@@ -61,6 +61,16 @@ const createPaymentRequests = async (data) => {
 
     return returnData;
 }
+const payPaymentRequests = async (data) => {
+    const returnData = await Commissions.payPaymentRequests(data);
+    if (returnData.error) {
+        return {
+            error: returnData.error
+        }
+    }
+
+    return returnData;
+}
 
 
 
@@ -71,4 +81,5 @@ export default {
     searchDataProductor,
     searchPaymentRequests,
     createPaymentRequests,
+    payPaymentRequests,
 }

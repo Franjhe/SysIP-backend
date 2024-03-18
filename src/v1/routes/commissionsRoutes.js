@@ -41,6 +41,7 @@ router
     .post("/search-paymentRequests",  commissionsController.searchPaymentRequests)
     .post("/detail-paymentRequests/:id",  commissionsController.searchComisionesProductores)
     .post("/create-paymetRequests",  commissionsController.createPaymentRequests)
+    .post("/pay-paymetRequests",  commissionsController.payPaymentRequests)
     //api de carga de transacciones 
     
     // .post("/create-notification-movement", document_upload.single('file'), commissionsController.createNotificationMovement   ) //creacion del movimiento de transaccion del reporte de pago
