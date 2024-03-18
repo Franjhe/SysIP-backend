@@ -640,7 +640,7 @@ const createEmmisionGH = async(create,bcv) => {
       .input('cproductor', sql.Int, parseInt(create.cproductor))
       .input('pcomision', sql.Numeric(17,2), parseFloat(create.pcomision))
       .input('mcomisionext', sql.Numeric(18,2), parseFloat(create.mcomisionext))
-      .input('ptasamon', sql.Numeric(18,6), parseFloat(bcv))
+      .input('ptasamon', sql.Numeric(18,6), bcv)
       .input('cmetodologiapago', sql.Int, parseInt(create.cmetodologiapago))
       .input('cpoliza', sql.Numeric(19, 0), create.cpoliza ? create.cpoliza: undefined)
       .input('cproces', sql.Numeric(13, 0), create.cproces ? create.cproces: undefined)
