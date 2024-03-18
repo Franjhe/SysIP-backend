@@ -63,6 +63,26 @@ const searchPaymentReportData = async () => {
 
 }
 
+const createPaymentReportSoport = async (createPaymentReport) => {
+    if(createPaymentReport.diference){
+        const createPaymentReportData = await Collection.createPaymentReportSoportW(createPaymentReport);
+        if (createPaymentReportData.error) {
+            return {
+                error: createPaymentReportData.error
+            }
+        }
+        return createPaymentReportData;
+    }else{
+        const createPaymentReportData = await Collection.createPaymentReportSoportDiference(createPaymentReport);
+        if (createPaymentReportData.error) {
+            return {
+                error: createPaymentReportData.error
+            }
+        }
+        return createPaymentReportData;
+    }
+}
+
 const searchPaymentPendingData = async () => {
     const searchPaymentPending = await Collection.searchDataPaymentPending();
     if (searchPaymentPending.error) {
@@ -249,4 +269,5 @@ export default {
     differenceOfNotificationData,
     updateDifferenceOfNotificationData,
     searchPaymentCollected,
+    createPaymentReportSoport
 }

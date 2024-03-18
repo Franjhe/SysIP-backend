@@ -7,6 +7,7 @@ router
 
     .post("/search",  collectionController.searchCollectionbyClient)
     .post("/create-trans",  collectionController.createPaymentReporTrans) 
+    .post("/create-report",  collectionController.createPaymentReportSoport) 
         
     .get("/search-notification",  collectionController.searchPaymentReportNotification)
     .get("/search-pending",  collectionController.searchPaymentPending)

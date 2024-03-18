@@ -116,7 +116,7 @@ const createPaymentReportSoportW = async(createPaymentReport) => {
         let data ;
         for(let i = 0; i < createPaymentReport.report.length; i++){
             let insertReport = await pool.request()
-            .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.idTrans)   
+            .input('ctransaccion'   , sql.Numeric(18, 0), createPaymentReport.ctransaccion)   
             .input('npago'   , sql.Numeric(18, 0), i + 1)   
             .input('casegurado'   , sql.Numeric(18, 0), createPaymentReport.casegurado)   
             .input('cmoneda'      , sql.Char(4, 0), createPaymentReport.report[i].cmoneda )  
