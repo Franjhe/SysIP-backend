@@ -15,20 +15,51 @@ const searchDataReceipt = async (searchDataReceipt) => {
 }
 
 const createPaymentReportTrans = async (createPaymentReport) => {
-    const createPaymentReportData = await Collection.createPaymentReportTransW(createPaymentReport);
-    if (createPaymentReportData.error) {
+    const createTransAndDetail = await Collection.createPaymentReportTransW(createPaymentReport);
+    if (createTransAndDetail.error) {
         return {
-            error: createPaymentReportData.error
+            error: createTransAndDetail.error
         }
     }
 
-    const updateReceipt = await Collection.transaccionReceipt(createPaymentReport,createPaymentReportData);
+
+    const updateReceipt = await Collection.transaccionReceipt(createPaymentReport);
     if (updateReceipt.error) {
         return {
             error: updateReceipt.error
         }
     }
-    return createPaymentReportData;
+    if(createPaymentReport.diference){
+        const createPaymentReportData = await Collection.createPaymentReportSoportDiference(createPaymentReport);
+        if (createPaymentReportData.error) {
+            return {
+                error: createPaymentReportData.error
+            }
+        }
+        return createPaymentReportData;
+    }else if(!createPaymentReport.diference){
+        const createPaymentReportData = await Collection.createPaymentReportSoportW(createPaymentReport);
+        if (createPaymentReportData.error) {
+            return {
+                error: createPaymentReportData.error
+            }
+        }
+        return createPaymentReportData;
+    }
+}
+
+
+
+const searchPaymentReportData = async () => {
+    const searchDataNotifiqued = await Collection.searchDataPaymentReport();
+    if (searchDataNotifiqued.error) {
+        return {
+            error: searchDataNotifiqued.error
+        }
+    }
+
+    return searchDataNotifiqued
+
 }
 
 const createPaymentReportSoport = async (createPaymentReport) => {
@@ -49,18 +80,6 @@ const createPaymentReportSoport = async (createPaymentReport) => {
         }
         return createPaymentReportData;
     }
-}
-
-const searchPaymentReportData = async () => {
-    const searchDataNotifiqued = await Collection.searchDataPaymentReport();
-    if (searchDataNotifiqued.error) {
-        return {
-            error: searchDataNotifiqued.error
-        }
-    }
-
-    return searchDataNotifiqued
-
 }
 
 const searchPaymentPendingData = async () => {
@@ -112,50 +131,42 @@ const updateDataReceipt = async (updatePaymentReport) => {
     }
 
 
-//     const searchDataClient = await Collection.searchDataClient(updatePaymentReport.casegurado);
-//     if (searchDataClient.error) {
-//         return {
-//             error: searchDataClient.error
-//         }
-//     }
+    let cuotas = [] //llenamos un alosta con los recibos y cuotas recibidos
+    for(let i = 0; i < updatePaymentReport.detalle.length; i++){
+        cuotas.push({
+            cuota:updatePaymentReport.detalle[i].qcuota,
+            cnpoliza:updatePaymentReport.detalle[i].cnpoliza,
+        })
+    }
+    let cuotasLength = cuotas.length //asgignamos una variable a la longitud
 
-//     let cuotas = [] //llenamos un alosta con los recibos y cuotas recibidos
-//     for(let i = 0; i < updatePaymentReport.detalle.length; i++){
-//         cuotas.push({
-//             cuota:updatePaymentReport.detalle[i].qcuota,
-//             cnpoliza:updatePaymentReport.detalle[i].cnpoliza,
-//         })
-//     }
-//     let cuotasLength = cuotas.length //asgignamos una variable a la longitud
+//la Logica representa la busqueda del valor de la cuota para especifcar si se enviar el cuadro poliza,el cuadro recibo o ambos al mismo tiempo 
 
-// //la Logica representa la busqueda del valor de la cuota para especifcar si se enviar el cuadro poliza,el cuadro recibo o ambos al mismo tiempo 
+    if(cuotasLength > 1){   //si tiene mas de un recibo,se valida si posee la cuota inial,sino,solo se enviara una lista de recibos pagados
 
-//     if(cuotasLength > 1){   //si tiene mas de un recibo,se valida si posee la cuota inial,sino,solo se enviara una lista de recibos pagados
+        const resultado = cuotas.find((numero) => numero.cuota === 1);
 
-//         const resultado = cuotas.find((numero) => numero.cuota === 1);
+        const encontrado = resultado ? true : false;
 
-//         const encontrado = resultado ? true : false;
+        if(encontrado){
+            Collection.sendMailPolizandReceipt(cuotas,updatePaymentReport.correo)
+        }else{
+            Collection.sendMailReceipt(cuotas,updatePaymentReport.correo)
+        }
+    }
+    else if(cuotasLength == 1){  //si tiene un recibo,se valida si es la cuota inial,sino,solo se enviara el recibo pagado
+        const resultado = cuotas.find((numero) => numero.cuota == 1);
+        const encontrado = resultado ? true : false;
 
-//         if(encontrado){
-//             Collection.sendMailPolizandReceipt(cuotas,searchDataClient)
-//         }else{
-//             Collection.sendMailReceipt(cuotas,searchDataClient)
-//         }
-//     }
-//     else if(cuotasLength == 1){  //si tiene un recibo,se valida si es la cuota inial,sino,solo se enviara el recibo pagado
-//         const resultado = cuotas.find((numero) => numero.cuota == 1);
-//         const encontrado = resultado ? true : false;
+        if(encontrado){
+            Collection.sendMailPoliza(cuotas,updatePaymentReport.correo)
+        }else{
+            Collection.sendMailReceipt(cuotas,updatePaymentReport.correo)
+        }
+    }
 
-//         if(encontrado){
-//             Collection.sendMailPoliza(cuotas,searchDataClient)
-//         }else{
-//             Collection.sendMailReceipt(cuotas,searchDataClient)
-//         }
-//     }
-
-
-    // console.log(cuotas,searchDataClient)
-    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv';
+                                              
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
 
     try {
         const response = await httpService(url);
@@ -238,7 +249,6 @@ const updateDifferenceOfNotificationData = async (notification) => {
 export default {
     searchDataReceipt,
     createPaymentReportTrans,
-    createPaymentReportSoport,
     searchPaymentReportData,
     searchPaymentPendingData,
     getAllPaymentsCollected,
@@ -250,4 +260,5 @@ export default {
     differenceOfNotificationData,
     updateDifferenceOfNotificationData,
     searchPaymentCollected,
+    createPaymentReportSoport
 }

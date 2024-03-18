@@ -25,6 +25,13 @@ const { diskStorage } = multer;
 const app = express(); 
 dotenv;
 
+app.use(cors({
+  origin: '*',  // o especifica el dominio permitido
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use(cors());
 
 app.use(express.json({ limit: '10mb' }));
@@ -74,14 +81,14 @@ const document_storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now() + '.' + fileExtension(file.originalname));
+    cb(null, file.originalname);
   }
 });
 
 let document_upload = multer({
     storage: document_storage,
     limits: {
-      fileSize: 5000000
+      fileSize: 35000000
     },
     fileFilter(req, file, cb) {
       cb(null, true);
@@ -103,7 +110,7 @@ app.post('/api/upload/documents', document_upload.array('xdocumentos', 5), (req,
   res.json({ data: { status: true, uploadedFile: files } });
 });
 
-app.post('/api/upload/image', document_upload.single('file'),(req, res , err) => {
+app.post('/api/upload/image', document_upload.array('image'),(req, res , err) => {
   const files = req.file;
   if (!files || files.length === 0) {
     const error = new Error('Please upload at least one file');
