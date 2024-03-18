@@ -167,7 +167,6 @@ const searchPaymentRequests = async () => {
             return {
                 search: search.recordset
             };
-
         }
 
         await pool.close();
@@ -221,17 +220,17 @@ const createPaymentRequests = async (data) => {
                     VALUES (@csolpag, @cmoneda, @ffacturacion, @ffacturacion, @fanopol, @fmespol, 'P', @csucursal, @ccorredor, @ccorredor, @cid, @xbeneficiario, @mmontototal, @xtransaccion, @xconcepto, @xobservaciones, @ffacturacion)`)
 
                 // if (search.rowsAffected) {
-                    for (let j = 0; j < data.list[i].recibos.length; j++) {
-                        console.log(data.list[i].recibos[j]);
-                        // const element = data.list[i].recibos[j];
-                        console.log(data.list[i].ccorredor);
+                for (let j = 0; j < data.list[i].recibos.length; j++) {
+                    console.log(data.list[i].recibos[j]);
+                    // const element = data.list[i].recibos[j];
+                    console.log(data.list[i].ccorredor);
 
-                        let updateReceipt = pool.request()
-                            .input('ccodigo', sql.Numeric(19, 0), data.list[i].recibos[j])
-                            .input('cproductor', sql.Numeric(11, 0), data.list[i].ccorredor)
-                            .query(`UPDATE [dbo].[admovcom] SET [istatcom] = 'C' WHERE [cproductor] = @cproductor 
+                    let updateReceipt = pool.request()
+                        .input('ccodigo', sql.Numeric(19, 0), data.list[i].recibos[j])
+                        .input('cproductor', sql.Numeric(11, 0), data.list[i].ccorredor)
+                        .query(`UPDATE [dbo].[admovcom] SET [istatcom] = 'C' WHERE [cproductor] = @cproductor 
                             AND [ccodigo] = @ccodigo;`);
-                    }
+                }
 
                 // }
 
@@ -268,15 +267,47 @@ const payPaymentRequests = async (data) => {
         let update = await pool.request()
             .input('csolpag', sql.Numeric(17, 0), csolpag) //
             .query(`UPDATE [dbo].[adsolpg] SET [istatsol] = 'C' WHERE [csolpag] = @csolpag`);
-            
-            if (update.rowsAffected) {
+
+        if (update.rowsAffected) {
 
             return { result: { message: `Solicitud de pago #${csolpag} cancelada correctamente.` } };
-    
+
             await pool.close();
             return { result: data };
 
         }
+    }
+    catch (err) {
+        return { error: err.message, message: 'No se pudo encontrar la orden, por favor revise los datos e intente nuevamente ' };
+    }
+}
+const detailPaymentRequest = async (data) => {
+    try {
+
+        console.log("↓");
+        let csolpag = data.csolpag;
+        let pool = await sql.connect(sqlConfig);
+
+        let search = await pool.request()
+            .input('csolpag', sql.Numeric(17, 0), csolpag) //
+            .query(`SELECT 
+            CASE 
+                WHEN istatsol = 'P' THEN 'Pendiente'
+                WHEN istatsol = 'C' THEN 'Cancelado'
+                ELSE ''
+            END as xstatsol
+            ,* FROM adsolpg
+            WHERE csolpag = @csolpag;`);
+
+        if (search.rowsAffected) {
+            return {
+                search: search.recordset
+            };
+        }
+
+        await pool.close();
+        return { result: search.recordset };
+
     }
     catch (err) {
         return { error: err.message, message: 'No se pudo encontrar la orden, por favor revise los datos e intente nuevamente ' };
@@ -293,4 +324,5 @@ export default {
     searchPaymentRequests,
     createPaymentRequests,
     payPaymentRequests,
+    detailPaymentRequest,
 }
