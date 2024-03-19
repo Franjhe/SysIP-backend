@@ -23,7 +23,13 @@ const searchReceipt = async (searchReceipt) => {
     return receipt;
 }
 
+const sendMailData = async (estatus) => {
+    const receipt = await Report.sendMailReportSys(estatus);
+
+}
+
 export default {
     searchPremiums,
-    searchReceipt
+    searchReceipt,
+    sendMailData
 }

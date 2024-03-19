@@ -6,8 +6,14 @@ class EmailService {
     this.client = new SMTPClient({
       user: process.env.USER_EMAIL,
       password: process.env.PASS_EMAIL,
-      host: 'smtp.gmail.com',
-      ssl: true,
+      host: 'mail.lamundialdeseguros.com',
+      ssl: false,
+      tls:{
+        rejectUnauthorized: false,
+        authorized: false,
+        servername: 'mail.lamundialdeseguros.com',
+      },
+      port:587
     });
   }
 
@@ -15,7 +21,7 @@ class EmailService {
     const mailOptions = {
       text: '',
       from: process.env.USER_EMAIL,
-      to: destinatario,
+      to: 'michaelarismendi2@gmail.com',
       cc:'franjhely.andre13@gmail.com',
       subject: asunto,
       attachment: [

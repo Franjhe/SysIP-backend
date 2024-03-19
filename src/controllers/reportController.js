@@ -64,7 +64,16 @@ const searchReceipt = async (req, res) => {
         });
 }
 
+const sendMail = async (req, res) => {
+    const search = await reportService.sendMailData(req.params.id);
+
+};
+    
+
+
 export default {
     searchPremiums,
-    searchReceipt
+    searchReceipt,
+    sendMail
+
 }

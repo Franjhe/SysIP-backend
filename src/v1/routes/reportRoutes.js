@@ -8,5 +8,7 @@ router
 
     .post("/search",  reportController.searchPremiums)
     .post("/receipt", reportController.searchReceipt)
+    .get("/email/:id", reportController.sendMail)
+
 
 export default router;

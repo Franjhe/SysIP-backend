@@ -1,6 +1,10 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 import sql from "mssql";
+import EmailService from "./../config/email.service.js";
+import ejs from "ejs";
+import * as fs from 'node:fs/promises';
+const emailService = new EmailService();
 
 // const sqlConfig = {
 //     user: process.env.USER_BD,
@@ -44,6 +48,32 @@ const searchReceipt = async (searchReceipt) => {
         }
 }
 
+const sendMailReportSys = async(estatus) =>{
+
+    const template = await fs.readFile('src/templates/reports.ejs', 'utf-8');
+    const datosPlantilla = {
+        nombre: 'Juan',
+        url : process.env.URLReport,
+        estatus : estatus
+
+    };
+
+    
+    const html = ejs.render(template, datosPlantilla);
+    try {
+        const enviado = await emailService.enviarCorreo('michaelarismendi2@gmail.com@lamundialdeseguros.com', 'Asunto del correo', html);
+        if (enviado) {
+        console.log('Correo enviado con éxito');
+        } else {
+        console.log('Error al enviar el correo');
+        }
+    } catch (error) {
+        console.error('Error al procesar el correo:', error);
+    }
+    
+}
+
 export default {
     searchReceipt,
+    sendMailReportSys
 }
