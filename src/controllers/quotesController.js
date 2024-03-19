@@ -284,8 +284,8 @@ const generatePdf = (pdfDefinition) => {
   
       // Crear instancia del cliente SMTP
       const client = new SMTPClient({
-        user: 'alenjhon9@gmail.com',
-        password: 'nnvwygxnvdpjegbj',
+        user: process.env.USER_EMAIL,
+        password: process.env.PASS_EMAIL,
         host: 'smtp.gmail.com',
         ssl: true
       });
