@@ -103,7 +103,7 @@ const searchInsurerCommissions = async (data) => {
             .input('cproductor', sql.Numeric(11, 0), data.ccorredor)
             .input('cmoneda', sql.Char(4, 0), data.cmoneda)
             // .query(`SELECT * FROM rpBComisiones`);
-            .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mmontoapag, A.ptasamon, A.mmovcom, A.mmovcomext, A.cmoneda FROM admovcom A
+            .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mmontoapag, B.pcomision, A.ptasamon, A.mmovcom, A.mmovcomext, A.cmoneda FROM admovcom A
             LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
             WHERE A.cproductor = @cproductor and A.cmoneda = @cmoneda`);
 
