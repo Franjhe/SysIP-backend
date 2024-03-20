@@ -40,7 +40,7 @@ const searchPoliza = async (cedula) => {
         let pool = await sql.connect(sqlConfig);
         let result = await pool.request()
             .input('cci_rif', sql.NVarChar, cedula)
-            .query('select DISTINCT cpoliza as n_poliza, ltrim(RTRIM(ramo)) FROM adVpol_Coberturas where ctenedor = @cci_rif ')
+            .query('select DISTINCT cpoliza as n_poliza, RTRIM(ramo) as ramo FROM adVpol_Coberturas where ctenedor = @cci_rif ')
             await pool.close();
         return result.recordsets[0]
     }
