@@ -113,7 +113,7 @@ const createIndividualContract = async(createIndividualContract,bcv) => {
           .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
           .input('xcedula', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
           .input('xnombre', sql.NVarChar, createIndividualContract.xnombre ? createIndividualContract.xnombre: undefined)
-          .input('xapellido', sql.NVarChar, createIndividualContract.xapellido ? createIndividualContract.xapellido: undefined)
+          .input('xapellido', sql.NVarChar, createIndividualContract.xapellido ? createIndividualContract.xapellido: '.')
           .input('xtelefono_emp', sql.NVarChar, createIndividualContract.xtelefono_emp ? createIndividualContract.xtelefono_emp: undefined)
           .input('email', sql.NVarChar, createIndividualContract.email ? createIndividualContract.email: undefined)
           .input('cestado', sql.Int, createIndividualContract.cestado ? createIndividualContract.cestado: undefined)
