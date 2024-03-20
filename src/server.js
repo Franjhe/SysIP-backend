@@ -18,7 +18,7 @@ import v1EmissionsRouter from './v1/routes/emissionsRoutes.js';
 import v1QuotesRouter from './v1/routes/quotesRoutes.js';
 import v1Collection from './v1/routes/collection.js'
 import v1Commissions from './v1/routes/commissionsRoutes.js'
-// import v1VirtualAssistant from './v1/routes/virtualAssistantRoutes.js'
+import v1VirtualAssistant from './v1/routes/virtualAssistantRoutes.js'
 
 import fileExtension from 'file-extension';
 import multer from 'multer';
@@ -54,7 +54,7 @@ app.use("/api/v1/emissions", v1EmissionsRouter);
 app.use("/api/v1/quotes", v1QuotesRouter);
 app.use("/api/v1/collection", v1Collection);
 app.use("/api/v1/commissions", v1Commissions);
-//app.use("/api/v1/", v1VirtualAssistant);
+app.use("/api/v1/", v1VirtualAssistant);
 
 const PORT = process.env.PORT || 3000; 
 
