@@ -414,16 +414,6 @@ const searchRiotRate = async (searchRiotRate) => {
 // }
 
 
-
-
-const deleteEmmisionGHB = async () => {
-    let pool = await sql.connect(sqlConfig);
-    await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Ben");
-    await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Aseg");
-    await pool.request().query("TRUNCATE TABLE eePoliza_Salud");
-
-}
-
 const createGroupContract = async (createGroupContract, bcv) => {
   try {
     let rowsAffected = 0;
@@ -608,6 +598,14 @@ const searchQuotes = async (searchQuotes) => {
   }
 };
 
+//Emision de salud
+const deleteEmmisionGHB = async () => {
+  let pool = await sql.connect(sqlConfig);
+  await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Ben");
+  await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Aseg");
+  await pool.request().query("TRUNCATE TABLE eePoliza_Salud");
+
+}
 
 const createEmmisionGH = async(create,bcv) => {
   try{
@@ -642,11 +640,6 @@ const createEmmisionGH = async(create,bcv) => {
       .input('mcomisionext', sql.Numeric(18,2), parseFloat(create.mcomisionext))
       .input('ptasamon', sql.Numeric(18,6), bcv)
       .input('cmetodologiapago', sql.Int, parseInt(create.cmetodologiapago))
-      .input('cpoliza', sql.Numeric(19, 0), create.cpoliza ? create.cpoliza: undefined)
-      .input('cproces', sql.Numeric(13, 0), create.cproces ? create.cproces: undefined)
-      .input('fanopol', sql.Int, create.fanopol ? create.fanopol: undefined)
-      .input('fmespol', sql.Int, create.fmespol ? create.fmespol: undefined)
-      .input('cnpoliza', sql.NVarChar, create.cnpoliza ? create.cnpoliza: undefined)
       .input('cbanco', sql.Int, parseInt(create.cbanco))
       .input('xreferencia', sql.NVarChar, create.xreferencia)
       .input('fcobro', sql.DateTime, new Date(create.fcobro))
@@ -655,13 +648,13 @@ const createEmmisionGH = async(create,bcv) => {
       .query('INSERT INTO eePoliza_Salud (cnpoliza_rel,cnrecibo_rel,cramo ,xcanal_venta ,icedula_tomador ,xrif_tomador ,xnombre_tomador,xapellido_tomador ,xdireccion_tomador ,xcorreo_tomador  ,icedula_titular ,xrif_titular,xnombre_titular'+
         ',xapellido_titular,isexo_titular ,iestado_civil_titular ,fnac_titular,xdireccion_titular ,xcorreo_titular'+
         ',xtelefono_titular,nbeneficiarios ,msumaasegext ,mprimaext ,cproductor ,pcomision ,mcomisionext'+
-        ',ptasamon ,cmetodologiapago ,cpoliza ,cproces ,fanopol ,fmespol  ,cnpoliza'+
+        ',ptasamon ,cmetodologiapago   '+
         ',cbanco,xreferencia  ,fcobro ,femision)'+
       'VALUES (@cnpoliza_rel,@cnrecibo_rel,@cramo ,@xcanal_venta ,@icedula_tomador ,@xrif_tomador ,@xnombre_tomador'+
       ',@xapellido_tomador ,@xdireccion_tomador ,@xcorreo_tomador  ,@icedula_titular ,@xrif_titular,@xnombre_titular'+
        ',@xapellido_titular,@isexo_titular ,@iestado_civil_titular ,@fnac_titular,@xdireccion_titular ,@xcorreo_titular'+
        ',@xtelefono_titular,@nbeneficiarios ,@msumaasegext ,@mprimaext ,@cproductor ,@pcomision ,@mcomisionext'+
-       ',@ptasamon ,@cmetodologiapago ,@cpoliza ,@cproces ,@fanopol ,@fmespol  ,@cnpoliza'+
+       ',@ptasamon ,@cmetodologiapago  '+
        ',@cbanco,@xreferencia  ,@fcobro ,@femision)');
 
       //sql.close();
@@ -738,6 +731,146 @@ const createEmmisionGHA = async(create) => {
       return { error: err.message };
   }
 }
+
+//Emision de salud Paralife
+const deleteEmmisionHParalife = async () => {
+  let pool = await sql.connect(sqlConfig);
+  await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Aseg_Paralife");
+  await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Ben_Paralife");
+  await pool.request().query("TRUNCATE TABLE eePoliza_Salud_Paralife");
+
+}
+
+const createEmmisionGParalife = async(create,bcv) => {
+  try{
+      let rowsAffected = 0;
+      let pool = await sql.connect(sqlConfig);
+      let createEmmi = await pool.request()
+      .input('cnpoliza_rel', sql.NVarChar, create.cnpoliza_rel)
+      .input('cnrecibo_rel', sql.NVarChar, create.cnrecibo_rel)
+      .input('cramo', sql.Int, create.cramo)
+      .input('xcanal_venta', sql.NVarChar, create.xcanal_venta)
+      .input('icedula_tomador', sql.Char, create.icedula_tomador)
+      .input('xrif_tomador', sql.Numeric, parseFloat(create.xrif_tomador))
+      .input('xnombre_tomador', sql.NVarChar, create.xnombre_tomador)
+      .input('xapellido_tomador', sql.NVarChar, create.xapellido_tomador)
+      .input('xdireccion_tomador', sql.NVarChar, create.xdireccion_tomador)
+      .input('xcorreo_tomador', sql.NVarChar, create.xcorreo_tomador)
+      .input('icedula_titular', sql.Char, create.icedula_titular)
+      .input('xrif_titular', sql.Numeric(17,0), parseFloat(create.xrif_titular))
+      .input('xnombre_titular', sql.NVarChar, create.xnombre_titular)
+      .input('xapellido_titular', sql.NVarChar, create.xapellido_titular)
+      .input('isexo_titular', sql.Char, create.isexo_titular)
+      .input('iestado_civil_titular', sql.Char, create.iestado_civil_titular)
+      .input('fnac_titular', sql.DateTime, create.fnac_titular)
+      .input('xdireccion_titular', sql.NVarChar, create.xdireccion_titular)
+      .input('xcorreo_titular', sql.NVarChar, create.xcorreo_titular)
+      .input('xtelefono_titular', sql.NVarChar, create.xtelefono_titular)
+      .input('nbeneficiarios', sql.Int, create.nbeneficiarios)
+      .input('msumaasegext', sql.Numeric(17,2), parseFloat(create.msumaasegext))
+      .input('mprimaext', sql.Numeric(17,2), parseFloat(create.mprimaext))
+      .input('cproductor', sql.Int, parseInt(create.cproductor))
+      .input('pcomision', sql.Numeric(17,2), parseFloat(create.pcomision))
+      .input('mcomisionext', sql.Numeric(18,2), parseFloat(create.mcomisionext))
+      .input('ptasamon', sql.Numeric(18,6), bcv)
+      .input('cmetodologiapago', sql.Int, parseInt(create.cmetodologiapago))
+      .input('cpoliza', sql.Numeric(19, 0), create.cpoliza ? create.cpoliza: undefined)
+      .input('cproces', sql.Numeric(13, 0), create.cproces ? create.cproces: undefined)
+      .input('fanopol', sql.Int, create.fanopol ? create.fanopol: undefined)
+      .input('fmespol', sql.Int, create.fmespol ? create.fmespol: undefined)
+      .input('cbanco', sql.Int, parseInt(create.cbanco))
+      .input('xreferencia', sql.NVarChar, create.xreferencia)
+      .input('fcobro', sql.DateTime, new Date(create.fcobro))
+      .input('femision', sql.DateTime, new Date() )
+
+      .query('INSERT INTO eePoliza_Salud_Paralife (cnpoliza_rel,cnrecibo_rel,cramo ,xcanal_venta ,icedula_tomador ,xrif_tomador ,xnombre_tomador,xapellido_tomador ,xdireccion_tomador ,xcorreo_tomador  ,icedula_titular ,xrif_titular,xnombre_titular'+
+        ',xapellido_titular,isexo_titular ,iestado_civil_titular ,fnac_titular,xdireccion_titular ,xcorreo_titular'+
+        ',xtelefono_titular,nbeneficiarios ,msumaasegext ,mprimaext ,cproductor ,pcomision ,mcomisionext'+
+        ',ptasamon ,cmetodologiapago ,cpoliza ,cproces ,fanopol ,fmespol '+
+        ',cbanco,xreferencia  ,fcobro ,femision)'+
+      'VALUES (@cnpoliza_rel,@cnrecibo_rel,@cramo ,@xcanal_venta ,@icedula_tomador ,@xrif_tomador ,@xnombre_tomador'+
+      ',@xapellido_tomador ,@xdireccion_tomador ,@xcorreo_tomador  ,@icedula_titular ,@xrif_titular,@xnombre_titular'+
+       ',@xapellido_titular,@isexo_titular ,@iestado_civil_titular ,@fnac_titular,@xdireccion_titular ,@xcorreo_titular'+
+       ',@xtelefono_titular,@nbeneficiarios ,@msumaasegext ,@mprimaext ,@cproductor ,@pcomision ,@mcomisionext'+
+       ',@ptasamon ,@cmetodologiapago ,@cpoliza ,@cproces ,@fanopol ,@fmespol  '+
+       ',@cbanco,@xreferencia  ,@fcobro ,@femision)');
+
+      //sql.close();
+      return { rowsAffected  };
+  }
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
+
+const createEmmisionGBParalife = async(create) => {
+  try{
+      let data ;
+      let pool = await sql.connect(sqlConfig);
+      for(let i = 0; i < create.beneficiarios.length; i++){
+        let insertEmmiBen = await pool.request()
+        .input('icedula_beneficiario', sql.Char(1), create.beneficiarios[i].icedula_beneficiario)
+        .input('xrif_beneficiario', sql.Numeric(17,0), create.beneficiarios[i].xrif_beneficiario)
+        .input('xnombre_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xnombre_beneficiario)
+        .input('xapellido_beneficiario', sql.NVarChar(30), create.beneficiarios[i].xapellido_beneficiario)
+        .input('fnac_beneficiario', sql.DateTime, create.beneficiarios[i].fnac_beneficiario)
+        .input('isexo_beneficiario', sql.Char(1), create.beneficiarios[i].isexo_beneficiario)
+        .input('nparentesco_beneficiario', sql.Int, create.beneficiarios[i].nparentesco_beneficiario)
+        .query('INSERT INTO eePoliza_Salud_Ben_Paralife ' +
+        '(icedula_beneficiario, xrif_beneficiario, xnombre_beneficiario, xapellido_beneficiario, fnac_beneficiario,'+ 
+        'isexo_beneficiario,nparentesco_beneficiario) '
+        +'VALUES (@icedula_beneficiario, @xrif_beneficiario, @xnombre_beneficiario, @xapellido_beneficiario, @fnac_beneficiario,'+ 
+        '@isexo_beneficiario,@nparentesco_beneficiario)');
+
+        data = insertEmmiBen.rowsAffected
+
+      }
+      return data;
+  
+      //sql.close();
+  }
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
+
+const createEmmisionGAParalife = async(create) => {
+  try{
+        let pool = await sql.connect(sqlConfig);
+        let data ;
+
+        for(let i = 0; i < create.asegurados.length; i++){
+          let insertEmmiBen = await pool.request()
+          .input('icedula_asegurado', sql.Char(1), create.asegurados[i].icedula_asegurado)
+          .input('xrif_asegurado', sql.Numeric(17,0), create.asegurados[i].xrif_asegurado)
+          .input('xnombre_asegurado', sql.NVarChar(17,2), create.asegurados[i].xnombre_asegurado)
+          .input('xapellido_asegurado', sql.NVarChar(17,2), create.asegurados[i].xapellido_asegurado)
+          .input('fnac_asegurado', sql.DateTime, create.asegurados[i].fnac_asegurado)
+          .input('isexo_asegurado', sql.Char(1), create.asegurados[i].isexo_asegurado)
+          .input('nparentesco_asegurado', sql.Int, create.asegurados[i].nparentesco_asegurado)
+          .input('iestado_civil_asegurado', sql.Char(1), create.asegurados[i].iestado_civil_asegurado)
+          .query('INSERT INTO eePoliza_Salud_Aseg_Paralife ' +
+          '(icedula_asegurado,xrif_asegurado,xnombre_asegurado,xapellido_asegurado,'+
+          'fnac_asegurado,isexo_asegurado,nparentesco_asegurado,iestado_civil_asegurado)'
+          +'VALUES (@icedula_asegurado,@xrif_asegurado,@xnombre_asegurado,@xapellido_asegurado,'+
+          '@fnac_asegurado,@isexo_asegurado,@nparentesco_asegurado,@iestado_civil_asegurado)')
+
+          data = insertEmmiBen.rowsAffected
+        }
+
+        return data;
+
+    }
+  
+  catch(err){
+      console.log(err.message);
+      return { error: err.message };
+  }
+}
+
+//
 
 const createEmmisionAutomovile = async(create,bcv) => {
   try{
@@ -834,5 +967,9 @@ export default {
     createEmmisionGHA,
     searchRates,
     createEmmisionAutomovile,
-    deleteEmmisionGHB
+    deleteEmmisionGHB,
+    deleteEmmisionHParalife,
+    createEmmisionGBParalife,
+    createEmmisionGAParalife,
+    createEmmisionGParalife
   };
