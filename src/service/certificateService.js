@@ -173,7 +173,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             xnombrerepresentantelegal: getFleetContractData.result.recordset[0].XREPRESENTANTELEGAL,
             ccliente: getFleetContractData.result.recordset[0].CCLIENTE,
             xnombrecliente: getFleetContractClientData.result.recordset[0].XCLIENTE,
-            xdocidentidadcliente: getFleetContractClientData.result.recordset[0].XDOCIDENTIDAD,
+            xdocidentidadcliente: getFleetContractOwnerData.result.recordset[0].ICEDULA + '-' + getFleetContractClientData.result.recordset[0].XDOCIDENTIDAD,
             xdireccionfiscalcliente: getFleetContractClientData.result.recordset[0].XDIRECCIONFISCAL,
             xtelefonocliente:getFleetContractClientData.result.recordset[0].XTELEFONO,
             xemailcliente: getFleetContractClientData.result.recordset[0].XEMAIL,
