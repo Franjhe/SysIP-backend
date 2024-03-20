@@ -105,7 +105,7 @@ const searchInsurerCommissions = async (data) => {
             // .query(`SELECT * FROM rpBComisiones`);
             .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mmontoapag, B.pcomision, A.ptasamon, A.mmovcom, A.mmovcomext, A.cmoneda FROM admovcom A
             LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
-            WHERE A.cproductor = @cproductor and A.cmoneda = @cmoneda`);
+            WHERE A.cproductor = @cproductor and A.cmoneda = @cmoneda AND istatcom = 'P'`);
 
         if (search.rowsAffected) {
             return {
@@ -158,6 +158,7 @@ const searchPaymentRequests = async () => {
             .query(`SELECT 
             CASE 
                 WHEN istatsol = 'P' THEN 'Pendiente'
+                WHEN istatsol = 'S' THEN 'Solicitado'
                 WHEN istatsol = 'C' THEN 'Cancelado'
                 ELSE ''
             END as xstatsol
@@ -226,10 +227,12 @@ const createPaymentRequests = async (data) => {
                     console.log(data.list[i].ccorredor);
 
                     let updateReceipt = pool.request()
+                        .input('csolpag', sql.Numeric(17, 0), csolpag)
                         .input('ccodigo', sql.Numeric(19, 0), data.list[i].recibos[j])
                         .input('cproductor', sql.Numeric(11, 0), data.list[i].ccorredor)
-                        .query(`UPDATE [dbo].[admovcom] SET [istatcom] = 'S' WHERE [cproductor] = @cproductor 
+                        .query(`UPDATE [dbo].[admovcom] SET [csolpag] = @csolpag, [istatcom] = 'S' WHERE [cproductor] = @cproductor 
                             AND [ccodigo] = @ccodigo;`);
+                            // --AND [canexo] = 1 AND [imovcom] = 'PR'
                 }
 
                 // }
@@ -289,7 +292,7 @@ const detailPaymentRequest = async (data) => {
         let pool = await sql.connect(sqlConfig);
 
         let search = await pool.request()
-            .input('csolpag', sql.Numeric(17, 0), csolpag) //
+            .input('csolpag', sql.Numeric(17, 0), csolpag)
             .query(`SELECT 
             CASE 
                 WHEN istatsol = 'P' THEN 'Pendiente'
@@ -300,10 +303,42 @@ const detailPaymentRequest = async (data) => {
             WHERE csolpag = @csolpag;`);
 
         if (search.rowsAffected) {
+            for (let i = 0; i < search.recordset.length; i++) {
+                const element = search.recordset[i];
+
+                // console.log(element.cproductor);
+                // console.log(element.cmoneda);
+
+                let result = await pool.request()
+                    .input('csolpag', sql.Numeric(17, 0), csolpag)
+                    // .query(`SELECT * FROM admovcom WHERE csolpag = @csolpag`);
+                    .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mmontoapag, B.pcomision, A.ptasamon, A.mmovcom, A.mmovcomext, A.cmoneda FROM admovcom A
+                    LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
+                    WHERE csolpag = @csolpag`);
+
+                // console.log(result);
+                // var value = Object.values(result.recordset[0]);
+                Object.assign(search.recordset[i], { 'recibos': result.recordset });
+                // var minilist = {};
+                // result.recordset.forEach(e => {
+                //     minilist.push(e)
+                // });
+
+            }
+            console.log(search.recordset);
+
             return {
                 search: search.recordset
             };
+
+
         }
+
+        // if (search.rowsAffected) {
+        //     return {
+        //         search: search.recordset
+        //     };
+        // }
 
         await pool.close();
         return { result: search.recordset };
