@@ -374,6 +374,21 @@ const createEmmisionHealthGeneric = async (req, res) => {
         .send({status : true, messaje: "Se ha generado la Emisión de Salud con éxito"});
 }
 
+const createEmmisionHealthParalife = async (req, res) => {
+    const createEmmision = await emissionsService.createEmmisionHealthParalife(req.body);
+    if (createEmmision.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: createEmmision.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({status : true, messaje: "Se ha generado la Emisión de Salud con éxito"});
+}
 
 const createEmmisionAutomovileGeneric = async (req, res) => {
     const createEmmision = await emissionsService.createEmmisionAutomovil(req.body);
@@ -437,6 +452,7 @@ export default {
     createGroupContract,
     searchQuotes,
     createEmmisionHealthGeneric,
+    createEmmisionHealthParalife,
     createEmmisionAutomovileGeneric,
     searchRates
 }

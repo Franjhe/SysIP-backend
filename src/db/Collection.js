@@ -267,6 +267,55 @@ const createCommision = async(createCommision,bcv) => {
     }
 }
 
+const createBono = async(createCommision,bcv) => {
+    try{
+        let pool = await sql.connect(sqlConfig);
+        let data ;
+        for(let i = 0; i < createCommision.detalle.length; i++){
+            let updateReceipt= await pool.request()
+            .input('crecibo'      , sql.Numeric(19, 0), createCommision.detalle[i].crecibo )  
+            .input('fcobro', sql.DateTime, new Date())
+            .query('update adrecibos set fcobro = @fcobro where crecibo = @crecibo' );
+           if(updateReceipt.rowsAffected > 0) {
+                let searchDataReceipt= await pool.request()
+                .input('crecibo'      , sql.Numeric(19, 0), createCommision.detalle[i].crecibo )  
+                .input('fcobro', sql.DateTime, new Date())
+                .query('select * from adrecibos where crecibo = @crecibo' );
+                if(searchDataReceipt.recordset.length > 0){
+                    for(let j = 0; j < searchDataReceipt.recordset.length; j++){
+                        let insertReport = await pool.request()
+                        .input('cproductor'   , sql.Numeric(18, 0), searchDataReceipt.recordset[j].cproductor )   
+                        .input('ccodigo'   , sql.Numeric(18, 0), createCommision.detalle[i].crecibo )   
+                        .input('cnrecibo'   , sql.Numeric(18, 0), searchDataReceipt.recordset[j].cnrecibo )   
+                        .input('imovcom'   , sql.Char(2), 'BO')   
+                        .input('canexo'      , sql.SmallInt, j + 1 )  
+                        .input('cmoneda'        , sql.Char(4), searchDataReceipt.recordset[j].cmoneda ) 
+                        .input('ptasamon'     , sql.Numeric(18, 2), bcv) 
+                        .input('fmovcom'     , sql.DateTime, new Date())  
+                        .input('mbono'     , sql.Numeric(18, 2), searchDataReceipt.recordset[j].mmovcom)      
+                        .input('mbonoext'     , sql.Numeric(18, 2), searchDataReceipt.recordset[j].mmovcomext)  
+                        .input('istatcon'     , sql.Char(1), 'P')     
+                        .input('istatcom'     , sql.Char(1), 'P')     
+                        // .input('cusuario'     , sql.Numeric(18, 2), createCommision.cusuario )        
+                        .query('INSERT INTO admovcom '
+                        +'(cproductor, ccodigo, cnrecibo, imovcom, canexo, cmoneda, ptasamon, fmovcom, mmovcom, mmovcomext , istatcon ,istatcom) VALUES'
+                        +'(@cproductor, @ccodigo, @cnrecibo, @imovcom, @canexo, @cmoneda, @ptasamon, @fmovcom, @mmovcom, @mmovcomext , @istatcon ,@istatcom)')
+                        data = insertReport.rowsAffected                    
+                    }
+                }
+            }
+
+        }
+
+        await pool.close();
+        return  data 
+
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registraron los datos ' };
+    }
+}
+
 const searchDataPaymentReport = async() => {
     try{
         let pool = await sql.connect(sqlConfig);
@@ -679,6 +728,7 @@ export default {
     sendMailReceipt,
     sendMailPoliza,
     sendMailPolizandReceipt,
-    createPaymentReportSoportDiference
+    createPaymentReportSoportDiference,
+    createBono
     
 }
