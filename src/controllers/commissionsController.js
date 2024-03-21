@@ -203,6 +203,35 @@ const payPaymentRequests = async (req, res) => {
             
         });
 }
+const detailPaymentRequest = async (req, res) => {
+    
+    const returnData = await commissionsService.detailPaymentRequest(req.body);
+    if (returnData.permissionError) {
+        return res
+            .status(403)
+            .send({
+                status: false,
+                message: returnData.permissionError
+            });
+    }
+    if (returnData.error) {
+        return res
+            .status(500)
+            .send({
+                status: false,
+                message: returnData.error
+            });
+    }
+
+    return res
+        .status(200)
+        .send({
+            status: true,
+            returnData,
+            message: 'Consulta exitosa.'
+            
+        });
+}
 
 
 
@@ -214,4 +243,5 @@ export default {
     searchPaymentRequests,
     createPaymentRequests,
     payPaymentRequests,
+    detailPaymentRequest,
 }
