@@ -66,15 +66,16 @@ const searchComisionesProductores = async () => {
                 let result = await pool.request()
                     .input('cproductor', sql.Numeric(11, 0), element.cproductor)
                     .input('cmoneda', sql.Char(4, 0), element.cmoneda)
-                    .query(`SELECT ccodigo FROM admovcom WHERE cproductor = @cproductor AND cmoneda = @cmoneda AND istatcom = 'P';`);
+                    .query(`SELECT cproductor, ccodigo, canexo, imovcom FROM admovcom WHERE cproductor = @cproductor AND cmoneda = @cmoneda AND istatcom = 'P';`);
 
                 // console.log(result);
                 // var value = Object.values(result.recordset[0]);
-                var minilist = [];
-                result.recordset.forEach(e => {
-                    minilist.push(e.ccodigo)
-                    Object.assign(search.recordset[i], { 'recibos': minilist });
-                });
+                // var minilist = [];
+                // result.recordset.forEach(e => {
+                //     minilist.push(e.ccodigo)
+                //     Object.assign(search.recordset[i], { 'recibos': minilist });
+                // });
+                Object.assign(search.recordset[i], { 'recibos': result.recordset });
 
             }
 
@@ -103,7 +104,7 @@ const searchInsurerCommissions = async (data) => {
             .input('cproductor', sql.Numeric(11, 0), data.ccorredor)
             .input('cmoneda', sql.Char(4, 0), data.cmoneda)
             // .query(`SELECT * FROM rpBComisiones`);
-            .query(`SELECT B.cnpoliza, B.crecibo, A.imovcom, A.canexo, B.femision, B.mmontoapag, B.pcomision, A.ptasamon, A.mmovcom, A.mmovcomext, A.cmoneda FROM admovcom A
+            .query(`SELECT B.cnpoliza, B.crecibo, A.cproductor, A.ccodigo, A.imovcom,  A.canexo, B.femision, B.mmontoapag, B.pcomision, A.ptasamon, A.mmovcom, A.mmovcomext, A.cmoneda FROM admovcom A
             LEFT JOIN adrecibos B ON B.crecibo = A.ccodigo
             WHERE A.cproductor = @cproductor and A.cmoneda = @cmoneda AND istatcom = 'P'`);
 
@@ -162,7 +163,7 @@ const searchPaymentRequests = async () => {
                 WHEN istatsol = 'C' THEN 'Cancelado'
                 ELSE ''
             END as xstatsol
-            ,* FROM adsolpg;`);
+            ,* FROM adsolpg ORDER BY fsolicit DESC;`);
 
         if (search.rowsAffected) {
             return {
@@ -222,16 +223,18 @@ const createPaymentRequests = async (data) => {
 
                 // if (search.rowsAffected) {
                 for (let j = 0; j < data.list[i].recibos.length; j++) {
+                    console.log("↓↓↓");
                     console.log(data.list[i].recibos[j]);
-                    // const element = data.list[i].recibos[j];
-                    console.log(data.list[i].ccorredor);
+                    const admovcom = data.list[i].recibos[j];
+                    // console.log(data.list[i].ccorredor);
 
                     let updateReceipt = pool.request()
                         .input('csolpag', sql.Numeric(17, 0), csolpag)
-                        .input('ccodigo', sql.Numeric(19, 0), data.list[i].recibos[j])
-                        .input('cproductor', sql.Numeric(11, 0), data.list[i].ccorredor)
-                        .query(`UPDATE [dbo].[admovcom] SET [csolpag] = @csolpag, [istatcom] = 'S' WHERE [cproductor] = @cproductor 
-                            AND [ccodigo] = @ccodigo;`);
+                        .input('cproductor', sql.Numeric(11, 0), admovcom.cproductor)
+                        .input('ccodigo', sql.Numeric(19, 0), admovcom.ccodigo)
+                        .input('imovcom', sql.Char(2, 0), admovcom.imovcom)
+                        .input('canexo', sql.SmallInt(2, 0), admovcom.canexo)
+                        .query(`UPDATE [dbo].[admovcom] SET [csolpag] = @csolpag, [istatcom] = 'S' WHERE [cproductor] = @cproductor AND [ccodigo] = @ccodigo AND [canexo] = @canexo AND [imovcom] = @imovcom;`);
                             // --AND [canexo] = 1 AND [imovcom] = 'PR'
                 }
 
@@ -319,11 +322,6 @@ const detailPaymentRequest = async (data) => {
                 // console.log(result);
                 // var value = Object.values(result.recordset[0]);
                 Object.assign(search.recordset[i], { 'recibos': result.recordset });
-                // var minilist = {};
-                // result.recordset.forEach(e => {
-                //     minilist.push(e)
-                // });
-
             }
             console.log(search.recordset);
 
