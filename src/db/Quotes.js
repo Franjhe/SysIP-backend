@@ -86,10 +86,30 @@ const createQuotes = async (createQuotes) => {
 
         if (createQuotes.xtipo == 'V') {
             query = await pool.request()
-                .query('SELECT TOP 6 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+                .query('SELECT TOP 6 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, xclasificacion, qano FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+                for (let i = 0; i < query.recordset.length; i++) {
+                    const xclasificacion = query.recordset[i].xclasificacion;
+                    const qano = query.recordset[i].qano;
+            
+                    // Consulta en la tabla matarifa_casco
+                    const tariffResult = await pool.request()
+                        .input('xclasificacion', sql.NVarChar, xclasificacion)
+                        .input('cano', sql.Int, qano)
+                        .query('SELECT pcobertura_amplia, pperdida_total FROM matarifa_casco WHERE xclase = @xclasificacion AND cano = @cano');
+            
+                    if (tariffResult.recordset.length > 0) {
+                        query.recordset[i].pcobertura_amplia = tariffResult.recordset[0].pcobertura_amplia;
+                        query.recordset[i].pperdida_total = tariffResult.recordset[0].pperdida_total;
+            
+                    } else {
+                        query.recordset[i].pcobertura_amplia = 0;
+                        query.recordset[i].pperdida_total = 0;
+                        // Haz lo que necesites con el valor de tarifa 0
+                    }
+                }
         } else {
             query = await pool.request()
-                .query('SELECT TOP 1 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+                .query('SELECT TOP 1 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, xclasificacion FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
         }
 
         await pool.close();
