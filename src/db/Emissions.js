@@ -107,7 +107,7 @@ const createIndividualContract = async(createIndividualContract,bcv) => {
           createIndividualContract.ctomador = matomadorResult.recordset[0].ctomador;
         }
       }
-
+console
       let insert = await pool.request()
           .input('icedula', sql.Char, createIndividualContract.icedula ? createIndividualContract.icedula: undefined)
           .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
@@ -149,7 +149,7 @@ const createIndividualContract = async(createIndividualContract,bcv) => {
           .input('precarga', sql.Numeric(17, 2), createIndividualContract.precarga ? createIndividualContract.precarga: undefined)
           .input('pmotin', sql.Numeric(17, 2), createIndividualContract.pmotin ? createIndividualContract.pmotin: undefined)
           .input('pcatastrofico', sql.Numeric(17, 2), createIndividualContract.pcatastrofico ? createIndividualContract.pcatastrofico: undefined)
-          .input('mprima_casco', sql.Numeric(17, 2), createIndividualContract.mprima_casco ? createIndividualContract.mprima_casco: 0)
+          .input('mprima_casco', sql.Numeric(17, 2), createIndividualContract.mprima_casco ? createIndividualContract.mprima_casco: undefined)
           .input('mcatastrofico', sql.Numeric(17, 2), createIndividualContract.mcatastrofico ? createIndividualContract.mcatastrofico: undefined)
           .input('mmotin', sql.Numeric(17, 2), createIndividualContract.mmotin ? createIndividualContract.mmotin: undefined)
           .input('pblindaje', sql.Numeric(17, 2), createIndividualContract.pblindaje ? createIndividualContract.pblindaje: undefined)
