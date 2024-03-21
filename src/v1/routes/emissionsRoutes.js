@@ -19,6 +19,7 @@ router
 
     //emissions generic
     .post("/health",  emissionsController.createEmmisionHealthGeneric)
+    .post("/health-Paralife",  emissionsController.createEmmisionHealthParalife)
     .post("/automovile",  emissionsController.createEmmisionAutomovileGeneric)
 
 

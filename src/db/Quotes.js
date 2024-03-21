@@ -86,7 +86,7 @@ const createQuotes = async (createQuotes) => {
 
         if (createQuotes.xtipo == 'V') {
             query = await pool.request()
-                .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, pperdida_total, pcobertura_amplia FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+                .query('SELECT TOP 6 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, pperdida_total, pcobertura_amplia FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
         } else {
             query = await pool.request()
                 .query('SELECT TOP 1 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, pperdida_total, pcobertura_amplia FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');

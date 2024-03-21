@@ -178,6 +178,14 @@ const updateDataReceipt = async (updatePaymentReport) => {
                 error: createCommision.error
             }
         }
+
+        const createBono = await Collection.createBono(updatePaymentReport,bcv);
+        if (createBono.error) {
+            return {
+                error: createBono.error
+            }
+        }
+
         return updatePaymentsCollected;
     } catch (error) {
         console.error('Ooops. Ha ocurrido un error:', error.message);
