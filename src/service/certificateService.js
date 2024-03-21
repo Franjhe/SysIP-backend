@@ -149,14 +149,23 @@ const detailCertificateCertificate = async (searchDetail) => {
         let xestado_tomador; let xciudad_tomador;
         if(getTakers.error){ return { status: false, code: 500, message: getTakers.error }; }
         if(getTakers.result.rowsAffected > 0){ 
-            xtomador = getTakers.result.recordset[0].XTOMADOR
-            xrif_tomador = getTakers.result.recordset[0].XRIF
+            // xtomador = getTakers.result.recordset[0].XTOMADOR
             xdireccion_tomador = getTakers.result.recordset[0].XDIRECCION
             xzona_postal_tomador = getTakers.result.recordset[0].XZONA_POSTAL
             xtelefono_tomador = getTakers.result.recordset[0].XTELEFONO
             xcorreo_tomador = getTakers.result.recordset[0].XCORREO
             xestado_tomador = getTakers.result.recordset[0].XESTADO
             xciudad_tomador = getTakers.result.recordset[0].XCIUDAD
+
+            if(getTakers.result.recordset[0].XTOMADOR){
+                xtomador = getTakers.result.recordset[0].XTOMADOR.toUpperCase();
+            }
+
+            if(getTakers.result.recordset[0].XRIF){
+                xrif_tomador = getFleetContractOwnerData.result.recordset[0].ICEDULA + '-' + getTakers.result.recordset[0].XRIF
+            }else{
+                xrif_tomador = null
+            }
         }
         return {
             status: true,
@@ -173,7 +182,7 @@ const detailCertificateCertificate = async (searchDetail) => {
             xnombrerepresentantelegal: getFleetContractData.result.recordset[0].XREPRESENTANTELEGAL,
             ccliente: getFleetContractData.result.recordset[0].CCLIENTE,
             xnombrecliente: getFleetContractClientData.result.recordset[0].XCLIENTE,
-            xdocidentidadcliente: getFleetContractClientData.result.recordset[0].XDOCIDENTIDAD,
+            xdocidentidadcliente: getFleetContractOwnerData.result.recordset[0].ICEDULA + '-' + getFleetContractClientData.result.recordset[0].XDOCIDENTIDAD,
             xdireccionfiscalcliente: getFleetContractClientData.result.recordset[0].XDIRECCIONFISCAL,
             xtelefonocliente:getFleetContractClientData.result.recordset[0].XTELEFONO,
             xemailcliente: getFleetContractClientData.result.recordset[0].XEMAIL,

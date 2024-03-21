@@ -168,23 +168,74 @@ const createEmmisionHealth = async (create) => {
         const response = await httpService(url);
         let bcv = response.monitors.usd.price
 
-        const truncateTables = await Emissions.deleteEmmisionGHB(create);
+        const truncateTables = await Emissions.deleteEmmisionGHB();
 
-        const createEmmisionBen = await Emissions.createEmmisionGHB(create);
-        if (createEmmisionBen.error) {
-            return {
-                error: createEmmisionBen.error
+        if(create.beneficiarios.length > 0){
+            const createEmmisionBen = await Emissions.createEmmisionGHB(create);
+            if (createEmmisionBen.error) {
+                return {
+                    error: createEmmisionBen.error
+                }
             }
         }
 
-        const createEmmisionAseg = await Emissions.createEmmisionGHA(create);
-        if (createEmmisionAseg.error) {
-            return {
-                error: createEmmisionAseg.error
+        if(create.asegurados.length > 0){
+            const createEmmisionAseg = await Emissions.createEmmisionGHA(create);
+            if (createEmmisionAseg.error) {
+                return {
+                    error: createEmmisionAseg.error
+                }
             }
         }
 
         const createEmmision = await Emissions.createEmmisionGH(create,bcv);
+        if (createEmmision.error) {
+            return {
+                error: createEmmision.error
+            }
+        }
+
+        return createEmmision;
+
+    } catch (error) {
+        console.error('Ooops. Ha ocurrido un error:', error.message);
+        return {
+            error: error.message
+        };
+    }
+
+
+}
+
+const createEmmisionHealthParalife = async (create) => {
+
+    const url = 'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv';
+
+    try {
+        const response = await httpService(url);
+        let bcv = response.monitors.usd.price
+
+        const truncateTables = await Emissions.deleteEmmisionHParalife();
+
+        if(create.beneficiarios.length > 0){
+            const createEmmisionBen = await Emissions.createEmmisionGBParalife(create);
+            if (createEmmisionBen.error) {
+                return {
+                    error: createEmmisionBen.error
+                }
+            }
+        }
+
+        if(create.asegurados.length > 0){
+            const createEmmisionAseg = await Emissions.createEmmisionGAParalife(create);
+            if (createEmmisionAseg.error) {
+                return {
+                    error: createEmmisionAseg.error
+                }
+            }
+        }
+
+        const createEmmision = await Emissions.createEmmisionGParalife(create,bcv);
         if (createEmmision.error) {
             return {
                 error: createEmmision.error
@@ -252,5 +303,6 @@ export default {
     searchQuotes,
     createEmmisionHealth,
     searchRates,
-    createEmmisionAutomovil
+    createEmmisionAutomovil,
+    createEmmisionHealthParalife
 }
