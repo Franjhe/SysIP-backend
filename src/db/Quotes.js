@@ -73,7 +73,7 @@ const createQuotes = async (createQuotes) => {
             .input('ncapacidad_p', sql.Int, createQuotes.ncapacidad_p)
             .input('msuma', sql.Numeric(18, 2), createQuotes.msum)
             .input('ccorredor', sql.Int, createQuotes.ccorredor)
-            .input('xtipo', sql.Char, createQuotes.xtipo);
+            .input('xtipo', sql.Char, createQuotes.xtipo)
 
         if (createQuotes.xclasificacion) {
             request.input('xclasificacion', sql.NVarChar, createQuotes.xclasificacion.trim());
@@ -86,7 +86,7 @@ const createQuotes = async (createQuotes) => {
 
         if (createQuotes.xtipo == 'V') {
             query = await pool.request()
-                .query('SELECT TOP 6 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, xclasificacion, qano FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
+                .query('SELECT TOP 5 ccotizacion, xmarca, xmodelo, xnombre, xapellido, cplan_rc, xplan_rc, mtotal_rcv, mtotal_amplia, mtotal_perdida, xcorredor, xcorreocorredor, xtelefonocorredor, xclasificacion, qano FROM VWBUSCARCOTIZACION ORDER BY ccotizacion DESC');
                 for (let i = 0; i < query.recordset.length; i++) {
                     const xclasificacion = query.recordset[i].xclasificacion;
                     const qano = query.recordset[i].qano;
@@ -272,6 +272,11 @@ const detailQuotesAutomobile = async (detailQuotesAutomobile) => {
             'xcorredor',
             'xcorreocorredor',
             'xtelefonocorredor',
+            'msuma_total',
+            'brcv',
+            'bamplia',
+            'bperdida',
+            'ctarifa_exceso',
           ],
       });
   
