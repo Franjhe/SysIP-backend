@@ -202,8 +202,12 @@ const searchQuotes = async (req, res) => {
             mtotal_perdida: result[i].mtotal_perdida,
             xplan_rc: result[i].xplan_rc,
             cplan_rc: result[i].cplan_rc,
+            brcv: result[i].brcv,
+            bamplia: result[i].bamplia,
+            bperdida: result[i].bperdida,
         })
     }
+    console.log(quote)
     return res
         .status(200)
         .send({
@@ -221,6 +225,8 @@ const searchQuotes = async (req, res) => {
                 xcorredor: result[0].xcorredor,
                 xcorreocorredor: result[0].xcorreocorredor,
                 xtelefonocorredor: result[0].xtelefonocorredor,
+                msuma_aseg: result[0].msuma_total,
+                ctarifa_exceso: result[0].ctarifa_exceso,
             }
         });
 }

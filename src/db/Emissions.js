@@ -107,7 +107,7 @@ const createIndividualContract = async(createIndividualContract,bcv) => {
           createIndividualContract.ctomador = matomadorResult.recordset[0].ctomador;
         }
       }
-
+console
       let insert = await pool.request()
           .input('icedula', sql.Char, createIndividualContract.icedula ? createIndividualContract.icedula: undefined)
           .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
