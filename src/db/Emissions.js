@@ -107,7 +107,6 @@ const createIndividualContract = async(createIndividualContract,bcv) => {
           createIndividualContract.ctomador = matomadorResult.recordset[0].ctomador;
         }
       }
-console
       let insert = await pool.request()
           .input('icedula', sql.Char, createIndividualContract.icedula ? createIndividualContract.icedula: undefined)
           .input('xrif_cliente', sql.NVarChar, createIndividualContract.xrif_cliente ? createIndividualContract.xrif_cliente: undefined)
@@ -175,7 +174,7 @@ console
           .input('mprima_aditamento', sql.Numeric(17, 2), createIndividualContract.mprima_aditamento ? createIndividualContract.mprima_aditamento: undefined)
           .input('mtasa_cambio', sql.Numeric(17, 2), bcv)
           .query('INSERT INTO TMEMISION_INDIVIDUAL (mtasa_cambio,icedula, xrif_cliente, xnombre, xapellido, xcedula, xtelefono_emp, email, cestado, cciudad, xdireccionfiscal, xplaca, xmarca, xmodelo, xversion, cano, ncapacidad_p, xcolor, xserialcarroceria, xserialmotor, xcobertura, ctarifa_exceso, cplan_rc, ccorredor, ctomador, ccotizacion, cinspeccion, fdesde_pol, fhasta_pol, cclasificacion, msuma_aseg, mprima_bruta, pdescuento, precarga, pcatastrofico, mprima_casco, mcatastrofico, mmotin, pblindaje, msuma_blindaje, mprima_blindaje, xpago, femision, cmetodologiapago, cpais, id_inma, pcasco, pmotin, cuso, ctipopago, cbanco, cbanco_destino, xreferencia, mprima_pagada, fcobro, fnac, iestado_civil, isexo, mprima_accesorios, xuso, npesovacio, ncapcarga, paditamento, msuma_aditamento, mprima_aditamento) VALUES (@mtasa_cambio,@icedula, @xrif_cliente, @xnombre, @xapellido, @xcedula, @xtelefono_emp, @email, @cestado, @cciudad, @xdireccionfiscal, @xplaca, @xmarca, @xmodelo, @xversion, @cano, @ncapacidad_p, @xcolor, @xserialcarroceria, @xserialmotor, @xcobertura, @ctarifa_exceso, @cplan_rc, @ccorredor, @ctomador, @ccotizacion, @cinspeccion, @fdesde_pol, @fhasta_pol, @cclasificacion, @msuma_aseg, @mprima_bruta, @pdescuento, @precarga, @pcatastrofico, @mprima_casco, @mcatastrofico, @mmotin, @pblindaje, @msuma_blindaje, @mprima_blindaje, @xpago, @femision, @cmetodologiapago, @cpais, @id_inma, @pcasco, @pmotin, @cuso, @ctipopago, @cbanco, @cbanco_destino, @xreferencia, @mprima_pagada, @fcobro, @fnac, @iestado_civil, @isexo, @mprima_accesorio, @xuso, @npesovacio, @ncapcarga, @paditamento, @msuma_aditamento, @mprima_aditamento)')
-          await pool.close();
+          
 
           if (createIndividualContract.accesorios) {
             const accesoriosConMonto = createIndividualContract.accesorios.filter(accesorio => accesorio.xprimaAccesorio !== '');
@@ -206,7 +205,8 @@ console
                         .execute('trBAcesorios_ContratoFlota');
                 }
             }
-        }
+          }
+          await pool.close();
           return { result: { rowsAffected: rowsAffected, status: true } };
   }
   catch(err){
@@ -216,6 +216,7 @@ console
 }
 
 const searchContractIndividual = async () => {
+  console.log('hola')
   try {
     const maxContract = await Contract.findOne({
       attributes: ['ccontratoflota'],
@@ -225,6 +226,7 @@ const searchContractIndividual = async () => {
 
     return maxContract ? maxContract.get({ plain: true }) : null;
   } catch (error) {
+    console.log(error.message)
     return { error: error.message };
   }
 };
@@ -285,6 +287,7 @@ const searchVehicle = async (searchVehicle) => {
 };
 
 const updateUbii = async(updateUbii) => {
+  console.log(updateUbii)
   try{
       let rowsAffected = 0;
       let pool = await sql.connect(sqlConfig);
