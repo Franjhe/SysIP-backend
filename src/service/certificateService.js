@@ -56,6 +56,7 @@ const detailCertificateCertificate = async (searchDetail) => {
                 cestatus: getFleetContractReceiptData.result.recordset[i].CESTATUSGENERAL,
             });
         }
+        console.log(receiptList)
     }
     let getFleetContractOwnerData = await Certificate.getFleetContractOwnerDataQuery(searchDetail, getFleetContractData.result.recordset[0].CPROPIETARIO).then((res) => res);
         if(getFleetContractOwnerData.error){return { status: false, code: 500, message: getFleetContractOwnerData.error }; }
