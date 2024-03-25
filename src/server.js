@@ -19,6 +19,7 @@ import v1QuotesRouter from './v1/routes/quotesRoutes.js';
 import v1Collection from './v1/routes/collection.js'
 import v1Commissions from './v1/routes/commissionsRoutes.js'
 import v1VirtualAssistant from './v1/routes/virtualAssistantRoutes.js'
+import Update from './config/updateMoneda.js'
 
 import fileExtension from 'file-extension';
 import multer from 'multer';
@@ -26,6 +27,7 @@ const { diskStorage } = multer;
 
 const app = express(); 
 dotenv;
+Update
 
 app.use(cors({
   origin: '*',  // o especifica el dominio permitido

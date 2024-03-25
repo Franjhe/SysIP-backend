@@ -890,6 +890,7 @@ const createEmmisionAutomovile = async(create,bcv) => {
     .input('direccion', sql.NVarChar(250), create.direccion)
     .input('fnacimiento', sql.DateTime, create.fnacimiento)
     .input('sexo', sql.Char(1), create.sexo)
+    .input('estado_civil', sql.Char(1), create.estado_civil)
     .input('telefono', sql.NVarChar(250), create.telefono)
     .input('correo', sql.NVarChar(250), create.correo)
     .input('tipo_pago', sql.NVarChar(50), create.tipo_pago)
@@ -914,11 +915,11 @@ const createEmmisionAutomovile = async(create,bcv) => {
     .input('cplan_rc', sql.Int, create.cplan_rc)
     .query('INSERT INTO eePoliza_auto ' +
       '(fregistro,cproductor,xcanal_venta,poliza , cobertura, tipo_doc , doc_identidad , nombre,apellido,estado,ciudad,'+
-      'direccion,fnacimiento,sexo,telefono,correo,tipo_pago,fcobro,femision,banco,banco_destino,sumaaseg,'+
+      'direccion,fnacimiento,sexo,estado_civil,telefono,correo,tipo_pago,fcobro,femision,banco,banco_destino,sumaaseg,'+
       'sumaasegext,prima,primaext,ptasamon, xreferencia, xmarca, xmodelo , xversion , cano , xplaca,' +
       'serial_carroceria, serial_motor , color , cplan_rc)'
     +'VALUES (@fregistro,@cproductor,@xcanal_venta,@poliza , @cobertura, @tipo_doc , @doc_identidad , @nombre,@apellido,@estado,@ciudad,'+
-    '@direccion,@fnacimiento,@sexo,@telefono,@correo,@tipo_pago,@fcobro,@femision,@banco,@banco_destino,@sumaaseg,'+
+    '@direccion,@fnacimiento,@sexo,@estado_civil,@telefono,@correo,@tipo_pago,@fcobro,@femision,@banco,@banco_destino,@sumaaseg,'+
     '@sumaasegext,@prima,@primaext,@ptasamon, @xreferencia, @xmarca, @xmodelo , @xversion , @cano , @xplaca,' +
     '@serial_carroceria, @serial_motor , @color , @cplan_rc)' )
 
