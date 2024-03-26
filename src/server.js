@@ -27,8 +27,8 @@ const { diskStorage } = multer;
 
 const app = express(); 
 dotenv;
-Update
 
+Update.start()
 app.use(cors({
   origin: '*',  // o especifica el dominio permitido
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

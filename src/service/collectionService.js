@@ -63,15 +63,22 @@ const searchPaymentReportData = async () => {
 }
 
 const createPaymentReportSoport = async (createPaymentReport) => {
-    if(createPaymentReport.diference){
-        const createPaymentReportData = await Collection.createPaymentReportSoportW(createPaymentReport);
-        if (createPaymentReportData.error) {
-            return {
-                error: createPaymentReportData.error
-            }
+
+    const createTransAndDetail = await Collection.updatePaymentReportTransW(createPaymentReport);
+    if (createTransAndDetail.error) {
+        return {
+            error: createTransAndDetail.error
         }
-        return createPaymentReportData;
-    }else{
+    }
+
+    const updateReceipt = await Collection.transaccionReceipt(createPaymentReport);
+    if (updateReceipt.error) {
+        return {
+            error: updateReceipt.error
+        }
+    }
+    
+    if(createPaymentReport.diference){
         const createPaymentReportData = await Collection.createPaymentReportSoportDiference(createPaymentReport);
         if (createPaymentReportData.error) {
             return {
@@ -79,7 +86,16 @@ const createPaymentReportSoport = async (createPaymentReport) => {
             }
         }
         return createPaymentReportData;
+    }else if(!createPaymentReport.diference){
+        const createPaymentReportData = await Collection.createPaymentReportSoportW(createPaymentReport);
+        if (createPaymentReportData.error) {
+            return {
+                error: createPaymentReportData.error
+            }
+        }
+        return createPaymentReportData;
     }
+    
 }
 
 const searchPaymentPendingData = async () => {

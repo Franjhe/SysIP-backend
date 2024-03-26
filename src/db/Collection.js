@@ -110,6 +110,28 @@ const createPaymentReportTransW = async(createPaymentReport) => {
     }
 }
 
+const updatePaymentReportTransW = async(createPaymentReport) => {
+    try{
+            let data ;
+            //inserta en cbreporte_tran
+            let pool = await sql.connect(sqlConfig);
+            let inserTransaccion = await pool.request()
+            .input('ctransaccion'     , sql.Int , createPaymentReport.ctransaccion )
+            .input('freporte'     , sql.DateTime , createPaymentReport.freporte )
+            .input('mpago'        , sql.Numeric(18, 2), createPaymentReport.mpago ) 
+            .input('mpagoext'     , sql.Numeric(18, 2), createPaymentReport.mpagoext)    
+            .input('ptasamon'     , sql.Numeric(18, 2), createPaymentReport.ptasamon )         
+            .input('fingreso'     , sql.DateTime , new Date() )
+            .query('UPDATE cbreporte_tran set freporte = @freporte, mpago = @mpago,fingreso = @fingreso, mpagoext = @mpagoext, ptasamon = @ptasamon where ctransaccion = @ctransaccion') 
+
+            await pool.close();
+            return  inserTransaccion.rowsAffected; //;
+    }
+    catch(err){
+        return { error: err.message, message: 'No se registraron los datos ' };
+    }
+}
+
 const createPaymentReportSoportW = async(createPaymentReport) => {
     try{
         let pool = await sql.connect(sqlConfig);
@@ -322,16 +344,24 @@ const searchDataPaymentReport = async() => {
         let searchDataTransaction = await pool.request()
         .input('iestado'     , sql.Bit, 0)  
         .query('select * from vwbuscartransaccion where iestado = @iestado')
-        return  searchDataTransaction.recordsets[0] ;
+        if(searchDataTransaction.rowsAffected) {
+            for(let i = 0; i < searchDataTransaction.recordset.length; i++){
+                let pool = await sql.connect(sqlConfig);
+                let soportPago= await pool.request()
+                .input('ctransaccion', sql.Int, searchDataTransaction.recordset[i].ctransaccion) 
+                .query('select * from cbreporte_pago where ctransaccion = @ctransaccion')
+                console.log(soportPago.recordset)
+            }
+            return  searchDataTransaction.recordset ;
+        }
     }
     catch(err){
         return { error: err.message, message: 'No se registraron los datos ' };
     }
 }
 
-const searchDataPaymentPending= async(searchDataReceipt) => {
+const searchDataPaymentPending= async() => {
     try{
-
         let pool = await sql.connect(sqlConfig);
         let searchReport = await pool.request()
         .input('fhasta'        , sql.DateTime , new Date())
@@ -578,9 +608,8 @@ const receiptDifference = async(receipt) => {
                 let pool = await sql.connect(sqlConfig);
                 let receiptUpdate = await pool.request()
                     .input('ctransaccion', sql.Numeric(18, 0), receipt.ctransaccion)
-                    .input('iestado_tran', sql.Char(2, 0), 'ER')
+                    .input('iestado_tran', sql.Char(2), 'ER')
                     .query('update cbreporte_tran set iestado_tran = @iestado_tran where ctransaccion = @ctransaccion');
-                        
                 if (receiptUpdate.rowsAffected) {
                     let pool = await sql.connect(sqlConfig);
                     let receiptUpdate = await pool.request()
@@ -710,6 +739,8 @@ const updateReceiptDifference = async(notification) => {
 export default {
     searchDataReceipt,
     createPaymentReportTransW,
+    updatePaymentReportTransW,
+
     createPaymentReportSoportW,
     searchDataPaymentReport,
     searchDataPaymentPending,
