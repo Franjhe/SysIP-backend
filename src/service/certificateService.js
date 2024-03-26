@@ -15,6 +15,10 @@ const detailCertificateCertificate = async (searchDetail) => {
     let getFleetContractData = await Certificate.getFleetContractDataQuery(searchDetail).then((res) => res);
     if(getFleetContractData.error){ return { status: false, code: 500, message: getFleetContractData.error }; }
     if(getFleetContractData.result.rowsAffected > 0){
+        // let fechasrecibo = [];
+        // for(let i = 0; i < getFleetContractData.result.recordset.length; i+){
+
+        // }
     let getFleetContractReceiptData = await Certificate.getFleetContractReceiptData(searchDetail).then((res) => res);
     let receiptList = [];
     if (getFleetContractReceiptData.result.rowsAffected > 0) {
@@ -43,10 +47,13 @@ const detailCertificateCertificate = async (searchDetail) => {
                 crecibo: getFleetContractReceiptData.result.recordset[i].CRECIBO,
                 fdesde_rec: dd_mm_yyyy_format(fdesdeRec),
                 fhasta_rec: dd_mm_yyyy_format(fhastaRec),
+                fdesde_rec_s: getFleetContractReceiptData.result.recordset[i].FDESDE_REC,
+                fhasta_rec_s: getFleetContractReceiptData.result.recordset[i].FHASTA_REC,
                 fcobro: fcobro,
                 xmoneda: getFleetContractReceiptData.result.recordset[i].xmoneda,
                 mprima: getFleetContractReceiptData.result.recordset[i].MPRIMA_BRUTA_EXT,
                 xestatus: getFleetContractReceiptData.result.recordset[i].XESTATUSGENERAL,
+                cestatus: getFleetContractReceiptData.result.recordset[i].CESTATUSGENERAL,
             });
         }
     }
